@@ -1,7 +1,22 @@
 import express from "express";
+import mongoose from "mongoose";
+import helmet from "helmet";
+import cors from "cors"
+import students from "./routes/student";
+import books from "./routes/book";
 
 const app = express();
 
 app.use(express.json());
+app.use(cors())
+app.use(helmet());
 
-export default app;
+app.use('/api/students', students)
+app.use('/api/books', books)
+
+mongoose
+  .connect("mongodb://localhost/project")
+  .then(() => console.log("Connected to mongodb..."))
+  .catch((err) => console.log("Couldnt connect to db ", err.message));
+
+export default app
