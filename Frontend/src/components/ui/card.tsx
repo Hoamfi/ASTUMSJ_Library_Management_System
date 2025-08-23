@@ -1,6 +1,5 @@
 import React from "react";
 
-// Card props now include optional imageUrl
 type CardProps = {
   className?: string;
   children: React.ReactNode;
