@@ -1,9 +1,14 @@
 import "./App.css";
+import Register from "../pages/Register"
 
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-200">
-      <h1 className="text-3xl font-bold">Hello World</h1>
+    // <div className="min-h-screen flex items-center justify-center bg-blue-200">
+    //   <h1 className="text-3xl font-bold">Hello World</h1>
+    // </div>
+
+    <div>
+      <Register/>
     </div>
   );
 }
