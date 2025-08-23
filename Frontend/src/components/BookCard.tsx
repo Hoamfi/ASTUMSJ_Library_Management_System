@@ -1,4 +1,3 @@
-// src/components/BookCard.tsx
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -10,7 +9,8 @@ type BookCardProps = {
     title: string;
     author: string;
     releasedYear: number;
-    description?: string; // optional
+    description?: string;
+    imageUrl?: string;
   };
   role: "admin" | "student";
   onBorrow?: (bookId: string) => void;
@@ -18,10 +18,9 @@ type BookCardProps = {
   onDelete?: (bookId: string) => void;
 };
 
-//bookcard function
 function BookCard({ book, role, onBorrow, onEdit, onDelete }: BookCardProps) {
   return (
-    <Card className="w-72">
+    <Card className="w-72" imageUrl={book.imageUrl} imageAlt={book.title}>
       <CardHeader>
         <CardTitle>{book.title}</CardTitle>
       </CardHeader>
