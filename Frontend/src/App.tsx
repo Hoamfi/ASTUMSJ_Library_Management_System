@@ -1,7 +1,7 @@
 import React from "react";
 import BookCard from "./components/BookCard";
 
-// Example dummy books
+
 const books = [
   {
     id: "1",
