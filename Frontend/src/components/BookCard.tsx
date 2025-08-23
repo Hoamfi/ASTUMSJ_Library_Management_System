@@ -18,7 +18,7 @@ type BookCardProps = {
   onDelete?: (bookId: string) => void;
 };
 
-// Function component version
+//bookcard function
 function BookCard({ book, role, onBorrow, onEdit, onDelete }: BookCardProps) {
   return (
     <Card className="w-72">
