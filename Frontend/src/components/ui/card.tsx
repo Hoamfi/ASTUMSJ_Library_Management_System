@@ -1,7 +1,23 @@
 import React from "react";
 
-export const Card: React.FC<{ className?: string; children: React.ReactNode }> = ({ className, children }) => (
-  <div className={`bg-white shadow rounded-lg p-4 ${className}`}>{children}</div>
+type CardProps = {
+  className?: string;
+  children: React.ReactNode;
+  imageUrl?: string; // optional image at the top
+  imageAlt?: string; // optional alt text
+};
+
+export const Card: React.FC<CardProps> = ({ className, children, imageUrl, imageAlt }) => (
+  <div className={`bg-white rounded-lg p-4 shadow-lg hover:shadow-xl transition-shadow duration-300 ${className}`}>
+    {imageUrl && (
+      <img
+        src={imageUrl}
+        alt={imageAlt || "Card image"}
+        className="w-full h-48 object-cover rounded-t mb-4"
+      />
+    )}
+    {children}
+  </div>
 );
 
 export const CardHeader: React.FC<{ children: React.ReactNode }> = ({ children }) => (
