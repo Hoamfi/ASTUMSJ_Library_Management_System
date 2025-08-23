@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import helmet from "helmet";
 import cors from "cors"
 import students from "./routes/student";
-import books from "./routes/book";
+import books from "./routes/bookRoutes";
 
 const app = express();
 
