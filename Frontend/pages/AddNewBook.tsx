@@ -52,9 +52,8 @@ const AddNewBook = () => {
       >
         <h2 className="text-2xl font-bold mb-4">Add a Book</h2>
 
-        {/* Grid for inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Book ID */}
+    
           <div>
             <label className="block font-medium mb-1">Book ID</label>
             <input
@@ -67,7 +66,6 @@ const AddNewBook = () => {
             />
           </div>
 
-          {/* Title */}
           <div>
             <label className="block font-medium mb-1">Title</label>
             <input
@@ -80,7 +78,6 @@ const AddNewBook = () => {
             />
           </div>
 
-          {/* Author */}
           <div>
             <label className="block font-medium mb-1">Author</label>
             <input
@@ -93,7 +90,6 @@ const AddNewBook = () => {
             />
           </div>
 
-          {/* Released Year */}
           <div>
             <label className="block font-medium mb-1">Released Year</label>
             <input
@@ -106,7 +102,6 @@ const AddNewBook = () => {
             />
           </div>
 
-          {/* Description */}
           <div className="md:col-span-2">
             <label className="block font-medium mb-1">Description</label>
             <textarea
@@ -119,7 +114,6 @@ const AddNewBook = () => {
             />
           </div>
 
-          {/* Image URL */}
           <div className="md:col-span-2">
             <label className="block font-medium mb-1">Image URL</label>
             <input
@@ -132,7 +126,6 @@ const AddNewBook = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition duration-300 disabled:opacity-50 cursor-pointer"
