@@ -1,42 +1,37 @@
-import React from "react";
-import BookCard from "./components/BookCard";
+import { Route, Routes } from "react-router";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
+interface RegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+}
 
-const books = [
-  {
-    id: "1",
-    title: "Rich Dad Poor Dad",
-    author: "Robert Kyosaki",
-    releasedYear: 2000,
-    description: "A book for finicially stable",
-    imageUrl:"https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1448383923i/27917357.jpg"
-  },
-  {
-    id: "2",
-    title: "Psychology of Money",
-    author: "Morgan Housel",
-    releasedYear: 2002,
-    description: "A book for how to manage your money",
-    imageUrl:"https://readersbooksclub.com/wp-content/uploads/2023/04/The-Psychology-of-Money-book.png"
-  },
-];
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 function App() {
-  const handleBorrow = (bookId: string) => {
-    alert(`Borrow book with id: ${bookId}`);
-  };
+  function handleRegister(data: RegisterFormData) {
+    console.log(data);
+  }
+
+  function handleLogin(data: LoginFormData) {
+    console.log(data)
+  }
 
   return (
-    <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {books.map((book) => (
-        <BookCard
-          key={book.id}
-          book={book}           
-          role="student"        
-          onBorrow={handleBorrow}
-        />
-      ))}
-    </div>
+    // <div>
+    //   <Register onRegister={(data) => handleCreateAccount(data)} />
+    //   <Login onLogin={(data) => handleLogin(data)}/>
+    // </div>
+    <Routes>
+      <Route path="/login" element={<Login onLogin={(data) => handleLogin(data)}/>}/>
+      <Route path="/register" element={<Register onRegister={(data) => handleRegister(data)}/>}/>
+        <Route path="addNewBook" element/>
+    </Routes>
   );
 }
 
