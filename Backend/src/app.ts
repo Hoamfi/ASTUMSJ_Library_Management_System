@@ -3,12 +3,8 @@ import mongoose from "mongoose";
 import helmet from "helmet";
 import cors from "cors"
 import students from "./routes/student";
-<<<<<<< HEAD
 import books from "./routes/bookRoutes";
-=======
-import books from "./routes/book";
 import authStudent from "./routes/auth";
->>>>>>> c1d321f5b3ac64a13083beab8c47b01e8be4f565
 
 const app = express();
 

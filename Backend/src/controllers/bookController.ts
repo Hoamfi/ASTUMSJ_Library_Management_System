@@ -1,11 +1,13 @@
-
-import validateBook from "../vallidators.ts/book";
+import validateBook from "../vallidators/validateBook";
 // controllers/bookController.ts
 import { Request, Response } from "express";
-import Book, { IBook } from "../models/book"; 
+import Book, { IBook } from "../models/book";
 
 // Create Book
-export const createBook = async (req: Request, res: Response): Promise<void> => {
+export const createBook = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const book: IBook = await Book.create(req.body);
     res.status(201).json(book);
@@ -25,7 +27,10 @@ export const getBooks = async (_req: Request, res: Response): Promise<void> => {
 };
 
 // Get Book by ID
-export const getBookById = async (req: Request, res: Response): Promise<void> => {
+export const getBookById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const book: IBook | null = await Book.findById(req.params.id);
     if (!book) {
@@ -39,9 +44,16 @@ export const getBookById = async (req: Request, res: Response): Promise<void> =>
 };
 
 // Update Book
-export const updateBook = async (req: Request, res: Response): Promise<void> => {
+export const updateBook = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const book: IBook | null = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const book: IBook | null = await Book.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
     if (!book) {
       res.status(404).json({ error: "Book not found" });
       return;
@@ -53,7 +65,10 @@ export const updateBook = async (req: Request, res: Response): Promise<void> => 
 };
 
 // Delete Book
-export const deleteBook = async (req: Request, res: Response): Promise<void> => {
+export const deleteBook = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const book: IBook | null = await Book.findByIdAndDelete(req.params.id);
     if (!book) {

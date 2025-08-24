@@ -1,5 +1,5 @@
 import Student from "@/models/student";
-import validateStudent from "../vallidators.ts/student";
+import validateStudent from "../vallidators/validateStudent";
 import { Request, Response, RequestHandler } from "express";
 import _ from "lodash";
 import bcryp from "bcrypt";
