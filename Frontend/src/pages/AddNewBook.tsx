@@ -1,145 +1,176 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
-import axios from "axios";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
-const AddNewBook = () => {
-  const [bookId, setBookId] = useState("");
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [description, setDescription] = useState("");
-  const [releasedYear, setReleasedYear] = useState(new Date().getFullYear());
-  const [imageUrl, setImageUrl] = useState("");
+interface Props {
+  onAdd: (data: {
+    title: string;
+    author: string;
+    description: string;
+    catagory: string;
+    publicationYear: number;
+    totalCopies: number;
+  }) => void;
+}
 
-  const handleAddBook = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+const schema = z.object({
+  title: z.string().min(1, { message: "Title is required" }),
+  author: z.string().min(1, { message: "Author is required" }),
+  description: z
+    .string()
+    .min(10, { message: "Description must be atleast 10 characters." }),
+  catagory: z.string().min(1, { message: "Catagories are required" }),
+  publicationYear: z
+    .number()
+    .min(1900, { message: "Please enter a valid year." }).max(new Date().getFullYear(), {message: "Please enter a valid year."}),
+  totalCopies: z.number().positive({ message: "Must be greater than 1" }),
+});
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/books",
-        {
-          bookId,
-          imageUrl,
-          title,
-          author,
-          description,
-          releasedYear,
-        },
-        { withCredentials: true }
-      );
+type FormData = z.infer<typeof schema>;
 
-      if (response.data.success) {
-        alert("Book added successfully ✅");
-        setBookId("");
-        setTitle("");
-        setAuthor("");
-        setDescription("");
-        setImageUrl("");
-        setReleasedYear(new Date().getFullYear());
-      } else {
-        alert(response.data.message || "Failed to add book ❌");
-      }
-    } catch (error) {
-      console.error("Error adding book", error);
-      alert("An error occurred while adding the book ❌");
-    }
-  };
-
+const AddNewBook = ({ onAdd }: Props) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { totalCopies: 1 },
+  });
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleAddBook}
-        className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md space-y-4"
+    <div className="flex flex-col items-center mt-5">
+      <h1
+        style={{ fontFamily: "'Libre Baskerville', serif" }}
+        className="text-[2rem] font-semibold my-2"
       >
-        <h2 className="text-2xl font-bold mb-4">Add a Book</h2>
-
-        {/* Grid for inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Book ID */}
-          <div>
-            <label className="block font-medium mb-1">Book ID</label>
-            <input
-              type="text"
-              placeholder="Book ID"
-              value={bookId}
-              onChange={(e) => setBookId(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black"
-              required
-            />
-          </div>
-
-          {/* Title */}
-          <div>
-            <label className="block font-medium mb-1">Title</label>
-            <input
-              type="text"
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black"
-              required
-            />
-          </div>
-
-          {/* Author */}
-          <div>
-            <label className="block font-medium mb-1">Author</label>
-            <input
-              type="text"
-              placeholder="Author"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black"
-              required
-            />
-          </div>
-
-          {/* Released Year */}
-          <div>
-            <label className="block font-medium mb-1">Released Year</label>
-            <input
-              type="number"
-              placeholder="Released Year"
-              value={releasedYear}
-              onChange={(e) => setReleasedYear(Number(e.target.value))}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black"
-              required
-            />
-          </div>
-
-          {/* Description */}
-          <div className="md:col-span-2">
-            <label className="block font-medium mb-1">Description</label>
-            <textarea
-              placeholder="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black"
-              rows={3}
-              required
-            />
-          </div>
-
-          {/* Image URL */}
-          <div className="md:col-span-2">
-            <label className="block font-medium mb-1">Image URL</label>
-            <input
-              type="url"
-              placeholder="Image URL"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-black"
-            />
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition duration-300 disabled:opacity-50 cursor-pointer"
+        Add New Book
+      </h1>
+      <div className="max-w-sm md:min-w-[400px] lg:min-w-[600px]">
+        <form
+          onSubmit={handleSubmit((data) => {
+            onAdd(data);
+          })}
         >
-          Add Book
-        </button>
-      </form>
+          <div>
+            <label
+              htmlFor="title"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              Title
+            </label>
+            <input
+              {...register("title")}
+              type="text"
+              id="title"
+              placeholder="The Psychology of Money"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.title && (
+              <p className="text-red-500 text-sm">{errors.title.message}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="author"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              Author
+            </label>
+            <input
+              {...register("author")}
+              type="text"
+              id="author"
+              placeholder="Morgan Housel"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.author && (
+              <p className="text-red-500 text-sm">{errors.author.message}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="description"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              Description
+            </label>
+            <textarea
+              {...register("description")}
+              id="description"
+              placeholder="Book Description"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="catagory"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              Catagories (Comma separated)
+            </label>
+            <input
+              {...register("catagory")}
+              type="text"
+              id="catagory"
+              placeholder="self-help, bussines"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.catagory && (
+              <p className="text-red-500 text-sm">{errors.catagory.message}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="publicationYear"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              Publication Year
+            </label>
+            <input
+              {...register("publicationYear", { valueAsNumber: true })}
+              type="string"
+              id="publicationYear"
+              placeholder="2015"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.publicationYear && (
+              <p className="text-red-500 text-sm">
+                {errors.publicationYear.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="totalCopies"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              TotalCopies
+            </label>
+            <input
+              {...register("totalCopies", { valueAsNumber: true })}
+              type="number"
+              id="totalCopies"
+              placeholder="10"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.totalCopies && (
+              <p className="text-red-500 text-sm">
+                {errors.totalCopies.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <button className="w-full py-2 px-2 my-6 bg-black rounded-lg text-white font-sans hover:bg-black/80 cursor-pointer">
+              Add Book
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
