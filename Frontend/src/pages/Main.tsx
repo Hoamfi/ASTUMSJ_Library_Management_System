@@ -2,6 +2,9 @@ import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState, type ReactNode } from "react";
+import { MdLogout } from "react-icons/md";
+import { FaRegUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 interface Props {
   children: ReactNode;
@@ -9,6 +12,8 @@ interface Props {
 
 const Main = ({ children }: Props) => {
   const [isOpen, setOpen] = useState(false);
+  const [profileExpanded, setProfileExpanded] = useState(false);
+
   return (
     <div className="min-h-screen grid grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto]">
       {/*  DESKTOP SIDEBAR (base column) */}
@@ -50,11 +55,30 @@ const Main = ({ children }: Props) => {
 
       {/* HEADER  */}
       <header className="flex items-center col-span-2 md:col-start-2 md:col-span-1">
-        <Header isOpen={(state) => setOpen(state)} />
+        <Header
+          isOpen={(state) => setOpen(state)}
+          isProfileExpanded={(state) => setProfileExpanded(state)}
+        />
       </header>
 
       {/* MAIN */}
-      <main className="col-span-2 lg:col-start-2 lg:col-span-1">
+      <main
+        className="col-span-2 lg:col-start-2 lg:col-span-1 relative"
+        onClick={() => setProfileExpanded(false)}
+      >
+        {profileExpanded && (
+          <div className="border-1 border-gray-200 z-50 absolute right-4 -top-3 p-1 shadow-xl bg-white rounded-md">
+            <Link to="/changepassword">
+              <FaRegUser size={15} className="inline" />
+              <span>Change Password</span>
+            </Link>
+            <Link to="/login" className="block">
+              <MdLogout size={15} className="inline" />
+              <span>Logout</span>
+            </Link>
+          </div>
+        )}
+
         {children}
       </main>
 

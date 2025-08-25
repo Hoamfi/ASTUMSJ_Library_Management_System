@@ -10,6 +10,7 @@ import Donate from "./pages/Donate";
 import Policy from "./pages/Policy";
 import About from "./pages/About";
 import Support from "./pages/Support";
+import ChangePassword from "./pages/ChangePassword";
 
 interface RegisterFormData {
   name: string;
@@ -61,6 +62,7 @@ function App() {
       <Route path="/about" element={<Main>{<About />}</Main>} />
       <Route path="/support" element={<Main>{<Support />}</Main>} />
       <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />
+      <Route path="/changepassword" element={<Main>{<ChangePassword />}</Main>} />
 
       <Route
         path="addnewbook"
