@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import AddNewBook from "./pages/AddNewBook";
-
+import Home from "./pages/Home";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -19,7 +19,7 @@ interface Book {
   author: string;
   description: string;
   catagory: string;
-  publicationYear: string;
+  publicationYear: number;
   totalCopies: number;
 }
 
@@ -33,15 +33,12 @@ function App() {
   }
 
   function handleAddBook(data: Book) {
-    console.log(data)
+    console.log(data);
   }
 
   return (
-    // <div>
-    //   <Register onRegister={(data) => handleCreateAccount(data)} />
-    //   <Login onLogin={(data) => handleLogin(data)}/>
-    // </div>
     <Routes>
+      <Route path="/" element={<Home />} />
       <Route
         path="/login"
         element={<Login onLogin={(data) => handleLogin(data)} />}
@@ -50,7 +47,10 @@ function App() {
         path="/register"
         element={<Register onRegister={(data) => handleRegister(data)} />}
       />
-      <Route path="addnewbook" element={<AddNewBook onAdd={(data) => handleAddBook(data)}/>} />
+      <Route
+        path="addnewbook"
+        element={<AddNewBook onAdd={(data) => handleAddBook(data)} />}
+      />
     </Routes>
   );
 }
