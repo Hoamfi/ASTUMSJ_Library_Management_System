@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 backend/.env
+frontend/src/assets/tmp
+backend/src/playground.ts
 
 # Editor directories and files
 .vscode/*

@@ -2,9 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import helmet from "helmet";
 import cors from "cors"
-import students from "./routes/student";
-import books from "./routes/bookRoutes";
 import authStudent from "./routes/auth";
+import bookRouter from "./routes/book";
+import studentRouter from "./routes/student";
 
 const app = express();
 
@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(cors())
 app.use(helmet());
 
-app.use('/api/students', students)
-app.use('/api/books', books)
+app.use('/api/students', studentRouter)
+app.use('/api/books', bookRouter)
 app.use('/api/auth', authStudent)
 
 mongoose
