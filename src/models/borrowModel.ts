@@ -1,29 +1,30 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { IBook } from "./book";
 
-
+// 1. Interface
 export interface IBorrow extends Document {
   user: mongoose.Types.ObjectId;
-  book: mongoose.Types.ObjectId;
+  book: mongoose.Types.ObjectId | IBook;
   borrowedAt: Date;
   returnedAt?: Date;
   status: "borrowed" | "returned" | "overdue";
-  dueDate?: Date; 
+  dueDate?: Date;
 }
 
-// 2. Define the Mongoose schema
+// 2. Schema
 const borrowSchema = new Schema<IBorrow>(
   {
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true, 
+      index: true,
     },
     book: {
       type: Schema.Types.ObjectId,
       ref: "Book",
       required: true,
-      index: true, 
+      index: true,
     },
     borrowedAt: {
       type: Date,
@@ -36,7 +37,7 @@ const borrowSchema = new Schema<IBorrow>(
       type: String,
       enum: ["borrowed", "returned", "overdue"],
       default: "borrowed",
-      index: true, // 🔍 useful for filtering by status
+      index: true,
     },
   },
   {
@@ -46,13 +47,14 @@ const borrowSchema = new Schema<IBorrow>(
   }
 );
 
+// 3. Virtual due date
 borrowSchema.virtual("dueDate").get(function (this: IBorrow) {
   const due = new Date(this.borrowedAt);
   due.setDate(due.getDate() + 14);
   return due;
 });
 
-
+// 4. Pre-save hook for overdue flag
 borrowSchema.pre("save", function (next) {
   if (!this.returnedAt && this.status === "borrowed") {
     const now = new Date();
@@ -65,7 +67,6 @@ borrowSchema.pre("save", function (next) {
   next();
 });
 
-// 5. Export the model
+// 5. Model
 const Borrow = mongoose.model<IBorrow>("Borrow", borrowSchema);
-
 export default Borrow;

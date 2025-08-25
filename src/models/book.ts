@@ -6,6 +6,7 @@ export interface IBook extends Document {
   author: string;
   releasedYear: number;
   description?: string;
+  isbn: string;
   availableCopies: number;
   totalCopies: number;
   createdAt: Date;
@@ -19,6 +20,13 @@ const bookSchema: Schema<IBook> = new Schema(
     author: { type: String, required: true },
     releasedYear: { type: Number, required: true },
     description: { type: String },
+    isbn: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+      match: /^[0-9\-]{10,17}$/, 
+    },
     totalCopies: { type: Number, required: true, min: 0 },
     availableCopies: { type: Number, required: true, min: 0 },
   },
@@ -27,5 +35,4 @@ const bookSchema: Schema<IBook> = new Schema(
 
 // 3. Model
 const Book = mongoose.model<IBook>("Book", bookSchema);
-
 export default Book;
