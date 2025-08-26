@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 interface Props {
   onLogin: (data: { email: string; password: string }) => void;
+  error?: string;
 }
 
 const schema = z.object({
@@ -15,7 +16,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const Login = ({ onLogin }: Props) => {
+const Login = ({ onLogin, error }: Props) => {
   const {
     register,
     handleSubmit,
@@ -64,6 +65,7 @@ const Login = ({ onLogin }: Props) => {
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           <div>
             <button className="w-full py-2 px-2 my-6 bg-black rounded-full text-white font-sans hover:bg-black/80 cursor-pointer">
               Sign in

@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate  } from "react-router";
+import { Route, Routes, useNavigate } from "react-router";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import AddNewBook from "./pages/AddNewBook";
@@ -43,32 +43,39 @@ interface Student {
 
 function App() {
   const [registrationError, setRegistrationError] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [user, setUser] = useState<Student | null>(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  async function saveUserAndRedirect(token: string) {
+    localStorage.setItem("token", token);
+
+    const me = await apiClient.get("/students/me", {
+      headers: { "x-auth-token": token },
+    });
+
+    setUser(me.data);
+    navigate("/");
+  }
+
   async function handleRegister(data: RegisterFormData) {
     apiClient
       .post("/students", data)
       .then((res) => {
         const token = res.headers["x-auth-token"];
-        if (token) localStorage.setItem("token", token);
-        apiClient
-          .get("/students/me", {
-            headers: {
-              "x-auth-token": token,
-            },
-          })
-          .then((res) => {
-            setUser(res.data);
-          })
-          .catch((error) => console.log(error));
-
-          navigate("/")
+        saveUserAndRedirect(token);
       })
       .catch((error) => setRegistrationError(error.response.data));
   }
 
   function handleLogin(data: LoginFormData) {
-    console.log(data);
+    apiClient
+      .post("/auth", data)
+      .then((res) => {
+        const token = res.data;
+        saveUserAndRedirect(token);
+      })
+      .catch((error) => setLoginError(error.response.data));
   }
 
   function handleAddBook(data: Book) {
@@ -79,7 +86,9 @@ function App() {
     <Routes>
       <Route
         path="/login"
-        element={<Login onLogin={(data) => handleLogin(data)} />}
+        element={
+          <Login onLogin={(data) => handleLogin(data)} error={loginError} />
+        }
       />
       <Route
         path="/register"
