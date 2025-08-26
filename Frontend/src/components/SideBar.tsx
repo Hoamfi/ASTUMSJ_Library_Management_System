@@ -1,14 +1,13 @@
-import { Link, NavLink } from "react-router-dom";
-import Logo from "../assets/logo.png";
-import { IoMdHome } from "react-icons/io";
-import { IoSearch } from "react-icons/io5";
-import { GiBookshelf } from "react-icons/gi";
 import { BiSolidDonateHeart } from "react-icons/bi";
-import apiClient from "../services/api-client";
-import { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
 import { FaClock } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
+import { GiBookshelf } from "react-icons/gi";
+import { IoMdHome } from "react-icons/io";
+import { Link, NavLink } from "react-router-dom";
+import { MdDashboard } from "react-icons/md";
+import { useEffect, useState } from "react";
+import apiClient from "../services/api-client";
+import Logo from "../assets/logo.png";
 
 interface Props {
   open: Boolean;

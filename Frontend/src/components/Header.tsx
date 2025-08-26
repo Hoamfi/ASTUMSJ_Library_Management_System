@@ -4,10 +4,9 @@ import UserProfileCard from "./UserProfileCard";
 
 interface Props {
   isOpen: (state: boolean) => void;
-  isProfileExpanded: (state: boolean) => void;
 }
 
-const Header = ({ isOpen, isProfileExpanded }: Props) => {
+const Header = ({ isOpen }: Props) => {
   const [isExpanded, setExpanded] = useState(false);
   return (
     <div className="w-full h-full border-1 flex justify-between border-gray-200">
@@ -21,7 +20,7 @@ const Header = ({ isOpen, isProfileExpanded }: Props) => {
       >
         <RxHamburgerMenu size={30} color="black" />
       </button>
-      <UserProfileCard isExpanded={(state) => isProfileExpanded(state)} />
+      <UserProfileCard />
     </div>
   );
 };

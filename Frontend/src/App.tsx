@@ -12,7 +12,7 @@ import About from "./pages/About";
 import Support from "./pages/Support";
 import ChangePassword from "./pages/ChangePassword";
 import apiClient from "./services/api-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookDetail from "./pages/BookDetail";
 
 interface RegisterFormData {
@@ -48,6 +48,11 @@ function App() {
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) navigate("/login");
+  }, [navigate]);
+
   async function handleRegister(data: RegisterFormData) {
     apiClient
       .post("/students", data)
@@ -68,11 +73,6 @@ function App() {
         navigate("/");
       })
       .catch((error) => setLoginError(error.response.data));
-  }
-
-  function handleLogout() {
-    localStorage.removeItem("token");
-    navigate("/login");
   }
 
   function handleAddBook(data: Book) {
