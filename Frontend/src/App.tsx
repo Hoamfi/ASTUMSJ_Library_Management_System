@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes, useNavigate  } from "react-router";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import AddNewBook from "./pages/AddNewBook";
@@ -11,6 +11,8 @@ import Policy from "./pages/Policy";
 import About from "./pages/About";
 import Support from "./pages/Support";
 import ChangePassword from "./pages/ChangePassword";
+import apiClient from "./services/api-client";
+import { useState } from "react";
 
 interface RegisterFormData {
   name: string;
@@ -32,9 +34,37 @@ interface Book {
   totalCopies: number;
 }
 
+interface Student {
+  _id: string;
+  name: string;
+  email: string;
+  isAdmin: boolean;
+}
+
 function App() {
-  function handleRegister(data: RegisterFormData) {
-    console.log(data);
+  const [registrationError, setRegistrationError] = useState("");
+  const [user, setUser] = useState<Student | null>(null);
+  const navigate = useNavigate()
+  async function handleRegister(data: RegisterFormData) {
+    apiClient
+      .post("/students", data)
+      .then((res) => {
+        const token = res.headers["x-auth-token"];
+        if (token) localStorage.setItem("token", token);
+        apiClient
+          .get("/students/me", {
+            headers: {
+              "x-auth-token": token,
+            },
+          })
+          .then((res) => {
+            setUser(res.data);
+          })
+          .catch((error) => console.log(error));
+
+          navigate("/")
+      })
+      .catch((error) => setRegistrationError(error.response.data));
   }
 
   function handleLogin(data: LoginFormData) {
@@ -53,7 +83,12 @@ function App() {
       />
       <Route
         path="/register"
-        element={<Register onRegister={(data) => handleRegister(data)} />}
+        element={
+          <Register
+            onRegister={(data) => handleRegister(data)}
+            error={registrationError}
+          />
+        }
       />
       <Route path="/" element={<Main>{<Home />}</Main>} />
       <Route path="/search" element={<Main>{<Search />}</Main>} />
@@ -62,7 +97,10 @@ function App() {
       <Route path="/about" element={<Main>{<About />}</Main>} />
       <Route path="/support" element={<Main>{<Support />}</Main>} />
       <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />
-      <Route path="/changepassword" element={<Main>{<ChangePassword />}</Main>} />
+      <Route
+        path="/changepassword"
+        element={<Main>{<ChangePassword />}</Main>}
+      />
 
       <Route
         path="addnewbook"

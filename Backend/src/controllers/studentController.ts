@@ -20,7 +20,7 @@ export async function addStudent(req: Request, res: Response) {
   const token = student.generateAuthToken();
   res
     .header("x-auth-token", token)
-    .send(_.pick(student, ["_id", "name", "email"]));
+    .send(_.pick(student, ["_id", "name", "email", "isAdmin"]));
 }
 
 export const student: RequestHandler = async (req, res) => {

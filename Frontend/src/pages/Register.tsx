@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 interface Props {
   onRegister: (data: { name: string; email: string; password: string }) => void;
+  error?: string;
 }
 
 const schema = z
@@ -28,7 +29,7 @@ const schema = z
 
 type FormData = z.infer<typeof schema>;
 
-const Register = ({ onRegister }: Props) => {
+const Register = ({ onRegister, error }: Props) => {
   const {
     register,
     handleSubmit,
@@ -81,6 +82,7 @@ const Register = ({ onRegister }: Props) => {
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
+            {error && <p className="text-red-500 text-sm">This email is already registered. Please login or use another email.</p>}
           </div>
           <div>
             <label
@@ -144,7 +146,9 @@ const Register = ({ onRegister }: Props) => {
         <div className="mb-15 mt-10">
           <p>
             Already have an account?{" "}
-            <Link to="/login" className="underline cursor-pointer">Sign in</Link>
+            <Link to="/login" className="underline cursor-pointer">
+              Sign in
+            </Link>
           </p>
         </div>
 

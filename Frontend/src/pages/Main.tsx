@@ -21,8 +21,7 @@ const Main = ({ children }: Props) => {
         className={`hidden lg:block row-span-3 transition-[width] duration-300 ${isOpen ? "w-64" : "w-16"} h-full relative group `}
       >
         <SideBar open={isOpen} />
-        {/* Hover flyout always in DOM for smooth transition */}
-        <div
+        {/* <div
           className={` 
             fixed top-0 left-0 h-screen w-64 shadow-2xl z-30 transform transition-transform duration-300 ease-out 
             ${
@@ -33,7 +32,7 @@ const Main = ({ children }: Props) => {
                 `}
         >
           <SideBar open={true} />
-        </div>
+        </div> */}
       </aside>
 
       {/* MOBILE SIDEBAR  */}
@@ -46,7 +45,7 @@ const Main = ({ children }: Props) => {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 z-50 transition-transform duration-300 lg:hidden ${
+        className={`fixed top-0 left-0 h-screen shadow-2xl w-64 z-50 transition-transform duration-300 lg:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
