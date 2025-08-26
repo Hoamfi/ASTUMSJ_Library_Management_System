@@ -8,7 +8,7 @@ export interface IBorrow extends Document {
   borrowedAt: Date;
   returnedAt?: Date;
   status: "borrowed" | "returned" | "overdue";
-  dueDate?: Date;
+  dueDate: Date;
 }
 
 // 2. Schema
@@ -38,6 +38,9 @@ const borrowSchema = new Schema<IBorrow>(
       enum: ["borrowed", "returned", "overdue"],
       default: "borrowed",
       index: true,
+    },
+    dueDate:{
+      type:Date,
     },
   },
   {

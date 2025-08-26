@@ -1,8 +1,8 @@
-import { ENV } from "@/config/env";
+import { ENV } from "../config/env";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
-interface IStudent {
+export interface IStudent  {
     name: string;
     email: string;
     password: string;
@@ -41,4 +41,4 @@ studentSchema.methods.generateAuthToken = function() {
 
 const Student = mongoose.model("Student", studentSchema)
 
-export default Student
+export default  Student;
