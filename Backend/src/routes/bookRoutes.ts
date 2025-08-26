@@ -20,4 +20,4 @@ import  isAdmin  from "../middleware/admin";
 
   
 
-export default Router;
+export default router;
