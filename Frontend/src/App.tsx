@@ -26,12 +26,13 @@ interface LoginFormData {
 }
 
 interface Book {
+  _id: string;
   title: string;
   author: string;
   description: string;
   catagory: string;
   publicationYear: number;
-  totalCopies: number;
+  bookCover: string;
 }
 
 interface Student {
@@ -45,7 +46,15 @@ function App() {
   const [registrationError, setRegistrationError] = useState("");
   const [loginError, setLoginError] = useState("");
   const [user, setUser] = useState<Student | null>(null);
+  const [books, setBooks] = useState<Book[]>([]);
   const navigate = useNavigate();
+
+  async function fetchBookList() {
+    apiClient
+      .get("/books")
+      .then((res) => {setBooks(res.data); console.log(res.data, books)})
+      .catch((error) => console.log(error.response.data));
+  }
 
   async function saveUserAndRedirect(token: string) {
     localStorage.setItem("token", token);
@@ -56,6 +65,7 @@ function App() {
 
     setUser(me.data);
     navigate("/");
+    fetchBookList();
   }
 
   async function handleRegister(data: RegisterFormData) {
@@ -76,6 +86,12 @@ function App() {
         saveUserAndRedirect(token);
       })
       .catch((error) => setLoginError(error.response.data));
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login");
   }
 
   function handleAddBook(data: Book) {
