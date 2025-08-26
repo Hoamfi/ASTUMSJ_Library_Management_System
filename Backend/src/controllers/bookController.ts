@@ -2,6 +2,7 @@ import validateBook from "../vallidators/validateBook";
 // controllers/bookController.ts
 import { Request, Response } from "express";
 import Book, { IBook } from "../models/book";
+import _ from "lodash";
 
 // Create Book
 export const createBook = async (
@@ -20,7 +21,17 @@ export const createBook = async (
 export const getBooks = async (_req: Request, res: Response): Promise<void> => {
   try {
     const books: IBook[] = await Book.find();
-    res.json(books);
+    res.json(
+      _.pick(books, [
+        "_id",
+        "title",
+        "author",
+        "description",
+        "catagory",
+        "publicationYear",
+        "bookCover",
+      ])
+    );
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -37,7 +48,17 @@ export const getBookById = async (
       res.status(404).json({ error: "Book not found" });
       return;
     }
-    res.json(book);
+    res.json(
+      _.pick(book, [
+        "_id",
+        "title",
+        "author",
+        "description",
+        "catagory",
+        "publicationYear",
+        "bookCover",
+      ])
+    );
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }

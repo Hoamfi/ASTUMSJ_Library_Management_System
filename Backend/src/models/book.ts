@@ -5,7 +5,8 @@ export interface IBook extends Document {
   title: string;
   author: string;
   bookCover: string;
-  releasedYear: number;
+  publicationYear: number;
+  catagory: string;
   description?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -16,11 +17,12 @@ const bookSchema: Schema<IBook> = new Schema(
   {
     title: { type: String, required: true },
     author: { type: String, required: true },
-    bookCover: {type: String, required: true},
-    releasedYear: { type: Number, required: true },
+    bookCover: { type: String, required: true },
+    publicationYear: { type: Number, required: true },
+    catagory: { type: String, required: true },
     description: { type: String },
   },
-  { timestamps: true } 
+  { timestamps: true }
 );
 
 // 3. Model
