@@ -20,7 +20,12 @@ export const createBook = async (
 // Get All Books
 export const getBooks = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const books: IBook[] = await Book.find().select({
+    const catagory = (_req.query.catagory as string) || undefined;
+    let filter = {};
+
+    if (catagory) {filter = {catagory: catagory}}
+
+    const books: IBook[] = await Book.find(filter).select({
       createdDate: 0,
       updatedAt: 0,
     });

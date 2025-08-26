@@ -13,6 +13,7 @@ import Support from "./pages/Support";
 import ChangePassword from "./pages/ChangePassword";
 import apiClient from "./services/api-client";
 import { useState } from "react";
+import BookDetail from "./pages/BookDetail";
 
 interface RegisterFormData {
   name: string;
@@ -45,35 +46,15 @@ interface Student {
 function App() {
   const [registrationError, setRegistrationError] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [user, setUser] = useState<Student | null>(null);
-  const [books, setBooks] = useState<Book[]>([]);
   const navigate = useNavigate();
-
-  async function fetchBookList() {
-    apiClient
-      .get("/books")
-      .then((res) => {setBooks(res.data); console.log(res.data, books)})
-      .catch((error) => console.log(error.response.data));
-  }
-
-  async function saveUserAndRedirect(token: string) {
-    localStorage.setItem("token", token);
-
-    const me = await apiClient.get("/students/me", {
-      headers: { "x-auth-token": token },
-    });
-
-    setUser(me.data);
-    navigate("/");
-    fetchBookList();
-  }
 
   async function handleRegister(data: RegisterFormData) {
     apiClient
       .post("/students", data)
       .then((res) => {
         const token = res.headers["x-auth-token"];
-        saveUserAndRedirect(token);
+        localStorage.setItem("token", token);
+        navigate("/");
       })
       .catch((error) => setRegistrationError(error.response.data));
   }
@@ -83,14 +64,14 @@ function App() {
       .post("/auth", data)
       .then((res) => {
         const token = res.data;
-        saveUserAndRedirect(token);
+        localStorage.setItem("token", token);
+        navigate("/");
       })
       .catch((error) => setLoginError(error.response.data));
   }
 
   function handleLogout() {
     localStorage.removeItem("token");
-    setUser(null);
     navigate("/login");
   }
 
@@ -115,7 +96,7 @@ function App() {
           />
         }
       />
-      <Route path="/" element={<Main>{<Home books={books} />}</Main>} />
+      <Route path="/" element={<Main>{<Home />}</Main>} />
       <Route path="/search" element={<Main>{<Search />}</Main>} />
       <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
       <Route path="/donate" element={<Main>{<Donate />}</Main>} />
@@ -131,6 +112,7 @@ function App() {
         path="addnewbook"
         element={<AddNewBook onAdd={(data) => handleAddBook(data)} />}
       />
+      <Route path="/bookdetail/:id" element={<BookDetail />} />
     </Routes>
   );
 }

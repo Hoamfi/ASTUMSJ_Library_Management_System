@@ -3,7 +3,8 @@ import BookList from "../components/BookList";
 import { IoSparkles } from "react-icons/io5";
 import { FaQuran } from "react-icons/fa";
 import { ImBooks } from "react-icons/im";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import apiClient from "../services/api-client";
 
 interface Book {
   _id: string;
@@ -15,12 +16,40 @@ interface Book {
   bookCover: string;
 }
 
-interface Props {
-  books: Book[];
-}
-
-const Home = ({ books }: Props) => {
+const Home = () => {
   const [active, setActive] = useState("all");
+  const [mostBorrowedBooks, setMostBorrowedBooks] = useState<Book[]>([]);
+  const [kitabs, setKitabs] = useState<Book[]>([]);
+  const [selfBooks, setSelfBooks] = useState<Book[]>([]);
+  const [bussinessBooks, setBussinessBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    apiClient
+      .get("/books")
+      .then((res) => {
+        setMostBorrowedBooks(res.data);
+      })
+      .catch((error) => console.log(error.response?.data));
+    apiClient
+      .get("/books/?catagory=kitab")
+      .then((res) => {
+        setKitabs(res.data);
+      })
+      .catch((error) => console.log(error.response?.data));
+    apiClient
+      .get("/books/?catagory=self")
+      .then((res) => {
+        setSelfBooks(res.data);
+      })
+      .catch((error) => console.log(error.response?.data));
+    apiClient
+      .get("/books/?catagory=bussiness")
+      .then((res) => {
+        setBussinessBooks(res.data);
+      })
+      .catch((error) => console.log(error.response?.data));
+  }, []);
+
   return (
     <div className="flex flex-col items-center">
       <SearchBox />
@@ -54,19 +83,19 @@ const Home = ({ books }: Props) => {
       </div>
       <div className="mt-15 mx-4">
         <h2 className="font-sansself-start my-3 mx-2 text-lg">Most borrowed</h2>
-        <BookList books={books} />
+        <BookList books={mostBorrowedBooks} />
       </div>
       <div className="my-5 mx-4">
         <h2 className="font-sansself-start my-3 mx-2 text-lg">Kitabs</h2>
-        <BookList books={books} />
+        <BookList books={kitabs} />
       </div>
       <div className="my-5 mx-4">
         <h2 className="font-sansself-start my-3 mx-2 text-lg">Self Helps</h2>
-        <BookList books={books} />
+        <BookList books={selfBooks} />
       </div>
       <div className="mt-5 mb-15 mx-4">
         <h2 className="font-sansself-start my-3 mx-2 text-lg">Bussiness</h2>
-        <BookList books={books} />
+        <BookList books={bussinessBooks} />
       </div>
     </div>
   );
