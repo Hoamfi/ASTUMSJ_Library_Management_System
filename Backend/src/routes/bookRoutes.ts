@@ -6,9 +6,10 @@ import {
   updateBook,
   deleteBook,
 } from "../controllers/bookController";
+
 import  isAdmin  from "../middleware/admin"; 
 
-function bookRouter(): Router {
+
   const router: Router = Router();
 
   router.post("/", isAdmin, createBook);       // admin only
@@ -17,7 +18,6 @@ function bookRouter(): Router {
   router.put("/:id", isAdmin, updateBook);    // admin only
   router.delete("/:id", isAdmin, deleteBook); // admin only
 
-  return router;
-}
+  
 
-export default bookRouter;
+export default Router;
