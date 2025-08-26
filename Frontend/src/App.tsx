@@ -115,7 +115,7 @@ function App() {
           />
         }
       />
-      <Route path="/" element={<Main>{<Home />}</Main>} />
+      <Route path="/" element={<Main>{<Home books={books} />}</Main>} />
       <Route path="/search" element={<Main>{<Search />}</Main>} />
       <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
       <Route path="/donate" element={<Main>{<Donate />}</Main>} />

@@ -18,21 +18,9 @@ const Main = ({ children }: Props) => {
     <div className="min-h-screen grid grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto]">
       {/*  DESKTOP SIDEBAR (base column) */}
       <aside
-        className={`hidden lg:block row-span-3 transition-[width] duration-300 ${isOpen ? "w-64" : "w-16"} h-full relative group `}
+        className={`hidden shadow-xl lg:block row-span-3 transition-[width] duration-300 ${isOpen ? "w-64" : "w-16"} h-full relative group `}
       >
         <SideBar open={isOpen} />
-        {/* <div
-          className={` 
-            fixed top-0 left-0 h-screen w-64 shadow-2xl z-30 transform transition-transform duration-300 ease-out 
-            ${
-              isOpen
-                ? "translate-x-[-100%] pointer-events-none opacity-0" // hide flyout if sidebar expanded
-                : "translate-x-[-100%] pointer-events-none opacity-0 group-hover:translate-x-0 group-hover:pointer-events-auto group-hover:opacity-100"
-            }
-                `}
-        >
-          <SideBar open={true} />
-        </div> */}
       </aside>
 
       {/* MOBILE SIDEBAR  */}
