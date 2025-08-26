@@ -20,18 +20,11 @@ export const createBook = async (
 // Get All Books
 export const getBooks = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const books: IBook[] = await Book.find();
-    res.json(
-      _.pick(books, [
-        "_id",
-        "title",
-        "author",
-        "description",
-        "catagory",
-        "publicationYear",
-        "bookCover",
-      ])
-    );
+    const books: IBook[] = await Book.find().select({
+      createdDate: 0,
+      updatedAt: 0,
+    });
+    res.json(books);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
