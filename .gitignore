@@ -11,9 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
-backend/.env
-frontend/src/assets/tmp
-backend/src/playground.ts
+Backend/.env
+Frontend/src/assets/tmp
+Backend/src/playground.ts
 
 # Editor directories and files
 .vscode/*

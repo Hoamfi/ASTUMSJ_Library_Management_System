@@ -13,8 +13,8 @@ import Support from "./pages/Support";
 import ChangePassword from "./pages/ChangePassword";
 import apiClient from "./services/api-client";
 import { useEffect, useState } from "react";
-import BookDetail from "./pages/BookDetail";
-
+import BookDetail from "../pages/BookDetail";
+import ProtectedRoute from "./ProtectedRoute";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -47,10 +47,24 @@ function App() {
   const [registrationError, setRegistrationError] = useState("");
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
+  const [isAuth, setAuth] = useState(false);
+  const [isAdmin, setAdmin] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) navigate("/login");
+    if (!token) return;
+
+    apiClient
+      .get("/students/me", { headers: { "x-auth-token": token } })
+      .then((res) => {
+        if (res.data) setAuth(true);
+        if (res.data.isAdmin) setAdmin(true);
+      })
+      .catch(() => {
+        setAuth(false);
+        setAdmin(false);
+        localStorage.removeItem("token");
+      });
   }, [navigate]);
 
   async function handleRegister(data: RegisterFormData) {
@@ -96,23 +110,31 @@ function App() {
           />
         }
       />
-      <Route path="/" element={<Main>{<Home />}</Main>} />
-      <Route path="/search" element={<Main>{<Search />}</Main>} />
-      <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
-      <Route path="/donate" element={<Main>{<Donate />}</Main>} />
-      <Route path="/about" element={<Main>{<About />}</Main>} />
-      <Route path="/support" element={<Main>{<Support />}</Main>} />
-      <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />
-      <Route
-        path="/changepassword"
-        element={<Main>{<ChangePassword />}</Main>}
-      />
-
-      <Route
-        path="addnewbook"
-        element={<AddNewBook onAdd={(data) => handleAddBook(data)} />}
-      />
-      <Route path="/bookdetail/:id" element={<BookDetail />} />
+      <Route element={<ProtectedRoute isAuth={isAuth} />}>
+        <Route path="/" element={<Main>{<Home />}</Main>} />
+        <Route path="/search" element={<Main>{<Search />}</Main>} />
+        <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
+        <Route path="/donate" element={<Main>{<Donate />}</Main>} />
+        <Route path="/about" element={<Main>{<About />}</Main>} />
+        <Route path="/support" element={<Main>{<Support />}</Main>} />
+        (
+        <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />)
+        {isAdmin && (
+          <Route
+            path="/addnewbook"
+            element={
+              <Main>
+                {<AddNewBook onAdd={(data) => handleAddBook(data)} />}
+              </Main>
+            }
+          />
+        )}
+        <Route
+          path="/changepassword"
+          element={<Main>{<ChangePassword />}</Main>}
+        />
+        <Route path="/bookdetail/:id" element={<BookDetail />} />
+      </Route>
     </Routes>
   );
 }
