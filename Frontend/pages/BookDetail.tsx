@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import apiClient from "../src/services/api-client";
 interface Book {
-  id: string;
+  _id: string;
   title: string;
   author: string;
   description: string;
-  releasedYear: number;
-  imageUrl?: string;
+  catagory: string;
+  publicationYear: number;
+  bookCover: string;
 }
 
 const BookDetail = () => {
-  const { id } = useParams<{ id: string }>(); 
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -20,8 +21,11 @@ const BookDetail = () => {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/books/${id}`);
+        const response = await apiClient.get(
+          `/books/${id}`
+        );
         setBook(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching book details:", error);
       } finally {
@@ -34,7 +38,9 @@ const BookDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
-        <p className="text-lg text-gray-500 animate-pulse">Loading book details...</p>
+        <p className="text-lg text-gray-500 animate-pulse">
+          Loading book details...
+        </p>
       </div>
     );
   }
@@ -65,7 +71,7 @@ const BookDetail = () => {
       <div className="grid md:grid-cols-2 gap-8 bg-white rounded-xl shadow-lg p-6">
         <div className="flex justify-center items-center">
           <img
-            src={book.imageUrl || "https://via.placeholder.com/300x400?text=No+Image"}
+            src={book.bookCover}
             alt={book.title}
             className="w-full max-w-sm rounded-lg shadow-md"
           />
@@ -75,8 +81,8 @@ const BookDetail = () => {
           <h1 className="text-3xl font-bold">{book.title}</h1>
           <p className="text-lg text-gray-600">by {book.author}</p>
           <p className="text-gray-700">{book.description}</p>
-          <p className="text-gray-500">Released: {book.releasedYear}</p>
-          <p className="text-gray-400">Book ID: {book.id}</p>
+          <p className="text-gray-500">Released: {book.publicationYear}</p>
+          <p className="text-gray-400">Book ID: {book._id}</p>
         </div>
       </div>
     </div>

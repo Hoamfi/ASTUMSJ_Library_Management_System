@@ -82,19 +82,19 @@ const Home = () => {
         </div>
       </div>
       <div className="mt-15 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg">Most borrowed</h2>
+        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Most borrowed</h2>
         <BookList books={mostBorrowedBooks} />
       </div>
       <div className="my-5 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg">Kitabs</h2>
+        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Islamic</h2>
         <BookList books={islamic} />
       </div>
       <div className="my-5 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg">Self Helps</h2>
+        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Self Helps</h2>
         <BookList books={selfBooks} />
       </div>
       <div className="mt-5 mb-15 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg">Bussiness</h2>
+        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Bussiness</h2>
         <BookList books={bussinessBooks} />
       </div>
     </div>

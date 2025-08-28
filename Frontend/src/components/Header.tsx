@@ -9,7 +9,7 @@ interface Props {
 const Header = ({ isOpen }: Props) => {
   const [isExpanded, setExpanded] = useState(false);
   return (
-    <div className="w-full h-full border-1 flex justify-between border-gray-200">
+    <div className="w-full h-full border-1 flex justify-between border-gray-200 bg-[#f9fafb]">
       <button
         className=" text-white p-2 rounded"
         onClick={() => {

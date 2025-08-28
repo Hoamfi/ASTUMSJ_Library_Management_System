@@ -2,7 +2,7 @@ import Student from "@/models/student";
 import validateStudent from "../vallidators/validateStudent";
 import { Request, Response, RequestHandler } from "express";
 import _ from "lodash";
-import bcryp from "bcrypt";
+import bcrypt from "bcrypt";
 
 export async function addStudent(req: Request, res: Response) {
   const { error } = validateStudent(req.body);
@@ -13,8 +13,8 @@ export async function addStudent(req: Request, res: Response) {
 
   student = new Student(_.pick(req.body, ["name", "email", "password"]));
 
-  const salt = await bcryp.genSalt(10);
-  student.password = await bcryp.hash(student.password, salt);
+  const salt = await bcrypt.genSalt(10);
+  student.password = await bcrypt.hash(student.password, salt);
 
   student = await student.save();
   const token = student.generateAuthToken();
@@ -23,9 +23,32 @@ export async function addStudent(req: Request, res: Response) {
     .send(_.pick(student, ["_id", "name", "email", "isAdmin"]));
 }
 
-export const student: RequestHandler = async (req, res) => {
+export async function student(req: Request, res: Response) {
   const student = await Student.findById((req as any).user._id).select(
     "-password"
   );
   res.send(student);
-};
+}
+
+export async function updateStudent(req: Request, res: Response) {
+  let student = await Student.findOne({ _id: req.body._id });
+  if (!student) return res.status(400).send("Bad Request");
+
+  const validPassword = await bcrypt.compare(
+    req.body.currentPassword,
+    student.password
+  );
+  if (!validPassword) return res.status(400).send("Incorrect current Password");
+
+  const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+
+  student = await Student.findOneAndUpdate(
+    { _id: req.body._id },
+    {
+      email: req.body.email,
+      password: hashedPassword,
+    },
+    { new: true }
+  );
+  res.send(_.pick(student, ["_id", "email"]));
+}

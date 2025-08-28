@@ -10,12 +10,12 @@ import Donate from "./pages/Donate";
 import Policy from "./pages/Policy";
 import About from "./pages/About";
 import Support from "./pages/Support";
-import ChangePassword from "./pages/ChangePassword";
 import apiClient from "./services/api-client";
 import { useEffect, useState } from "react";
 import BookDetail from "../pages/BookDetail";
 import ProtectedRoute from "./ProtectedRoute";
 import axios from "axios";
+import UpdatePassword from "./pages/UpdateProfile";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -45,12 +45,16 @@ interface Student {
 }
 
 function App() {
-  const [registrationError, setRegistrationError] = useState("");
-  const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
+
   const [isAuth, setAuth] = useState(false);
   const [isAdmin, setAdmin] = useState(false);
+  const [student, setStudent] = useState<Student | null>(null);
+  const [loginError, setLoginError] = useState("");
   const [addBookError, setAddBookError] = useState("");
+  const [registrationError, setRegistrationError] = useState("");
+  const [updateProfileError, setUpdateProfileError] = useState("");
+  const [profileUpdated, setProfileUpdated] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -59,7 +63,10 @@ function App() {
     apiClient
       .get("/students/me", { headers: { "x-auth-token": token } })
       .then((res) => {
-        if (res.data) setAuth(true);
+        if (res.data) {
+          setAuth(true);
+          setStudent(res.data);
+        }
         if (res.data.isAdmin) setAdmin(true);
       })
       .catch(() => {
@@ -121,49 +128,106 @@ function App() {
       .catch((error) => setAddBookError(error.response.data));
   }
 
+  function handleUpdateProfile(data: {
+    email: string;
+    currentPassword: string;
+    newPassword: string;
+  }) {
+    // console.log(data)
+    const updateProfile = {
+      _id: student?._id,
+      email: data.email,
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    };
+    apiClient
+      .put("/students/updateStudent", updateProfile, {
+        headers: { "x-auth-token": localStorage.getItem("token") },
+      })
+      .then(() => {
+        setProfileUpdated(true);
+        localStorage.removeItem("token");
+      })
+      .catch((error) => setUpdateProfileError(error.response.data));
+  }
+
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <Login onLogin={(data) => handleLogin(data)} error={loginError} />
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <Register
-            onRegister={(data) => handleRegister(data)}
-            error={registrationError}
-          />
-        }
-      />
-      <Route element={<ProtectedRoute isAuth={isAuth} />}>
-        <Route path="/" element={<Main>{<Home />}</Main>} />
-        <Route path="/search" element={<Main>{<Search />}</Main>} />
-        <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
-        <Route path="/donate" element={<Main>{<Donate />}</Main>} />
-        <Route path="/about" element={<Main>{<About />}</Main>} />
-        <Route path="/support" element={<Main>{<Support />}</Main>} />
-        (
-        <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />)
-        {isAdmin && (
+    <>
+      {profileUpdated && (
+        <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
+          <div className="bg-white p-5 shadow-xl rounded-lg flex flex-col w-md font-sans">
+            <h1 className="text-3xl">🎉 You've Updated ur Profile Successfully</h1>
+            <button
+              className="py-2 px-2 bg-black rounded-lg text-white font-sans justify-end hover:bg-black/80 cursor-pointer mt-10 mb-3"
+              onClick={() => {
+                setProfileUpdated(false);
+                navigate("/login");
+              }}
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      )}
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <Login onLogin={(data) => handleLogin(data)} error={loginError} />
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Register
+              onRegister={(data) => handleRegister(data)}
+              error={registrationError}
+            />
+          }
+        />
+        <Route element={<ProtectedRoute isAuth={isAuth} />}>
+          <Route path="/" element={<Main>{<Home />}</Main>} />
+          <Route path="/search" element={<Main>{<Search />}</Main>} />
+          <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
+          <Route path="/donate" element={<Main>{<Donate />}</Main>} />
+          <Route path="/about" element={<Main>{<About />}</Main>} />
+          <Route path="/support" element={<Main>{<Support />}</Main>} />
+          (
+          <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />
+          )
+          {isAdmin && (
+            <Route
+              path="/addnewbook"
+              element={
+                <Main>
+                  {
+                    <AddNewBook
+                      onAdd={(data) => handleAddBook(data)}
+                      error={addBookError}
+                    />
+                  }
+                </Main>
+              }
+            />
+          )}
           <Route
-            path="/addnewbook"
+            path="/changepassword"
             element={
               <Main>
-                {<AddNewBook onAdd={(data) => handleAddBook(data)} error={addBookError}/>}
+                {
+                  <UpdatePassword
+                    email={student?.email}
+                    onUpdate={(data) => handleUpdateProfile(data)}
+                    error={updateProfileError}
+                  />
+                }
               </Main>
             }
           />
-        )}
-        <Route
-          path="/changepassword"
-          element={<Main>{<ChangePassword />}</Main>}
-        />
-        <Route path="/bookdetail/:id" element={<BookDetail />} />
-      </Route>
-    </Routes>
+          <Route path="/bookdetail/:id" element={<BookDetail />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

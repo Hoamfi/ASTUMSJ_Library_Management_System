@@ -26,7 +26,7 @@ const SideBar = ({ open }: Props) => {
       .catch((error) => console.log(error));
   }, []);
   return (
-    <div className="h-full border-1 border-gray-200 bg-white flex flex-col align-center relative overflow-hidden">
+    <div className="h-full border-1 border-gray-200 bg-[#f9fafb] flex flex-col align-center relative overflow-hidden">
       <div className="w-full border-1 flex justify-center pb-3 pt-3 border-b-1  border-gray-200">
         <img src={Logo} className="w-[40%]" alt="" />
       </div>

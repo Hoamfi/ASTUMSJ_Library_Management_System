@@ -9,7 +9,7 @@ interface Props {
     description: string;
     catagory: string;
     publicationYear: number;
-    bookCover: string;
+    bookCover: FileList;
     totalCopies: number;
   }) => void;
   error: string;
@@ -59,7 +59,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
           <div>
             <label
               htmlFor="title"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
             >
               Title
             </label>
@@ -77,7 +77,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
           <div>
             <label
               htmlFor="author"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
             >
               Author
             </label>
@@ -95,7 +95,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
           <div>
             <label
               htmlFor="catagory"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
             >
               Catagories
             </label>
@@ -116,7 +116,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
           <div>
             <label
               htmlFor="description"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
             >
               Description
             </label>
@@ -135,7 +135,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
           <div>
             <label
               htmlFor="publicationYear"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
             >
               Publication Year
             </label>
@@ -155,7 +155,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
           <div>
             <label
               htmlFor="bookCover"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
             >
               Book Cover
             </label>
@@ -173,7 +173,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
           <div>
             <label
               htmlFor="totalCopies"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
             >
               TotalCopies
             </label>
