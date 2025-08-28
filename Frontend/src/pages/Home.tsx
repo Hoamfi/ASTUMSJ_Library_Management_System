@@ -19,7 +19,7 @@ interface Book {
 const Home = () => {
   const [active, setActive] = useState("all");
   const [mostBorrowedBooks, setMostBorrowedBooks] = useState<Book[]>([]);
-  const [kitabs, setKitabs] = useState<Book[]>([]);
+  const [islamic, setIslamic] = useState<Book[]>([]);
   const [selfBooks, setSelfBooks] = useState<Book[]>([]);
   const [bussinessBooks, setBussinessBooks] = useState<Book[]>([]);
 
@@ -31,9 +31,9 @@ const Home = () => {
       })
       .catch((error) => console.log(error.response?.data));
     apiClient
-      .get("/books/?catagory=kitab")
+      .get("/books/?catagory=islamic")
       .then((res) => {
-        setKitabs(res.data);
+        setIslamic(res.data);
       })
       .catch((error) => console.log(error.response?.data));
     apiClient
@@ -63,13 +63,13 @@ const Home = () => {
           <IoSparkles /> All
         </div>
         <div
-          className={`px-4 py-1 rounded-full flex items-center gap-2 ${active === "kitabs" ? "border-3 border-[#1AA190] bg-[#ddf7f4]" : "border-1 border-gray-300 bg-white"}`}
+          className={`px-4 py-1 rounded-full flex items-center gap-2 ${active === "islamic" ? "border-3 border-[#1AA190] bg-[#ddf7f4]" : "border-1 border-gray-300 bg-white"}`}
           onClick={() => {
-            setActive("kitabs");
+            setActive("islamic");
           }}
         >
           <FaQuran />
-          Kitabs
+          Islamic
         </div>
         <div
           className={`px-4 py-1 rounded-full flex items-center gap-2 ${active === "books" ? "border-3 border-[#1AA190] bg-[#ddf7f4]" : "border-1 border-gray-300 bg-white"}`}
@@ -87,7 +87,7 @@ const Home = () => {
       </div>
       <div className="my-5 mx-4">
         <h2 className="font-sansself-start my-3 mx-2 text-lg">Kitabs</h2>
-        <BookList books={kitabs} />
+        <BookList books={islamic} />
       </div>
       <div className="my-5 mx-4">
         <h2 className="font-sansself-start my-3 mx-2 text-lg">Self Helps</h2>

@@ -15,6 +15,7 @@ import apiClient from "./services/api-client";
 import { useEffect, useState } from "react";
 import BookDetail from "../pages/BookDetail";
 import ProtectedRoute from "./ProtectedRoute";
+import axios from "axios";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -27,13 +28,13 @@ interface LoginFormData {
 }
 
 interface Book {
-  _id: string;
   title: string;
   author: string;
   description: string;
   catagory: string;
   publicationYear: number;
-  bookCover: string;
+  bookCover: FileList;
+  totalCopies: number;
 }
 
 interface Student {
@@ -49,6 +50,7 @@ function App() {
   const navigate = useNavigate();
   const [isAuth, setAuth] = useState(false);
   const [isAdmin, setAdmin] = useState(false);
+  const [addBookError, setAddBookError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -90,7 +92,33 @@ function App() {
   }
 
   function handleAddBook(data: Book) {
-    console.log(data);
+    const imageFile = data.bookCover?.[0];
+    const imageData = new FormData();
+    imageData.append("image", imageFile);
+    axios
+      .post(
+        `https://api.imgbb.com/1/upload?key=82bca9b4b1e6512f2421267af231717d`,
+        imageData
+      )
+      .then((res) => {
+        console.log(res.data.data.url);
+        const newBook = {
+          title: data.title,
+          author: data.author,
+          description: data.description,
+          catagory: data.catagory,
+          publicationYear: data.publicationYear,
+          bookCover: res.data.data.url,
+          totalCopies: data.totalCopies,
+        };
+        apiClient
+          .post("/books", newBook, {
+            headers: { "x-auth-token": localStorage.getItem("token") },
+          })
+          .then(() => navigate("/"))
+          .catch((error) => setAddBookError(error.response.data));
+      })
+      .catch((error) => setAddBookError(error.response.data));
   }
 
   return (
@@ -124,7 +152,7 @@ function App() {
             path="/addnewbook"
             element={
               <Main>
-                {<AddNewBook onAdd={(data) => handleAddBook(data)} />}
+                {<AddNewBook onAdd={(data) => handleAddBook(data)} error={addBookError}/>}
               </Main>
             }
           />

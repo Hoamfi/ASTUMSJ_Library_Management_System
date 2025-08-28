@@ -8,6 +8,7 @@ export interface IBook extends Document {
   publicationYear: number;
   catagory: string;
   description?: string;
+  totalCopies: number;
   createdAt: Date;
   updatedAt: Date;
 }

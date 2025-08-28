@@ -9,8 +9,10 @@ interface Props {
     description: string;
     catagory: string;
     publicationYear: number;
+    bookCover: string;
     totalCopies: number;
   }) => void;
+  error: string;
 }
 
 const schema = z.object({
@@ -19,16 +21,18 @@ const schema = z.object({
   description: z
     .string()
     .min(10, { message: "Description must be atleast 10 characters." }),
-  catagory: z.string().min(1, { message: "Catagories are required" }),
+  catagory: z.string().min(1, { message: "Catagory is required" }),
   publicationYear: z
     .number()
-    .min(1900, { message: "Please enter a valid year." }).max(new Date().getFullYear(), {message: "Please enter a valid year."}),
+    .min(1900, { message: "Please enter a valid year." })
+    .max(new Date().getFullYear(), { message: "Please eznter a valid year." }),
+  bookCover: z.any(),
   totalCopies: z.number().positive({ message: "Must be greater than 1" }),
 });
 
 type FormData = z.infer<typeof schema>;
 
-const AddNewBook = ({ onAdd }: Props) => {
+const AddNewBook = ({ onAdd, error }: Props) => {
   const {
     register,
     handleSubmit,
@@ -39,6 +43,7 @@ const AddNewBook = ({ onAdd }: Props) => {
   });
   return (
     <div className="flex flex-col items-center mt-5">
+      {error && <h1>{error}</h1>}
       <h1
         style={{ fontFamily: "'Libre Baskerville', serif" }}
         className="text-[2rem] font-semibold my-2"
@@ -89,6 +94,27 @@ const AddNewBook = ({ onAdd }: Props) => {
           </div>
           <div>
             <label
+              htmlFor="catagory"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              Catagories
+            </label>
+            <select
+              {...register("catagory")}
+              id="catagory"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            >
+              <option></option>
+              <option value="islamic">Islamic</option>
+              <option value="self">Self Help</option>
+              <option value="bussiness">Bussiness</option>
+            </select>
+            {errors.catagory && (
+              <p className="text-red-500 text-sm">{errors.catagory.message}</p>
+            )}
+          </div>
+          <div>
+            <label
               htmlFor="description"
               className="block w-full mt-2 mb-1 text-sm font-medium"
             >
@@ -104,24 +130,6 @@ const AddNewBook = ({ onAdd }: Props) => {
               <p className="text-red-500 text-sm">
                 {errors.description.message}
               </p>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="catagory"
-              className="block w-full mt-2 mb-1 text-sm font-medium"
-            >
-              Catagories (Comma separated)
-            </label>
-            <input
-              {...register("catagory")}
-              type="text"
-              id="catagory"
-              placeholder="self-help, bussines"
-              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
-            />
-            {errors.catagory && (
-              <p className="text-red-500 text-sm">{errors.catagory.message}</p>
             )}
           </div>
           <div>
@@ -142,6 +150,24 @@ const AddNewBook = ({ onAdd }: Props) => {
               <p className="text-red-500 text-sm">
                 {errors.publicationYear.message}
               </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="bookCover"
+              className="block w-full mt-2 mb-1 text-sm font-medium"
+            >
+              Book Cover
+            </label>
+            <input
+              {...register("bookCover", { required: true })}
+              type="file"
+              accept=".jpg, .png"
+              id="bookCover"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.bookCover?.type === "required" && (
+              <p className="text-red-500 text-sm">Book cover is required</p>
             )}
           </div>
           <div>

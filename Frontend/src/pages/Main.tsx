@@ -42,7 +42,7 @@ const Main = ({ children }: Props) => {
       </header>
 
       {/* MAIN */}
-      <main className="col-span-2 lg:col-start-2 lg:col-span-1">
+      <main className="col-span-2 lg:col-start-2 lg:col-span-1 max-h-[84vh] overflow-y-auto">
         {children}
       </main>
 
