@@ -51,7 +51,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center overflow-hidden">
       <SearchBox />
       <div className="flex gap-5 mt-7">
         <div
@@ -81,21 +81,24 @@ const Home = () => {
           Books
         </div>
       </div>
-      <div className="mt-15 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Most borrowed</h2>
-        <BookList books={mostBorrowedBooks} />
-      </div>
-      <div className="my-5 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Islamic</h2>
-        <BookList books={islamic} />
-      </div>
-      <div className="my-5 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Self Helps</h2>
-        <BookList books={selfBooks} />
-      </div>
-      <div className="mt-5 mb-15 mx-4">
-        <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Bussiness</h2>
-        <BookList books={bussinessBooks} />
+
+      <div className="w-screen lg:w-4xl px-3 mx-auto">
+        <div className="mt-15 mx-4">
+          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Most borrowed</h2>
+          <BookList books={mostBorrowedBooks} />
+        </div>
+        <div className="my-5 mx-4">
+          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Islamic</h2>
+          <BookList books={islamic} />
+        </div>
+        <div className="my-5 mx-4">
+          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Self Helps</h2>
+          <BookList books={selfBooks} />
+        </div>
+        <div className="mt-5 mb-15 mx-4">
+          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Bussiness</h2>
+          <BookList books={bussinessBooks} />
+        </div>
       </div>
     </div>
   );
