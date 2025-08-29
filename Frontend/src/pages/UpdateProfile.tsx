@@ -45,7 +45,7 @@ const UpdatePassword = ({ email, onUpdate, error }: Props) => {
     if (email) setValue("email", email);
   }, [email, setValue]);
   return (
-    <div className="flex flex-col items-center justify-center h-full p-5 m-5 shadow-7xl">
+    <div className="flex flex-col items-center bg-white w-fit px-10 py-5 my-5 mx-auto rounded-2xl shadow">
       <h1
         style={{ fontFamily: "'Libre Baskerville', serif" }}
         className="text-[2rem] font-semibold my-2"

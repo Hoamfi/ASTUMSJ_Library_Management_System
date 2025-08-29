@@ -42,7 +42,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
     defaultValues: { totalCopies: 1 },
   });
   return (
-    <div className="flex flex-col items-center mt-5">
+    <div className="flex flex-col items-center bg-white w-fit px-10 py-5 my-5 mx-auto rounded-2xl shadow">
       {error && <h1>{error}</h1>}
       <h1
         style={{ fontFamily: "'Libre Baskerville', serif" }}
