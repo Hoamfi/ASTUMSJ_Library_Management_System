@@ -5,6 +5,7 @@ export interface IBook extends Document {
   title: string;
   author: string;
   bookCover: string;
+  page: number;
   publicationYear: number;
   catagory: string;
   description?: string;

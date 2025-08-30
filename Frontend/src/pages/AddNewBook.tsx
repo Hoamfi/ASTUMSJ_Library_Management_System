@@ -11,6 +11,7 @@ interface Props {
     publicationYear: number;
     bookCover: FileList;
     totalCopies: number;
+    pages: number;
   }) => void;
   error: string;
 }
@@ -28,6 +29,7 @@ const schema = z.object({
     .max(new Date().getFullYear(), { message: "Please eznter a valid year." }),
   bookCover: z.any(),
   totalCopies: z.number().positive({ message: "Must be greater than 1" }),
+  pages: z.number().positive({ message: "Number of pages cant be -ve" }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -111,6 +113,24 @@ const AddNewBook = ({ onAdd, error }: Props) => {
             </select>
             {errors.catagory && (
               <p className="text-red-500 text-sm">{errors.catagory.message}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="pages"
+              className="block w-full mt-2 mb-1 text-lg font-medium"
+            >
+              Pages
+            </label>
+            <input
+              {...register("pages", { valueAsNumber: true })}
+              type="number"
+              id="pages"
+              placeholder="10"
+              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+            />
+            {errors.pages && (
+              <p className="text-red-500 text-sm">{errors.pages.message}</p>
             )}
           </div>
           <div>

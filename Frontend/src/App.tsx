@@ -1,21 +1,22 @@
 import { Route, Routes, useNavigate } from "react-router";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
+import { useEffect, useState } from "react";
 import AddNewBook from "./pages/AddNewBook";
+import AdminDashboard from "./pages/AdminDashboard";
+import apiClient from "./services/api-client";
+import axios from "axios";
+import BookDetail from "./pages/BookDetail";
+import Donate from "./pages/Donate";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 import Main from "./pages/Main";
+import ProtectedRoute from "./ProtectedRoute";
+import Register from "./pages/Register";
 import Search from "./pages/Search";
 import Shelf from "./pages/Shelf";
-import Donate from "./pages/Donate";
-import Policy from "./pages/Policy";
-import apiClient from "./services/api-client";
-import { useEffect, useState } from "react";
-import BookDetail from "../pages/BookDetail";
-import ProtectedRoute from "./ProtectedRoute";
-import axios from "axios";
 import UpdatePassword from "./pages/UpdateProfile";
-import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
+import Payments from "./pages/Payments";
+import Users from "./pages/Users";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -35,6 +36,7 @@ interface Book {
   publicationYear: number;
   bookCover: FileList;
   totalCopies: number;
+  pages: number;
 }
 
 interface Student {
@@ -133,7 +135,6 @@ function App() {
     currentPassword: string;
     newPassword: string;
   }) {
-    // console.log(data)
     const updateProfile = {
       _id: student?._id,
       email: data.email,
@@ -149,6 +150,10 @@ function App() {
         localStorage.removeItem("token");
       })
       .catch((error) => setUpdateProfileError(error.response.data));
+  }
+
+  function handleDonation(data: { amount: number; screenshot: FileList }) {
+    console.log(data);
   }
 
   return (
@@ -192,10 +197,23 @@ function App() {
           <Route path="/search" element={<Main>{<Search />}</Main>} />
           <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
           <Route path="/dashboard" element={<Main>{<UserDashboard />}</Main>} />
-          <Route path="/donate" element={<Main>{<Donate />}</Main>} />
-          (
-          <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />
-          )
+          <Route
+            path="/donate"
+            element={
+              <Main>
+                {<Donate onSubmit={(data) => handleDonation(data)} />}
+              </Main>
+            }
+          />
+          <Route
+            path="/bookdetail/:id"
+            element={
+              <Main>
+                <BookDetail isAdmin={student?.isAdmin} />
+              </Main>
+            }
+          />
+
           {isAdmin && (
             <Route
               path="/addnewbook"
@@ -212,18 +230,15 @@ function App() {
             />
           )}
           {isAdmin && (
+            <Route path="/users" element={<Main>{<Users />}</Main>} />
+          )}
+          {isAdmin && (
+            <Route path="/payments" element={<Main>{<Payments />}</Main>} />
+          )}
+          {isAdmin && (
             <Route
               path="/admindashboard"
-              element={
-                <Main>
-                  {
-                    <AdminDashboard
-                    // onAdd={(data) => handleAddBook(data)}
-                    // error={addBookError}
-                    />
-                  }
-                </Main>
-              }
+              element={<Main>{<AdminDashboard />}</Main>}
             />
           )}
           <Route
@@ -240,7 +255,6 @@ function App() {
               </Main>
             }
           />
-          <Route path="/bookdetail/:id" element={<BookDetail />} />
         </Route>
       </Routes>
     </>
