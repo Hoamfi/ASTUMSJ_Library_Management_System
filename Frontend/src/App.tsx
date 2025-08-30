@@ -8,14 +8,14 @@ import Search from "./pages/Search";
 import Shelf from "./pages/Shelf";
 import Donate from "./pages/Donate";
 import Policy from "./pages/Policy";
-import About from "./pages/About";
-import Support from "./pages/Support";
 import apiClient from "./services/api-client";
 import { useEffect, useState } from "react";
 import BookDetail from "../pages/BookDetail";
 import ProtectedRoute from "./ProtectedRoute";
 import axios from "axios";
 import UpdatePassword from "./pages/UpdateProfile";
+import AdminDashboard from "./pages/AdminDashboard";
+import UserDashboard from "./pages/UserDashboard";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -156,7 +156,9 @@ function App() {
       {profileUpdated && (
         <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
           <div className="bg-white p-5 shadow-xl rounded-lg flex flex-col w-md font-sans">
-            <h1 className="text-3xl">🎉 You've Updated ur Profile Successfully</h1>
+            <h1 className="text-3xl">
+              🎉 You've Updated ur Profile Successfully
+            </h1>
             <button
               className="py-2 px-2 bg-black rounded-lg text-white font-sans justify-end hover:bg-black/80 cursor-pointer mt-10 mb-3"
               onClick={() => {
@@ -189,9 +191,8 @@ function App() {
           <Route path="/" element={<Main>{<Home />}</Main>} />
           <Route path="/search" element={<Main>{<Search />}</Main>} />
           <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
+          <Route path="/dashboard" element={<Main>{<UserDashboard />}</Main>} />
           <Route path="/donate" element={<Main>{<Donate />}</Main>} />
-          <Route path="/about" element={<Main>{<About />}</Main>} />
-          <Route path="/support" element={<Main>{<Support />}</Main>} />
           (
           <Route path="/termsnconditions" element={<Main>{<Policy />}</Main>} />
           )
@@ -204,6 +205,21 @@ function App() {
                     <AddNewBook
                       onAdd={(data) => handleAddBook(data)}
                       error={addBookError}
+                    />
+                  }
+                </Main>
+              }
+            />
+          )}
+          {isAdmin && (
+            <Route
+              path="/admindashboard"
+              element={
+                <Main>
+                  {
+                    <AdminDashboard
+                    // onAdd={(data) => handleAddBook(data)}
+                    // error={addBookError}
                     />
                   }
                 </Main>
