@@ -84,7 +84,7 @@ export const returnBook = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Book returned successfully", borrow });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Something went wrong. Please try again later." , error });
   }
 };
 
