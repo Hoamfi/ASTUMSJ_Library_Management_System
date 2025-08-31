@@ -4,9 +4,12 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IBook extends Document {
   title: string;
   author: string;
-  releasedYear: number;
+  publicationYear: number;
+  bookCover:string;
   description?: string;
   isbn: string;
+  page:number;
+  category:string;
   availableCopies: number;
   totalCopies: number;
   createdAt: Date;
@@ -18,7 +21,7 @@ const bookSchema: Schema<IBook> = new Schema(
   {
     title: { type: String, required: true },
     author: { type: String, required: true },
-    releasedYear: { type: Number, required: true },
+    publicationYear: { type: Number, required: true },
     description: { type: String },
     isbn: {
       type: String,
