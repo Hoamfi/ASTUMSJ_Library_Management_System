@@ -1,24 +1,14 @@
-import express from "express";
-import dotenv from "dotenv";
+import app from "./app";
+import { ENV } from "./config/env";
 
-dotenv.config();
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+if (ENV.JWT_SECRET_KEY === "dev_secret_key") {
+  console.log("FATAL: JWT SECRETE KEY IS NOT FOUND!")
+  process.exit(1)
+}
 
-// middleware
-app.use(express.json());
-
-// routes
-import bookRoutes from "./routes/bookRoutes";
-import borrowRoutes from "./routes/borrowRoutes";
-import router from "./routes/auth";
-
-app.use("/api/books", bookRoutes);
-app.use("/api/borrow", borrowRoutes);
-app.use("/api/auth",router);
-
-// start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+app.listen(ENV.PORT, () => {
+  console.log(`Server running on http://localhost:${ENV.PORT}`);
 });
