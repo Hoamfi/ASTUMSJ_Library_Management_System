@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import helmet from "helmet";
 import cors from "cors";
 import authStudent from "./routes/auth";
-import bookRouter from "./routes/book";
+import router from "./routes/ bookRoutes";
 import studentRouter from "./routes/student";
 
 const app = express();
@@ -13,7 +13,7 @@ app.use(cors({ exposedHeaders: ["x-auth-token"] }));
 app.use(helmet());
 
 app.use("/api/students", studentRouter);
-app.use("/api/books", bookRouter);
+app.use("/api/books", router);
 app.use("/api/auth", authStudent);
 
 mongoose
