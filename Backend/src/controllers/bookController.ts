@@ -2,7 +2,6 @@ import validateBook from "../vallidators/validateBook";
 // controllers/bookController.ts
 import { Request, Response } from "express";
 import Book, { IBook } from "../models/book";
-import _ from "lodash";
 
 // Create Book
 export const createBook = async (
@@ -20,17 +19,7 @@ export const createBook = async (
 // Get All Books
 export const getBooks = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const catagory = (_req.query.catagory as string) || undefined;
-    let filter = {};
-
-    if (catagory) {
-      filter = { catagory: catagory };
-    }
-
-    const books: IBook[] = await Book.find(filter).select({
-      createdDate: 0,
-      updatedAt: 0,
-    });
+    const books: IBook[] = await Book.find();
     res.json(books);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -43,10 +32,7 @@ export const getBookById = async (
   res: Response
 ): Promise<void> => {
   try {
-    const book: IBook | null = await Book.findById(req.params.id).select({
-      createdDate: 0,
-      updatedAt: 0,
-    });
+    const book: IBook | null = await Book.findById(req.params.id);
     if (!book) {
       res.status(404).json({ error: "Book not found" });
       return;
