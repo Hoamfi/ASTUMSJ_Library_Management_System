@@ -17,7 +17,11 @@ const user = {
   memberSince: "2023-08-12",
   borrowedBooks: [
     { title: "Riyad as-Salihin", dueDate: "2025-09-05", status: "Borrowed" },
-    { title: "The Psychology of money", dueDate: "2025-08-25", status: "Overdue" },
+    {
+      title: "The Psychology of money",
+      dueDate: "2025-08-25",
+      status: "Overdue",
+    },
     { title: "Atomic Habits", dueDate: "2025-09-10", status: "Borrowed" },
   ],
 };
@@ -41,25 +45,23 @@ const COLORS = ["#6366F1", "#22C55E", "#F59E0B"];
 
 export default function UserDashboard() {
   return (
-    <div className="min-h-screen bg-gray-100 p-8 space-y-8">
-      <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
+    <div className="min-h-screen p-8 space-y-8">
+      <div className="bg-white dark:bg-[#1d293d] p-6 rounded-2xl shadow flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-black">
-            Welcome, {user.name}
-          </h1>
+          <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
           <p className="text-gray-600">
             Member since{" "}
             <span className="font-semibold">{user.memberSince}</span>
           </p>
         </div>
         <Link to="/">
-          <button className="bg-black text-white px-4 py-2 rounded-lg shadow hover:bg-black/80 cursor-pointer">
+          <button className="bg-black dark:bg-gray-900 text-white px-4 py-2 rounded-lg shadow hover:bg-black/80 dark:hover:bg-black/90 cursor-pointer">
             Browse Books
           </button>
         </Link>
       </div>
 
-      <div className="bg-white p-6 rounded-2xl shadow">
+      <div className="bg-white dark:bg-[#1d293d] p-6 rounded-2xl shadow">
         <h2 className="text-lg font-semibold mb-4">📚 Your Borrowed Books</h2>
         <table className="w-full text-left border-collapse">
           <thead>
@@ -71,7 +73,7 @@ export default function UserDashboard() {
           </thead>
           <tbody>
             {user.borrowedBooks.map((book, idx) => (
-              <tr key={idx} className="border-b hover:bg-gray-50">
+              <tr key={idx} className="border-b">
                 <td className="p-2">{book.title}</td>
                 <td className="p-2">{book.dueDate}</td>
                 <td
@@ -91,10 +93,10 @@ export default function UserDashboard() {
 
       {/* Borrowing History Line Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow">
+        <div className="bg-white dark:bg-[#1d293d] dark:text-white p-6 rounded-2xl shadow">
           <h3 className="text-lg font-semibold mb-4">📈 Borrowing History</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={borrowingHistory}>
+            <LineChart data={borrowingHistory} className="text-black">
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
@@ -110,7 +112,7 @@ export default function UserDashboard() {
         </div>
 
         {/* Borrowed Categories Pie Chart */}
-        <div className="bg-white p-6 rounded-2xl shadow">
+        <div className="bg-white dark:bg-[#1d293d] p-6 rounded-2xl shadow">
           <h3 className="text-lg font-semibold mb-4">
             📊 Borrowed by Category
           </h3>

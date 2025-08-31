@@ -38,7 +38,7 @@ const booksByCategory = [
 
 const topBooks = [
   { title: "1984", borrowed: 120 },
-  { title: "Harry Potter", borrowed: 95 },
+  { title: "The Psychology of money", borrowed: 95 },
   { title: "Sapiens", borrowed: 70 },
   { title: "Atomic Habits", borrowed: 55 },
   { title: "Clean Code", borrowed: 40 },
@@ -49,9 +49,9 @@ const COLORS = ["#6366F1", "#22C55E", "#EF4444"];
 
 function StatCard({ title, value }: { title: string; value: number }) {
   return (
-    <div className="bg-white p-6 rounded-br-2xl rounded-tl-2xl shadow text-center">
-      <h4 className="text-gray-500 text-sm">{title}</h4>
-      <p className="text-2xl font-bold text-black">{value}</p>
+    <div className="dark:bg-[#1d293d] p-6 rounded-br-2xl rounded-tl-2xl shadow text-center">
+      <h4 className="text-gray-500  text-sm">{title}</h4>
+      <p className="text-2xl font-bold">{value}</p>
     </div>
   );
 }
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
     <div className="flex-1 p-8 space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold">Dashboard Overview</h2>
-        <button className="bg-black text-white px-4 py-2 rounded-lg shadow hover:bg-black/80 cursor-pointer">
+        <button className="bg-black dark:bg-[#1d293d] text-white px-4 py-2 rounded-lg shadow hover:bg-black/80 dark:hover:bg-[#1d293d]/80 cursor-pointer">
           Generate Report
         </button>
       </div>
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
 
       {/* Borrowing Trends Line Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow">
+        <div className="dark:bg-[#1d293d] p-6 rounded-2xl shadow">
           <h3 className="text-lg font-semibold mb-4">📈 Borrowing Trends</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={borrowingTrends}>
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Books By Category Pie Chart */}
-        <div className="bg-white p-6 rounded-2xl shadow">
+        <div className="dark:bg-[#1d293d] p-6 rounded-2xl shadow">
           <h3 className="text-lg font-semibold mb-4">📊 Books by Category</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* ===== Top Books Bar Chart ===== */}
-      <div className="bg-white p-6 rounded-2xl shadow">
+      <div className="dark:bg-[#1d293d] bg-white p-6 rounded-2xl shadow">
         <h3 className="text-lg font-semibold mb-4">🏆 Top Borrowed Books</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={topBooks}>

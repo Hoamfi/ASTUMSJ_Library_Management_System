@@ -21,7 +21,7 @@ const UserProfileCard = () => {
   const [profileExpanded, setProfileExpanded] = useState(false);
   return (
     <div className="relative">
-      <div className="p-2 m-4 border-1 border-gray-300 rounded-full">
+      <div className="p-2 m-4 border-1 border-gray-300 bg-white dark:bg-[#1d293d]  dark:border-0 rounded-full">
         <FaRegUser size={25} className="inline" />
         <p className="inline pl-1 pr-3">{userName}</p>
         {profileExpanded ? (
@@ -41,7 +41,7 @@ const UserProfileCard = () => {
         )}
       </div>
       {profileExpanded && (
-        <div className="border-1 border-gray-200 z-50 w-50  absolute right-4 top-16 p-3 shadow-xl bg-white rounded-md">
+        <div className="z-50 w-50  absolute right-4 top-16 p-3 shadow-xl bg-white dark:bg-[#1d293d] rounded-md">
           <Link
             to="/changepassword"
             onClick={() => {

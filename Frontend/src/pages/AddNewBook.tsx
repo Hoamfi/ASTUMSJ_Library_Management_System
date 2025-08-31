@@ -44,7 +44,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
     defaultValues: { totalCopies: 1 },
   });
   return (
-    <div className="flex flex-col items-center bg-white w-fit px-10 py-5 my-5 mx-auto rounded-2xl shadow">
+    <div className="flex flex-col items-center w-fit px-10 py-5 my-5 mx-auto rounded-2xl shadow bg-white dark:bg-[#1d293d]">
       {error && <h1>{error}</h1>}
       <h1
         style={{ fontFamily: "'Libre Baskerville', serif" }}
@@ -104,7 +104,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
             <select
               {...register("catagory")}
               id="catagory"
-              className="rounded-md m-1 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+              className="rounded-md m-1 dark:bg-gray-900 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
             >
               <option></option>
               <option value="islamic">Islamic</option>

@@ -7,6 +7,8 @@ import { FaBook } from "react-icons/fa";
 import { FaQuran } from "react-icons/fa";
 import { MdSelfImprovement } from "react-icons/md";
 import { FaSackDollar } from "react-icons/fa6";
+import { FaTrashAlt } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
 
 interface Book {
   _id: string;
@@ -73,11 +75,11 @@ const BookDetail = ({ isAdmin }: Props) => {
             <div className="flex gap-4 mt-3">
               <span className="border-gray-200 rounded-lg w-fit border-2 px-2 py-0.5 flex">
                 {book?.catagory === "islamic" ? (
-                  <FaQuran className="mr-1 self-center"/>
+                  <FaQuran className="mr-1 self-center" />
                 ) : book?.catagory === "self" ? (
-                  <MdSelfImprovement className="mr-1 self-center"/>
+                  <MdSelfImprovement className="mr-1 self-center" />
                 ) : (
-                  <FaSackDollar className="mr-1 self-center"/>
+                  <FaSackDollar className="mr-1 self-center" />
                 )}
                 {book?.catagory}
               </span>
@@ -104,8 +106,13 @@ const BookDetail = ({ isAdmin }: Props) => {
               <div className="border-t-2 py-7 border-gray-200 w-full lg:w-2xl">
                 <h2 className="text-xl font-bold md:text-2xl mb-2">Actions</h2>
                 <div className="flex gap-4">
-                  <span>Edit</span>
-                  <span>Delete</span>
+                  <span>
+                    <FaPen className="inline mr-1"/>
+                    Edit
+                  </span>
+                  <span>
+                    <FaTrashAlt className="inline" color="red"/> Delete
+                  </span>
                 </div>
               </div>
             )}
