@@ -107,7 +107,8 @@ const SideBar = ({ open }: Props) => {
           >
             {!open && <FaRegUser className="justify-self-center" />}
             {open && <span>Users</span>}
-          </NavLink><NavLink
+          </NavLink>
+          <NavLink
             to="/addnewbook"
             className={({ isActive }) =>
               isActive && open
@@ -130,7 +131,7 @@ const SideBar = ({ open }: Props) => {
             {open && <span>Dashboard</span>}
           </NavLink>
           <NavLink
-            to="/pendingpayments"
+            to="/payments"
             className={({ isActive }) =>
               isActive && open
                 ? "bg-black text-white text-left px-4 py-2 rounded-lg w-full"
@@ -138,7 +139,7 @@ const SideBar = ({ open }: Props) => {
             }
           >
             {!open && <FaClock className="justify-self-center" />}
-            {open && <span>Pending Payments</span>}
+            {open && <span>Payments</span>}
           </NavLink>
         </nav>
       )}
