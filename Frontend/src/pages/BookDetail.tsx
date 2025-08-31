@@ -43,7 +43,7 @@ const BookDetail = ({ isAdmin }: Props) => {
       });
   }, [id]);
   return (
-    <div className=" border-gray-200 m-5">
+    <div className=" border-gray-200 m-5 ">
       <Link to="/">
         <span className="mr-5">
           <FaArrowLeft className="inline mx-3" />
@@ -57,7 +57,7 @@ const BookDetail = ({ isAdmin }: Props) => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl bg-white px-5 py-7 my-5">
+        <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl px-5 py-7 my-5">
           <img
             src={book?.bookCover}
             alt="book-photo"
@@ -67,7 +67,7 @@ const BookDetail = ({ isAdmin }: Props) => {
             <div className="w-full lg:w-2xl flex justify-between">
               <h1 className="text-2xl font-bold md:text-5xl">{book?.title}</h1>
               {!isAdmin && (
-                <button className="bg-black text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 cursor-pointer h-fit">
+                <button className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit">
                   Borrow
                 </button>
               )}
