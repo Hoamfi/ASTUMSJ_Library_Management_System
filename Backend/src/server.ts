@@ -1,6 +1,7 @@
 import app from "./app";
 import { ENV } from "./config/env";
 import dotenv from "dotenv";
+import router from "./routes/bookRoutes"
 
 dotenv.config()
 
@@ -11,7 +12,7 @@ if (ENV.JWT_SECRET_KEY === "dev_secret_key") {
   console.log("FATAL: JWT SECRETE KEY IS NOT FOUND!")
   process.exit(1)
 }
-
+app.use("/api/books", router);
 app.listen(ENV.PORT, () => {
   console.log(`Server running on http://localhost:${ENV.PORT}`);
 });

@@ -96,9 +96,9 @@ export const deleteBook = async (
   }
 };
 
-// GET /api/books/most-borrowed
-export const getMostBorrowedBooks = async (req: Request, res: Response) => {
-  try {
+// GET /api/books/mostborrowed
+export const getMostBorrowedBooks=async (req:Request,res:Response) => {
+   try {
     const books = await Book.find()
       .sort({ borrowCount: -1 }) // highest first
       .limit(10); // top 10
