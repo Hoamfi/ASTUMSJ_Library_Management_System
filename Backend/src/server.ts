@@ -1,5 +1,8 @@
 import app from "./app";
 import { ENV } from "./config/env";
+import dotenv from "dotenv";
+
+dotenv.config()
 
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
