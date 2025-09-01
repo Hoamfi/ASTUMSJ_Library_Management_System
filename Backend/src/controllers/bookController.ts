@@ -95,7 +95,7 @@ export const deleteBook = async (
   }
 };
 
-// GET /api/books/most-borrowed
+// GET /api/books/mostborrowed
 export const getMostBorrowedBooks=async (req:Request,res:Response) => {
    try {
     const books = await Book.find()

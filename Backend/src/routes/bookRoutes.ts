@@ -5,6 +5,7 @@ import {
   getBookById,
   updateBook,
   deleteBook,
+  getMostBorrowedBooks,
 } from "../controllers/bookController";
 
 import  isAdmin  from "../middleware/admin"; 
@@ -17,7 +18,7 @@ import  isAdmin  from "../middleware/admin";
   router.get("/:id", getBookById);            // public
   router.put("/:id", updateBook);    // admin only
   router.delete("/:id",  deleteBook); // admin only
-
+  router.get("/mostborrowed",getMostBorrowedBooks);
   
 
 export default router;
