@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import Book, { IBook } from "../models/book";
 import _ from "lodash";
 
-// Create Book
+// Post /api/books
 export const createBook = async (
   req: Request,
   res: Response
@@ -17,7 +17,7 @@ export const createBook = async (
   }
 };
 
-// Get All Books
+// Get /api/books
 export const getBooks = async (_req: Request, res: Response): Promise<void> => {
   try {
     const catagory = (_req.query.catagory as string) || undefined;
@@ -37,7 +37,7 @@ export const getBooks = async (_req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Get Book by ID
+// Get /api/book/:id
 export const getBookById = async (
   req: Request,
   res: Response
@@ -57,7 +57,7 @@ export const getBookById = async (
   }
 };
 
-// Update Book
+// PUT/api/book/:id
 export const updateBook = async (
   req: Request,
   res: Response
@@ -78,7 +78,7 @@ export const updateBook = async (
   }
 };
 
-// Delete Book
+// DELETE /api/book/:id
 export const deleteBook = async (
   req: Request,
   res: Response
@@ -94,3 +94,18 @@ export const deleteBook = async (
     res.status(500).json({ error: err.message });
   }
 };
+
+// GET /api/books/most-borrowed
+export const getMostBorrowedBooks=async (req:Request,res:Response) => {
+   try {
+    const books = await Book.find()
+      .sort({ borrowCount: -1 })  // highest first
+      .limit(10);                 // top 10
+      
+    res.json(books);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+
+};
+
