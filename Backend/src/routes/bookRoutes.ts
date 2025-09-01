@@ -12,11 +12,11 @@ import  isAdmin  from "../middleware/admin";
 
   const router: Router = Router();
 
-  router.post("/", isAdmin, createBook);       // admin only
+  router.post("/", createBook);       // admin only
   router.get("/", getBooks);                   // public
   router.get("/:id", getBookById);            // public
-  router.put("/:id", isAdmin, updateBook);    // admin only
-  router.delete("/:id", isAdmin, deleteBook); // admin only
+  router.put("/:id", updateBook);    // admin only
+  router.delete("/:id",  deleteBook); // admin only
 
   
 

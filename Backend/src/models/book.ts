@@ -7,6 +7,7 @@ export interface IBook extends Document {
   publicationYear: number;
   bookCover:string;
   description?: string;
+  borrowCount:number;
   isbn: string;
   page:number;
   category:string;
@@ -20,12 +21,13 @@ export interface IBook extends Document {
 const bookSchema: Schema<IBook> = new Schema(
   {
     title: { type: String, required: true },
+    borrowCount:{type:Number,required:true},
     author: { type: String, required: true },
     publicationYear: { type: Number, required: true },
     description: { type: String },
     isbn: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       index: true,
       match: /^[0-9\-]{10,17}$/, 
