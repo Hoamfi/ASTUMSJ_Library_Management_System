@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import Book, { IBook } from "../models/book";
 import Borrow, { IBorrow } from "../models/borrowModel";
-import Student, { IStudent } from "../models/student";
+import Student   from "../models/student";
+import {IStudent} from "../models/student";
 
 // Borrow a book
 export const borrowBook = async (req: Request, res: Response) => {
@@ -12,9 +13,6 @@ export const borrowBook = async (req: Request, res: Response) => {
     const student = await Student.findById(userId) as IStudent;
     if (!student) return res.status(404).json({ message: "Student not found" });
 
-    if (student.membershipStatus !== "approved") {
-      return res.status(403).json({ message: "Membership not active" });
-    }
 
     const activeBorrows = await Borrow.countDocuments({
       user: userId,
@@ -45,6 +43,8 @@ export const borrowBook = async (req: Request, res: Response) => {
       dueDate,
       status: "borrowed",
     });
+
+    await Book.findByIdAndUpdate(book.id,{$inc:{borrowCount:1}} );
 
     book.availableCopies -= 1;
     await book.save();
@@ -96,7 +96,7 @@ export const getMyBorrows = async (req: Request, res: Response) => {
     const borrows = await Borrow.find({ user: userId }).populate("book");
     res.status(200).json({ borrows });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "SSomething went wrong . Please try again lr", error });
   }
 };
 
@@ -106,6 +106,6 @@ export const getAllBorrows = async (_req: Request, res: Response) => {
     const borrows = await Borrow.find().populate("book user");
     res.status(200).json({ borrows });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Something went wrong . Please try again later", error });
   }
 };
