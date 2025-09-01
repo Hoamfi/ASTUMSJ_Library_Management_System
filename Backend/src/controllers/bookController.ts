@@ -31,7 +31,8 @@ export const getBooks = async (_req: Request, res: Response): Promise<void> => {
       createdDate: 0,
       updatedAt: 0,
     });
-    res.json(books);
+    const count = await Book.find(filter).countDocuments();
+    res.json({ books, count });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -96,16 +97,14 @@ export const deleteBook = async (
 };
 
 // GET /api/books/most-borrowed
-export const getMostBorrowedBooks=async (req:Request,res:Response) => {
-   try {
+export const getMostBorrowedBooks = async (req: Request, res: Response) => {
+  try {
     const books = await Book.find()
-      .sort({ borrowCount: -1 })  // highest first
-      .limit(10);                 // top 10
-      
+      .sort({ borrowCount: -1 }) // highest first
+      .limit(10); // top 10
+
     res.json(books);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
-
 };
-

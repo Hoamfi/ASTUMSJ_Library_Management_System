@@ -10,12 +10,14 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import DarkModeToggler from "./DarkModeToggler";
 import Logo from "../assets/logo.png";
+import LogoDark from "../assets/log_dark.png";
 interface Props {
   open: Boolean;
 }
 
 const SideBar = ({ open }: Props) => {
   const [isAdmin, setIsAdmin] = useState<Boolean>(false);
+  const [isDark, setDark] = useState<Boolean>(false);
   useEffect(() => {
     apiClient
       .get("/students/me", {
@@ -29,11 +31,15 @@ const SideBar = ({ open }: Props) => {
   return (
     <div className="h-full flex flex-col align-center relative overflow-hidden">
       <div className="w-full flex justify-center pb-3 pt-3 ">
-        <img src={Logo} className="w-[40%]" alt="" />
+        {isDark ? (
+          <img src={LogoDark} className="w-[40%]" alt="" />
+        ) : (
+          <img src={Logo} className="w-[40%]" alt="" />
+        )}
       </div>
       {open && (
         <div className="self-end justify-self-end mr-5">
-          <DarkModeToggler />
+          <DarkModeToggler themeDark={(isDark) => setDark(isDark)} />
         </div>
       )}
 
@@ -47,7 +53,9 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <IoMdHome className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <IoMdHome className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>Home</span>}
           </NavLink>
           <NavLink
@@ -58,7 +66,9 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <GiBookshelf className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <GiBookshelf className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>My Shelf</span>}
           </NavLink>
           <NavLink
@@ -69,7 +79,9 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <MdDashboard className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <MdDashboard className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>Dashboard</span>}
           </NavLink>
           <NavLink
@@ -80,7 +92,9 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <BiSolidDonateHeart className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <BiSolidDonateHeart className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>Donate</span>}
           </NavLink>
         </nav>
@@ -96,7 +110,9 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <IoMdHome className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <IoMdHome className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>Home</span>}
           </NavLink>
           <NavLink
@@ -107,7 +123,9 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <FaRegUser className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <FaRegUser className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>Users</span>}
           </NavLink>
           <NavLink
@@ -118,7 +136,9 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <FaPlus className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <FaPlus className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>Add New Book</span>}
           </NavLink>
           <NavLink
@@ -129,19 +149,23 @@ const SideBar = ({ open }: Props) => {
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <MdDashboard className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
+            {!open && (
+              <MdDashboard className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
             {open && <span>Dashboard</span>}
           </NavLink>
           <NavLink
-            to="/payments"
+            to="/donations"
             className={({ isActive }) =>
               isActive && open
                 ? "bg-black dark:bg-[#1d293d] text-white text-left px-4 py-2 rounded-lg w-full"
                 : "text-gray-700 dark:text-gray-400 dark:hover:text-black hover:bg-indigo-100 px-4 py-2 rounded-lg w-full"
             }
           >
-            {!open && <FaClock className="justify-self-center text-black dark:text-white dark:hover:text-black" />}
-            {open && <span>Payments</span>}
+            {!open && (
+              <FaClock className="justify-self-center text-black dark:text-white dark:hover:text-black" />
+            )}
+            {open && <span>Donations</span>}
           </NavLink>
         </nav>
       )}

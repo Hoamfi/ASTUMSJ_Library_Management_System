@@ -18,7 +18,7 @@ const BookList = ({ books }: Props) => {
   return (
     <div className="flex gap-5 overflow-x-auto">
       {books.map((book) => (
-        <Link key={book._id} to={"/bookdetail/" + book._id}>
+        <Link key={book._id} to={"/bookdetail/" + book._id} >
           <BookCard title={book.title} bookCover={book.bookCover} />
         </Link>
       ))}

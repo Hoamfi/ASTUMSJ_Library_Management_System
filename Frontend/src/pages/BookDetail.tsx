@@ -73,7 +73,7 @@ const BookDetail = ({ isAdmin }: Props) => {
               )}
             </div>
             <div className="flex gap-4 mt-3">
-              <span className="border-gray-200 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+              <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
                 {book?.catagory === "islamic" ? (
                   <FaQuran className="mr-1 self-center" />
                 ) : book?.catagory === "self" ? (
@@ -83,36 +83,37 @@ const BookDetail = ({ isAdmin }: Props) => {
                 )}
                 {book?.catagory}
               </span>
-              <span className="border-gray-200 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+              <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
                 <FaCalendarAlt className="mr-1 self-center" />
                 {book?.publicationYear}
               </span>
-              <span className="border-gray-200 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+              <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
                 <FaBook className="mr-1 self-center" />
                 {book?.page}
               </span>
             </div>
-            <div className="border-t-2 mt-7 py-7 border-gray-200 w-full lg:w-2xl">
+            <div className="border-t-2 mt-7 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
               <h2 className="text-xl font-bold md:text-2xl mb-2">Author</h2>
               <p>{book?.author}</p>
             </div>
-            <div className="border-t-2 py-7 border-gray-200 w-full lg:w-2xl">
+            <div className="border-t-2 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
               <h2 className="text-xl font-bold md:text-2xl mb-2">
                 Description
               </h2>
               <p>{book?.description}</p>
             </div>
             {isAdmin && (
-              <div className="border-t-2 py-7 border-gray-200 w-full lg:w-2xl">
+              <div className="border-t-2 mt-7 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
                 <h2 className="text-xl font-bold md:text-2xl mb-2">Actions</h2>
                 <div className="flex gap-4">
-                  <span>
-                    <FaPen className="inline mr-1"/>
+                  <button className="cursor-pointer border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-1 ">
+                    <FaPen className="inline mr-1 align-center" />
                     Edit
-                  </span>
-                  <span>
-                    <FaTrashAlt className="inline" color="red"/> Delete
-                  </span>
+                  </button>
+                  <button>
+                    <FaTrashAlt className="inline" color="red" />
+                     Delete
+                  </button>
                 </div>
               </div>
             )}

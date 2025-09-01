@@ -16,7 +16,8 @@ import Shelf from "./pages/Shelf";
 import UpdatePassword from "./pages/UpdateProfile";
 import UserDashboard from "./pages/UserDashboard";
 import Users from "./pages/Users";
-import Payments from "./pages/Payments";
+import ViewMore from "./pages/ViewMore";
+import Donations from "./pages/Donations";
 // import Payments from "./pages/Payments";
 // import Users from "./pages/Users";
 interface RegisterFormData {
@@ -215,6 +216,14 @@ function App() {
               </Main>
             }
           />
+          <Route
+            path="/books/:catagory"
+            element={
+              <Main>
+                <ViewMore />
+              </Main>
+            }
+          />
 
           {isAdmin && (
             <Route
@@ -235,7 +244,7 @@ function App() {
             <Route path="/users" element={<Main>{<Users />}</Main>} />
           )}
           {isAdmin && (
-            <Route path="/payments" element={<Main>{<Payments />}</Main>} />
+            <Route path="/donations" element={<Main>{<Donations />}</Main>} />
           )}
           {isAdmin && (
             <Route
