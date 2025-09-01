@@ -16,7 +16,7 @@ export default function Donate({ onSubmit }: Props) {
       <h1 className="text-3xl font-bold mb-4 text-center">
         💝 Support Our Library
       </h1>
-      <p className="text-gray-700 text-center mb-6">
+      <p className="text-gray-700 dark:text-gray-400 text-center mb-6">
         Your donations are crucial in keeping our library running, maintaining
         our collection, and adding more amazing books for everyone to enjoy.
         Every contribution makes a big difference 📚✨
@@ -24,12 +24,12 @@ export default function Donate({ onSubmit }: Props) {
 
       <form
         onSubmit={handleSubmit((data) => onSubmit(data))}
-        className="bg-white shadow-md rounded-2xl p-6 space-y-6"
+        className="dark:bg-[#1d293d] shadow-md rounded-2xl p-6 space-y-6"
       >
         <div>
           <label
             htmlFor="amount"
-            className="block text-gray-700 font-semibold mb-2"
+            className="block text-gray-700 dark:text-gray-400 font-semibold mb-2"
           >
             Donation Amount (ETB)
           </label>
@@ -50,7 +50,7 @@ export default function Donate({ onSubmit }: Props) {
         <div>
           <label
             htmlFor="screenshot"
-            className="block text-gray-700 font-semibold mb-2"
+            className="block text-gray-700 dark:text-gray-400 font-semibold mb-2"
           >
             Upload Payment Screenshot
           </label>

@@ -55,7 +55,7 @@ const Home = () => {
       <SearchBox />
       <div className="flex gap-5 mt-7">
         <div
-          className={`px-4 py-1 rounded-full flex items-center gap-2 ${active === "all" ? "border-3 border-[#1AA190] bg-[#ddf7f4]" : "border-1 border-gray-300 bg-white"}`}
+          className={`px-4 py-1 rounded-full flex items-center gap-2 cursor-pointer ${active === "all" ? "border-3 border-[#1AA190] bg-[#ddf7f4] dark:bg-[#1d293d]" : "border-1 border-gray-300 dark:bg-[#1d293d]"}`}
           onClick={() => {
             setActive("all");
           }}
@@ -63,7 +63,7 @@ const Home = () => {
           <IoSparkles /> All
         </div>
         <div
-          className={`px-4 py-1 rounded-full flex items-center gap-2 ${active === "islamic" ? "border-3 border-[#1AA190] bg-[#ddf7f4]" : "border-1 border-gray-300 bg-white"}`}
+          className={`px-4 py-1 rounded-full flex items-center gap-2 cursor-pointer ${active === "islamic" ? "border-3 border-[#1AA190] bg-[#ddf7f4] dark:bg-[#1d293d]" : "border-1 border-gray-300 dark:bg-[#1d293d]"}`}
           onClick={() => {
             setActive("islamic");
           }}
@@ -72,7 +72,7 @@ const Home = () => {
           Islamic
         </div>
         <div
-          className={`px-4 py-1 rounded-full flex items-center gap-2 ${active === "books" ? "border-3 border-[#1AA190] bg-[#ddf7f4]" : "border-1 border-gray-300 bg-white"}`}
+          className={`px-4 py-1 rounded-full flex items-center gap-2 cursor-pointer ${active === "books" ? "border-3 border-[#1AA190] bg-[#ddf7f4] dark:bg-[#1d293d]" : "border-1 border-gray-300 dark:bg-[#1d293d]"}`}
           onClick={() => {
             setActive("books");
           }}

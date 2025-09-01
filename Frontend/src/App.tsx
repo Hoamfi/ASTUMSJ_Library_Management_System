@@ -15,8 +15,10 @@ import Search from "./pages/Search";
 import Shelf from "./pages/Shelf";
 import UpdatePassword from "./pages/UpdateProfile";
 import UserDashboard from "./pages/UserDashboard";
-import Payments from "./pages/Payments";
 import Users from "./pages/Users";
+import Payments from "./pages/Payments";
+// import Payments from "./pages/Payments";
+// import Users from "./pages/Users";
 interface RegisterFormData {
   name: string;
   email: string;

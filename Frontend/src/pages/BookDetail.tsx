@@ -7,6 +7,8 @@ import { FaBook } from "react-icons/fa";
 import { FaQuran } from "react-icons/fa";
 import { MdSelfImprovement } from "react-icons/md";
 import { FaSackDollar } from "react-icons/fa6";
+import { FaTrashAlt } from "react-icons/fa";
+import { FaPen } from "react-icons/fa";
 
 interface Book {
   _id: string;
@@ -41,7 +43,7 @@ const BookDetail = ({ isAdmin }: Props) => {
       });
   }, [id]);
   return (
-    <div className=" border-gray-200 m-5">
+    <div className=" border-gray-200 m-5 ">
       <Link to="/">
         <span className="mr-5">
           <FaArrowLeft className="inline mx-3" />
@@ -55,7 +57,7 @@ const BookDetail = ({ isAdmin }: Props) => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl bg-white px-5 py-7 my-5">
+        <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl px-5 py-7 my-5">
           <img
             src={book?.bookCover}
             alt="book-photo"
@@ -65,7 +67,7 @@ const BookDetail = ({ isAdmin }: Props) => {
             <div className="w-full lg:w-2xl flex justify-between">
               <h1 className="text-2xl font-bold md:text-5xl">{book?.title}</h1>
               {!isAdmin && (
-                <button className="bg-black text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 cursor-pointer h-fit">
+                <button className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit">
                   Borrow
                 </button>
               )}
@@ -73,11 +75,11 @@ const BookDetail = ({ isAdmin }: Props) => {
             <div className="flex gap-4 mt-3">
               <span className="border-gray-200 rounded-lg w-fit border-2 px-2 py-0.5 flex">
                 {book?.catagory === "islamic" ? (
-                  <FaQuran className="mr-1 self-center"/>
+                  <FaQuran className="mr-1 self-center" />
                 ) : book?.catagory === "self" ? (
-                  <MdSelfImprovement className="mr-1 self-center"/>
+                  <MdSelfImprovement className="mr-1 self-center" />
                 ) : (
-                  <FaSackDollar className="mr-1 self-center"/>
+                  <FaSackDollar className="mr-1 self-center" />
                 )}
                 {book?.catagory}
               </span>
@@ -104,8 +106,13 @@ const BookDetail = ({ isAdmin }: Props) => {
               <div className="border-t-2 py-7 border-gray-200 w-full lg:w-2xl">
                 <h2 className="text-xl font-bold md:text-2xl mb-2">Actions</h2>
                 <div className="flex gap-4">
-                  <span>Edit</span>
-                  <span>Delete</span>
+                  <span>
+                    <FaPen className="inline mr-1"/>
+                    Edit
+                  </span>
+                  <span>
+                    <FaTrashAlt className="inline" color="red"/> Delete
+                  </span>
                 </div>
               </div>
             )}

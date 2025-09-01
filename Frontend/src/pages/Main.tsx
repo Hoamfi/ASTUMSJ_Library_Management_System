@@ -8,10 +8,10 @@ interface Props {
 }
 
 const Main = ({ children }: Props) => {
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(true);
 
   return (
-    <div className="min-h-screen grid grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto]">
+    <div className="h-screen grid grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto] bg-[#f9fafb] text-black dark:bg-gray-900 dark:text-white">
       {/*  DESKTOP SIDEBAR (base column) */}
       <aside
         className={`hidden shadow-xl lg:block row-span-3 transition-[width] duration-300 ${isOpen ? "w-64" : "w-16"} h-full relative group `}
@@ -29,7 +29,7 @@ const Main = ({ children }: Props) => {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-screen shadow-2xl w-64 z-50 transition-transform duration-300 lg:hidden ${
+        className={`fixed top-0 left-0 h-screen shadow-2xl w-64 z-50 transition-transform duration-300 lg:hidden  bg-[#f9fafb] text-black dark:bg-gray-900 dark:text-white ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -37,12 +37,12 @@ const Main = ({ children }: Props) => {
       </aside>
 
       {/* HEADER  */}
-      <header className="flex items-center col-span-2 md:col-start-2 md:col-span-1">
+      <header className="flex items-center col-span-2 md:col-start-2 md:col-span-1 bg-gray-100 text-black dark:bg-gray-900 dark:text-white">
         <Header isOpen={(state) => setOpen(state)} />
       </header>
 
       {/* MAIN */}
-      <main className="col-span-2 lg:col-start-2 lg:col-span-1 max-h-[84vh] bg-gray-100 overflow-y-auto">
+      <main className="col-span-2 lg:col-start-2 lg:col-span-1 max-h-[84vh] overflow-y-auto bg-gray-100 text-black dark:bg-gray-900 dark:text-white">
         {children}
       </main>
 

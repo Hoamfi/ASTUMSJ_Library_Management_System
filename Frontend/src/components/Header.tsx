@@ -9,7 +9,7 @@ interface Props {
 const Header = ({ isOpen }: Props) => {
   const [isExpanded, setExpanded] = useState(false);
   return (
-    <div className="w-full h-full border-1 flex justify-between border-gray-200 bg-[#f9fafb]">
+    <div className="w-full h-full flex justify-between">
       <button
         className=" text-white p-2 rounded"
         onClick={() => {
@@ -18,7 +18,7 @@ const Header = ({ isOpen }: Props) => {
         }}
         aria-label="Toggle sidebar"
       >
-        <RxHamburgerMenu size={30} color="black" />
+        <RxHamburgerMenu size={30} className=" text-black dark:text-white" />
       </button>
       <UserProfileCard />
     </div>
