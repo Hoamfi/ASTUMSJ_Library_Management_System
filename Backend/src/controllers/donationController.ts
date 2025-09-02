@@ -13,7 +13,7 @@ export const createDonation = async(req:Request,res:Response):Promise<void> => {
             screenshot:req.body.screenshot,
             status:"Pending",
         });
-        res.status(201).json({ message: "Donation submitted", donation });
+        res.status(201).json({ message: "Donation submitted جزاكم الله خير", donation });
     } catch(error:any){
         res.status(400).json({ error: error.message });
     }   
