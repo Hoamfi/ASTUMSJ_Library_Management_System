@@ -32,7 +32,8 @@ export const getBooks = async (_req: Request, res: Response): Promise<void> => {
       createdDate: 0,
       updatedAt: 0,
     });
-    res.json(books);
+    const count = await Book.find(filter).countDocuments();
+    res.json({ books, count });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
@@ -127,8 +128,13 @@ export const deleteBook = async (
 export const getMostBorrowedBooks = async (req: Request, res: Response) => {
   try {
     const books = await Book.find()
+<<<<<<< HEAD
       .sort({ borrowCount: -1 })  // highest first
       .limit(10);                 // top 10
+=======
+      .sort({ borrowCount: -1 }) // highest first
+      .limit(10); // top 10
+>>>>>>> 52dbee9dfff402689280fa1be9b3b7c348b1e7ac
 
     res.json(books);
   } catch (err: any) {

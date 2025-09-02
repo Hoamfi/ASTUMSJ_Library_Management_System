@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { IoSunny, IoMoonOutline } from "react-icons/io5";
+interface Props {
+  themeDark: (theme: boolean) => void;
+}
 
-const DarkModeToggler = () => {
+const DarkModeToggler = ({ themeDark }: Props) => {
   const [dark, setDark] = useState(localStorage.getItem("theme") === "dark");
-
   useEffect(() => {
     if (dark) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("theme", "dark");
+      themeDark(true);
     } else {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
+      themeDark(false);
     }
   }, [dark]);
 

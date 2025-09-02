@@ -1,10 +1,8 @@
 import SearchBox from "../components/SearchBox";
 import BookList from "../components/BookList";
-import { IoSparkles } from "react-icons/io5";
-import { FaQuran } from "react-icons/fa";
-import { ImBooks } from "react-icons/im";
 import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
+import { Link } from "react-router-dom";
 
 interface Book {
   _id: string;
@@ -17,7 +15,6 @@ interface Book {
 }
 
 const Home = () => {
-  const [active, setActive] = useState("all");
   const [mostBorrowedBooks, setMostBorrowedBooks] = useState<Book[]>([]);
   const [islamic, setIslamic] = useState<Book[]>([]);
   const [selfBooks, setSelfBooks] = useState<Book[]>([]);
@@ -25,27 +22,27 @@ const Home = () => {
 
   useEffect(() => {
     apiClient
-      .get("/books")
+      .get("/books/mostborrowed")
       .then((res) => {
-        setMostBorrowedBooks(res.data);
+        setMostBorrowedBooks(res.data.books.slice(0, 8));
       })
       .catch((error) => console.log(error.response?.data));
     apiClient
       .get("/books/?catagory=islamic")
       .then((res) => {
-        setIslamic(res.data);
+        setIslamic(res.data.books.slice(0, 8));
       })
       .catch((error) => console.log(error.response?.data));
     apiClient
       .get("/books/?catagory=self")
       .then((res) => {
-        setSelfBooks(res.data);
+        setSelfBooks(res.data.books.slice(0, 8));
       })
       .catch((error) => console.log(error.response?.data));
     apiClient
       .get("/books/?catagory=bussiness")
       .then((res) => {
-        setBussinessBooks(res.data);
+        setBussinessBooks(res.data.books.slice(0, 8));
       })
       .catch((error) => console.log(error.response?.data));
   }, []);
@@ -53,50 +50,62 @@ const Home = () => {
   return (
     <div className="flex flex-col items-center overflow-hidden">
       <SearchBox />
-      <div className="flex gap-5 mt-7">
-        <div
-          className={`px-4 py-1 rounded-full flex items-center gap-2 cursor-pointer ${active === "all" ? "border-3 border-[#1AA190] bg-[#ddf7f4] dark:bg-[#1d293d]" : "border-1 border-gray-300 dark:bg-[#1d293d]"}`}
-          onClick={() => {
-            setActive("all");
-          }}
-        >
-          <IoSparkles /> All
-        </div>
-        <div
-          className={`px-4 py-1 rounded-full flex items-center gap-2 cursor-pointer ${active === "islamic" ? "border-3 border-[#1AA190] bg-[#ddf7f4] dark:bg-[#1d293d]" : "border-1 border-gray-300 dark:bg-[#1d293d]"}`}
-          onClick={() => {
-            setActive("islamic");
-          }}
-        >
-          <FaQuran />
-          Islamic
-        </div>
-        <div
-          className={`px-4 py-1 rounded-full flex items-center gap-2 cursor-pointer ${active === "books" ? "border-3 border-[#1AA190] bg-[#ddf7f4] dark:bg-[#1d293d]" : "border-1 border-gray-300 dark:bg-[#1d293d]"}`}
-          onClick={() => {
-            setActive("books");
-          }}
-        >
-          <ImBooks />
-          Books
-        </div>
-      </div>
 
       <div className="w-screen lg:w-4xl px-3 mx-auto">
         <div className="mt-15 mx-4">
-          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Most borrowed</h2>
+          <span className="flex justify-between my-3 mx-2">
+            <h2 className="font-sansself-start text-lg font-semibold">
+              Most borrowed
+            </h2>
+            <Link
+              to="/books/mostborrowed"
+              className="text-sm text-[#1AA190] hover:text-[#1AA190]/70 self-center underline"
+            >
+              View More
+            </Link>
+          </span>
           <BookList books={mostBorrowedBooks} />
         </div>
         <div className="my-5 mx-4">
-          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Islamic</h2>
+          <span className="flex justify-between my-3 mx-2">
+            <h2 className="font-sansself-start text-lg font-semibold">
+              Islamic
+            </h2>
+            <Link
+              to="/books/islamic"
+              className="text-sm text-[#1AA190] hover:text-[#1AA190]/70 self-center underline"
+            >
+              View More
+            </Link>
+          </span>
           <BookList books={islamic} />
         </div>
         <div className="my-5 mx-4">
-          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Self Helps</h2>
+          <span className="flex justify-between my-3 mx-2">
+            <h2 className="font-sansself-start text-lg font-semibold">
+              Self Helps
+            </h2>
+            <Link
+              to="/books/self"
+              className="text-sm text-[#1AA190] hover:text-[#1AA190]/70 self-center underline"
+            >
+              View More
+            </Link>
+          </span>
           <BookList books={selfBooks} />
         </div>
         <div className="mt-5 mb-15 mx-4">
-          <h2 className="font-sansself-start my-3 mx-2 text-lg font-semibold">Bussiness</h2>
+          <span className="flex justify-between my-3 mx-2">
+            <h2 className="font-sansself-start text-lg font-semibold">
+              Bussiness
+            </h2>
+            <Link
+              to="/books/bussiness"
+              className="text-sm text-[#1AA190] hover:text-[#1AA190]/70 self-center underline"
+            >
+              View More
+            </Link>
+          </span>
           <BookList books={bussinessBooks} />
         </div>
       </div>

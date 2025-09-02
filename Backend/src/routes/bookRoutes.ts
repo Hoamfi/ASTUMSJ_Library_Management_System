@@ -8,10 +8,9 @@ import {
   getMostBorrowedBooks,
 } from "../controllers/bookController";
 
-import  isAdmin  from "../middleware/admin"; 
+import isAdmin from "../middleware/admin";
 
-
-  const router: Router = Router();
+const router: Router = Router();
 
   router.post("/", createBook);       // admin only
   router.get("/", getBooks); // public

@@ -9,7 +9,6 @@ import studentRouter from "./routes/student";
 const app = express();
 
 app.use(express.json());
-app.use("/api/books", router);
 app.use(cors({ exposedHeaders: ["x-auth-token"] }));
 app.use(helmet());
 
