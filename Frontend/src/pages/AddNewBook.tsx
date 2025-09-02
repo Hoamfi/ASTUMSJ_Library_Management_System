@@ -104,7 +104,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
             <select
               {...register("catagory")}
               id="catagory"
-              className="rounded-md m-1 dark:bg-gray-900 px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
+              className="rounded-md m-1 dark:bg-[#1d293d] px-4 py-2 w-full border border-black/15 sm:text-sm/6 outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500"
             >
               <option></option>
               <option value="islamic">Islamic</option>
@@ -211,7 +211,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
             )}
           </div>
           <div>
-            <button className="w-full py-2 px-2 my-6 bg-black rounded-lg text-white font-sans hover:bg-black/80 cursor-pointer">
+            <button className="w-full py-2 px-2 my-6 bg-black dark:bg-gray-900 rounded-lg text-white font-sans hover:bg-black/80 cursor-pointer">
               Add Book
             </button>
           </div>
