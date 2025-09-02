@@ -128,13 +128,8 @@ export const deleteBook = async (
 export const getMostBorrowedBooks = async (req: Request, res: Response) => {
   try {
     const books = await Book.find()
-<<<<<<< HEAD
-      .sort({ borrowCount: -1 })  // highest first
-      .limit(10);                 // top 10
-=======
       .sort({ borrowCount: -1 }) // highest first
-      .limit(10); // top 10
->>>>>>> 52dbee9dfff402689280fa1be9b3b7c348b1e7ac
+      .limit(9); // top 9
 
     res.json(books);
   } catch (err: any) {

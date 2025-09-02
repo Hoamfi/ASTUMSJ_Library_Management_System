@@ -11,7 +11,6 @@ import Login from "./pages/Login";
 import Main from "./pages/Main";
 import ProtectedRoute from "./ProtectedRoute";
 import Register from "./pages/Register";
-import Search from "./pages/Search";
 import Shelf from "./pages/Shelf";
 import UpdatePassword from "./pages/UpdateProfile";
 import UserDashboard from "./pages/UserDashboard";
@@ -197,7 +196,6 @@ function App() {
         />
         <Route element={<ProtectedRoute isAuth={isAuth} />}>
           <Route path="/" element={<Main>{<Home />}</Main>} />
-          <Route path="/search" element={<Main>{<Search />}</Main>} />
           <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
           <Route path="/dashboard" element={<Main>{<UserDashboard />}</Main>} />
           <Route

@@ -3,6 +3,7 @@ import apiClient from "../services/api-client";
 import { Link, useParams } from "react-router-dom";
 import SearchBox from "../components/SearchBox";
 import { FaArrowLeft } from "react-icons/fa";
+import BookCardSkeleton from "../components/BookCardSkeleton";
 
 interface Book {
   _id: string;
@@ -41,25 +42,39 @@ const ViewMore = () => {
   const { catagory } = useParams<{ catagory: string }>();
   const [books, setBooks] = useState<Book[]>([]);
   const [booksCount, setBooksCount] = useState(0);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (catagory === "mostborrowed") {
-      apiClient
-        .get("/books/mostborrowed")
-        .then((res) => {
-          setBooks(res.data);
-        })
-        .catch((error) => console.log(error.response?.data));
-    }
-    apiClient
-      .get("/books/?catagory=" + catagory)
-      .then((res) => {
-        setBooks(res.data.books);
-        setBooksCount(res.data.count);
-      })
-      .catch((error) => console.log(error.response?.data));
+    setLoading(true);
+    setTimeout(() => {
+      if (catagory === "mostborrowed") {
+        apiClient
+          .get("/books/mostborrowed")
+          .then((res) => {
+            setBooks(res.data);
+            setBooksCount(10)
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error.response?.data);
+            setLoading(false);
+          });
+      } else {
+        apiClient
+          .get("/books/?catagory=" + catagory)
+          .then((res) => {
+            setBooks(res.data.books);
+            setBooksCount(res.data.count);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error.response?.data);
+            setLoading(false);
+          });
+      }
+    }, 2000);
   }, []);
-
+  const skeletonBooks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   return (
     <div className="flex flex-col items-center">
       <SearchBox />
@@ -95,11 +110,15 @@ const ViewMore = () => {
         </h3>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-items-center items-center gap-x-3 md:gap-6 lg:gap-x-10 gap-y-5 w-fit mx-auto mt-10">
-        {books.map((book) => (
-          <Link to={"/bookdetail/" + book._id}>
-            <BookCard title={book.title} bookCover={book.bookCover} />
-          </Link>
-        ))}
+        {isLoading
+          ? skeletonBooks.map(() => (
+              <BookCardSkeleton width="170px" height="260px" />
+            ))
+          : books.map((book) => (
+              <Link to={"/bookdetail/" + book._id}>
+                <BookCard title={book.title} bookCover={book.bookCover} />
+              </Link>
+            ))}
       </div>
     </div>
   );
