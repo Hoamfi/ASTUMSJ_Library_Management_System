@@ -2,7 +2,7 @@ import { ENV } from "@/config/env";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
-interface IStudent {
+export interface IStudent {
   name: string;
   email: string;
   password: string;
