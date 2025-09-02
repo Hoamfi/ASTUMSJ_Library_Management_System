@@ -72,7 +72,7 @@ const Home = () => {
           <div className="flex gap-5 overflow-x-auto">
             {isLoading
               ? skeletonBooks.map(() => (
-                  <BookCardSkeleton width={"170px"} height={"240px"} />
+                  <BookCardSkeleton width={"130px"} height={"184px"} />
                 ))
               : mostBorrowedBooks.map((book) => (
                   <Link key={book._id} to={"/bookdetail/" + book._id}>
@@ -94,7 +94,7 @@ const Home = () => {
           <div className="flex gap-5 overflow-x-auto">
             {isLoading
               ? skeletonBooks.map(() => (
-                  <BookCardSkeleton width={"170px"} height={"240px"} />
+                  <BookCardSkeleton width={"130px"} height={"184px"} />
                 ))
               : islamicBooks.map((book) => (
                   <Link key={book._id} to={"/bookdetail/" + book._id}>
@@ -116,7 +116,7 @@ const Home = () => {
           <div className="flex gap-5 overflow-x-auto">
             {isLoading
               ? skeletonBooks.map(() => (
-                  <BookCardSkeleton width={"170px"} height={"240px"} />
+                  <BookCardSkeleton width={"130px"} height={"184px"} />
                 ))
               : selfBooks.map((book) => (
                   <Link key={book._id} to={"/bookdetail/" + book._id}>
@@ -140,7 +140,7 @@ const Home = () => {
           <div className="flex gap-5 overflow-x-auto">
             {isLoading
               ? skeletonBooks.map(() => (
-                  <BookCardSkeleton width={"170px"} height={"240px"} />
+                  <BookCardSkeleton width={"130px"} height={"184px"} />
                 ))
               : bussinessBooks.map((book) => (
                   <Link key={book._id} to={"/bookdetail/" + book._id}>

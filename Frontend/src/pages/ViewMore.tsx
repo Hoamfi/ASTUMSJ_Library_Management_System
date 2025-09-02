@@ -110,7 +110,7 @@ const ViewMore = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 justify-items-center items-center gap-x-3 md:gap-6 lg:gap-x-10 gap-y-5 w-fit mx-auto mt-10">
         {isLoading
           ? skeletonBooks.map(() => (
-              <BookCardSkeleton width={"170px"} height={"240px"} />
+              <BookCardSkeleton width="170px" height="260px" />
             ))
           : books.map((book) => (
               <Link to={"/bookdetail/" + book._id}>

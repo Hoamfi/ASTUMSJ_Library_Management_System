@@ -7,7 +7,8 @@ const BookCardSkeleton = ({ width, height }: Props) => {
   return (
     <div>
       <div
-        className={`w-[${width}] h-[${height}] overflow-hidden rounded-xl bg-gray-900 dark:bg-[#1d293d] animate-pulse`}
+        className={`overflow-hidden rounded-xl bg-gray-900 dark:bg-[#1d293d] animate-pulse`}
+        style={{ width: width, height: height }}
       ></div>
       <div className="bg-gray-900 dark:bg-[#1d293d] animate-pulse w-25 h-3 my-3 rounded-full"></div>
     </div>
