@@ -43,7 +43,7 @@ export const borrowBook = async (req: Request, res: Response) => {
       dueDate,
       status: "borrowed",
     });
-
+    // counting how many times borrowed one book
     await Book.findByIdAndUpdate(book.id,{$inc:{borrowCount:1}} );
 
     book.availableCopies -= 1;

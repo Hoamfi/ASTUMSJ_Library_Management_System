@@ -1,8 +1,9 @@
-import validateBook from "../vallidators/validateBook";
 // controllers/bookController.ts
+import validateBook from "../vallidators/validateBook";
 import { Request, Response } from "express";
 import Book, { IBook } from "../models/book";
 import _ from "lodash";
+import mongoose from "mongoose";
 
 // Post /api/books
 export const createBook = async (
@@ -44,35 +45,53 @@ export const getBookById = async (
   res: Response
 ): Promise<void> => {
   try {
-    const book: IBook | null = await Book.findById(req.params.id).select({
+    const id = req.params.id.trim();
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ error: "Invalid book ID" });
+      return;
+    }
+
+    const book: IBook | null = await Book.findById(id).select({
       createdDate: 0,
       updatedAt: 0,
     });
+
     if (!book) {
       res.status(404).json({ error: "Book not found" });
       return;
     }
+
     res.json(book);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// PUT/api/book/:id
+// PUT /api/book/:id
 export const updateBook = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
+    const id = req.params.id.trim();
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ error: "Invalid book ID" });
+      return;
+    }
+
     const book: IBook | null = await Book.findByIdAndUpdate(
-      req.params.id,
+      id,
       req.body,
       { new: true }
     );
+
     if (!book) {
       res.status(404).json({ error: "Book not found" });
       return;
     }
+
     res.json(book);
   } catch (err: any) {
     res.status(400).json({ error: err.message });
@@ -85,11 +104,20 @@ export const deleteBook = async (
   res: Response
 ): Promise<void> => {
   try {
-    const book: IBook | null = await Book.findByIdAndDelete(req.params.id);
+    const id = req.params.id.trim();
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ error: "Invalid book ID" });
+      return;
+    }
+
+    const book: IBook | null = await Book.findByIdAndDelete(id);
+
     if (!book) {
       res.status(404).json({ error: "Book not found" });
       return;
     }
+
     res.json({ message: "Book deleted" });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -97,11 +125,16 @@ export const deleteBook = async (
 };
 
 // GET /api/books/mostborrowed
-export const getMostBorrowedBooks=async (req:Request,res:Response) => {
-   try {
+export const getMostBorrowedBooks = async (req: Request, res: Response) => {
+  try {
     const books = await Book.find()
+<<<<<<< HEAD
+      .sort({ borrowCount: -1 })  // highest first
+      .limit(10);                 // top 10
+=======
       .sort({ borrowCount: -1 }) // highest first
       .limit(10); // top 10
+>>>>>>> 52dbee9dfff402689280fa1be9b3b7c348b1e7ac
 
     res.json(books);
   } catch (err: any) {
