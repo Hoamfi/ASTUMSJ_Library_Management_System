@@ -52,6 +52,19 @@ const ViewMore = () => {
           .get("/books/mostborrowed")
           .then((res) => {
             setBooks(res.data);
+            setBooksCount(10)
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error.response?.data);
+            setLoading(false);
+          });
+      } else {
+        apiClient
+          .get("/books/?catagory=" + catagory)
+          .then((res) => {
+            setBooks(res.data.books);
+            setBooksCount(res.data.count);
             setLoading(false);
           })
           .catch((error) => {
@@ -59,17 +72,6 @@ const ViewMore = () => {
             setLoading(false);
           });
       }
-      apiClient
-        .get("/books/?catagory=" + catagory)
-        .then((res) => {
-          setBooks(res.data.books);
-          setBooksCount(res.data.count);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error.response?.data);
-          setLoading(false);
-        });
     }, 2000);
   }, []);
   const skeletonBooks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];

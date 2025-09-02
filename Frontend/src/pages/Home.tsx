@@ -29,7 +29,7 @@ const Home = () => {
       apiClient
         .get("/books/mostborrowed")
         .then((res) => {
-          setMostBorrowedBooks(res.data.books.slice(0, 8));
+          setMostBorrowedBooks(res.data.slice(0, 8));
         })
         .catch((error) => console.log(error.response?.data));
       apiClient

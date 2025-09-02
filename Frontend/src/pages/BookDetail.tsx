@@ -112,7 +112,7 @@ const BookDetail = ({ isAdmin }: Props) => {
                   </button>
                   <button>
                     <FaTrashAlt className="inline" color="red" />
-                     Delete
+                    Delete
                   </button>
                 </div>
               </div>
