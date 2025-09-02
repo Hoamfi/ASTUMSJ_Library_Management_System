@@ -19,3 +19,14 @@ export const createDonation = async(req:Request,res:Response):Promise<void> => {
     }   
 };
 
+//GET /api/donations/me
+export const getMyDonations = async (req:Request,res:Response):Promise<void> =>{
+    try{
+        const userId=(req as {user?:{id:string}}).user?.id;
+        const donations:IDonation[]=await Donation.find({ user: userId }).sort({ createdAt: -1 });
+           res.status(200).json({ donations });
+    } catch(error: any) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
