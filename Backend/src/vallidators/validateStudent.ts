@@ -1,4 +1,3 @@
-import { student } from "@/controllers/studentController";
 import {z} from "zod";
 
 export const studentSchema = z.object({
@@ -9,6 +8,6 @@ export const studentSchema = z.object({
 
 export type StudentInput = z.infer<typeof studentSchema>;
 
-export default function validateStudent(Student:unknown){
+export default function validateStudent(student:unknown){
     return studentSchema.safeParse(student);
 }

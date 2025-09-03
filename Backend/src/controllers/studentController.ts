@@ -23,11 +23,16 @@ export async function addStudent(req: Request, res: Response) {
     .send(_.pick(student, ["_id", "name", "email", "isAdmin"]));
 }
 
-export async function student(req: Request, res: Response) {
+export async function me(req: Request, res: Response) {
   const student = await Student.findById((req as any).user._id).select(
     "-password"
   );
   res.send(student);
+}
+
+export async function getAllStudents(req: Request, res: Response) {
+  const students = await Student.find().select(["-password", "-isAdmin"]);
+  res.send(students);
 }
 
 export async function updateStudent(req: Request, res: Response) {
@@ -52,3 +57,15 @@ export async function updateStudent(req: Request, res: Response) {
   );
   res.send(_.pick(student, ["_id", "email"]));
 }
+
+// GET /api/students/search?q=query
+export const searchStudents = async (req: Request, res: Response) => {
+  try {
+    const query = (req.query.q as string) || "";
+
+    const students = await Student.find({ name: new RegExp(query, "i") });
+    res.send(students);
+  } catch (err: any) {
+    res.status(500).send(err.message);
+  }
+};

@@ -51,7 +51,7 @@ const Login = ({ onLogin, error }: Props) => {
           <div>
             <label
               htmlFor="password"
-              className="block mb-2  text-sm font-medium"
+              className="block mb-1 mt-2  text-sm font-medium"
             >
               Password
             </label>

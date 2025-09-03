@@ -162,7 +162,7 @@ function App() {
     <>
       {profileUpdated && (
         <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
-          <div className="bg-white p-5 shadow-xl rounded-lg flex flex-col w-md font-sans">
+          <div className="bg-white dark:bg-[#1d293d] p-5 shadow-xl dark:text-white rounded-lg flex flex-col w-md font-sans">
             <h1 className="text-3xl">
               🎉 You've Updated ur Profile Successfully
             </h1>
