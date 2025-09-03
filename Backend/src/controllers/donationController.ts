@@ -30,3 +30,40 @@ export const getMyDonations = async (req:Request,res:Response):Promise<void> =>{
     }
 };
 
+//GET /api/admin/donations
+export const getAllDonations = async (req:Request,res:Response):Promise<void> =>{
+    try{
+        const donations:IDonation[] = await Donation.find().populate("user").sort({createdAt:-1});
+        res.status(200).json({donations});
+
+    } catch (error:any){
+        res.status(500).json({error: error.message});
+    }
+};
+
+
+//PATCH /api/admin/donations/:donationId
+export const updateDonationStatus = async (req:Request,res:Response):Promise<void> =>{
+    try{
+        const {donationId} =req.params;
+        const {status} =req.body;
+
+        if (!["Pending", "Approved", "Rejected"].includes(status)) {
+            res.status(400).json({ error: "Invalid status value" });
+            return;
+    }
+    const donation = await Donation.findByIdAndUpdate(
+        donationId,
+        {status},
+        {new:true},
+    );
+     if (!donation) {
+      res.status(404).json({ error: "Donation not found" });
+      return;
+     }
+      res.status(200).json({ message: "Status updated", donation });
+    }  catch (error:any){
+        res.status(500).json({error: error.message});
+  }
+};
+
