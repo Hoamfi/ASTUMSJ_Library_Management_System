@@ -81,11 +81,9 @@ export const updateBook = async (
       return;
     }
 
-    const book: IBook | null = await Book.findByIdAndUpdate(
-      id,
-      req.body,
-      { new: true }
-    );
+    const book: IBook | null = await Book.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
 
     if (!book) {
       res.status(404).json({ error: "Book not found" });
@@ -134,5 +132,34 @@ export const getMostBorrowedBooks = async (req: Request, res: Response) => {
     res.json(books);
   } catch (err: any) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+// GET /api/books/search?c=catagory&q=query
+export const searchBooks = async (req: Request, res: Response) => {
+  try {
+    const catagory = (req.query.c as string) || undefined;
+    const query = (req.query.q as string) || undefined;
+
+    if (catagory === "all") {
+      const books = await Book.find({ title: new RegExp(query || "", "i") });
+      const booksCount = await Book.find({
+        title: new RegExp(query || "", "i"),
+      }).countDocuments();
+      res.send({ books, booksCount });
+      return;
+    }
+
+    const books = await Book.find().and([
+      { catagory: catagory },
+      { title: new RegExp(query || "", "i") },
+    ]);
+    const booksCount = await Book.find()
+      .and([{ catagory: catagory }, { title: new RegExp(query || "", "i") }])
+      .countDocuments();
+
+    res.send({ books, booksCount });
+  } catch (err: any) {
+    res.status(500).send(err.message);
   }
 };
