@@ -4,7 +4,7 @@ import Borrow, { IBorrow } from "../models/borrowModel";
 import Student   from "../models/student";
 import {IStudent} from "../models/student";
 
-// Borrow a book
+// POST /api/borrow/:bookId
 export const borrowBook = async (req: Request, res: Response) => {
   const { bookId } = req.params;
   const userId = (req as { user?: { id: string } }).user?.id;
@@ -55,7 +55,7 @@ export const borrowBook = async (req: Request, res: Response) => {
   }
 };
 
-// Return a book
+// PUT /api/return/:borrowId 
 export const returnBook = async (req: Request, res: Response) => {
   const { borrowId } = req.params;
 
@@ -88,7 +88,7 @@ export const returnBook = async (req: Request, res: Response) => {
   }
 };
 
-// Get current student's borrows
+// GET /api/my-borrows 
 export const getMyBorrows = async (req: Request, res: Response) => {
   const userId = (req as { user?: { id: string } }).user?.id;
 
@@ -99,8 +99,7 @@ export const getMyBorrows = async (req: Request, res: Response) => {
     res.status(500).json({ message: "SSomething went wrong . Please try again lr", error });
   }
 };
-
-// Get all borrows (admin only)
+// GET /api/borrows
 export const getAllBorrows = async (_req: Request, res: Response) => {
   try {
     const borrows = await Borrow.find().populate("book user");

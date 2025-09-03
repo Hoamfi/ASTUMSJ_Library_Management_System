@@ -5,6 +5,7 @@ import cors from "cors";
 import authStudent from "./routes/auth";
 import router from "./routes/bookRoutes";
 import studentRouter from "./routes/student";
+import donationRoutes from "./routes/donationRoutes";
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(helmet());
 app.use("/api/students", studentRouter);
 app.use("/api/books", router);
 app.use("/api/auth", authStudent);
+
+app.use("/api/donations", donationRoutes);
 
 mongoose
   .connect("mongodb://localhost/project")

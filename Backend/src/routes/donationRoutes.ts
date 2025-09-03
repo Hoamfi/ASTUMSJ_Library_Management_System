@@ -6,10 +6,14 @@ import {
     updateDonationStatus,
 } from "../controllers/donationController";
 
+import auth from "../middleware/auth";
+
+
+
 const router = Router();
 
 //for user purpose
-router.post("/",createDonation);
+router.post("/", auth, createDonation);
 router.get("/me",getMyDonations);
 
 //for admin purpose
