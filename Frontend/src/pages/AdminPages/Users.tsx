@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import apiClient from "../services/api-client";
 import { Link } from "react-router";
 import { IoSearch } from "react-icons/io5";
 import { FaTimes } from "react-icons/fa";
 import { LuArrowDownUp } from "react-icons/lu";
+import apiClient from "../../services/api-client";
 
 export interface Student {
   _id: string;
