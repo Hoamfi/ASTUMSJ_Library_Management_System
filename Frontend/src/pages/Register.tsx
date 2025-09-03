@@ -82,7 +82,7 @@ const Register = ({ onRegister, error }: Props) => {
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
-            {error && <p className="text-red-500 text-sm">This email is already registered. Please login or use another email.</p>}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
           <div>
             <label

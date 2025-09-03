@@ -45,7 +45,7 @@ const UpdatePassword = ({ email, onUpdate, error }: Props) => {
     if (email) setValue("email", email);
   }, [email, setValue]);
   return (
-    <div className="flex flex-col items-center bg-white w-fit px-10 py-5 my-5 mx-auto rounded-2xl shadow">
+    <div className="flex flex-col items-center bg-white dark:bg-[#1d293d] w-fit px-10 py-5 my-5 mx-auto rounded-2xl shadow">
       <h1
         style={{ fontFamily: "'Libre Baskerville', serif" }}
         className="text-[2rem] font-semibold my-2"
@@ -130,7 +130,7 @@ const UpdatePassword = ({ email, onUpdate, error }: Props) => {
           )}
         </div>
         <div className="self-end ">
-          <button className="py-2 px-2 bg-black rounded-lg text-white font-sans hover:bg-black/80 cursor-pointer">
+          <button className="py-2 px-2 bg-black dark:bg-gray-900 rounded-lg text-white font-sans hover:bg-black/80 cursor-pointer">
             Update
           </button>
         </div>

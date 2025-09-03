@@ -6,7 +6,14 @@ export interface IStudent {
   name: string;
   email: string;
   password: string;
+  campusId: string;
+  idPhoto: string;
+  studyYear: string;
+  department: string;
+  status: string;
   isAdmin: Boolean;
+  createdAt: Date;
+  updatedAt: Date;
   generateAuthToken(): string;
 }
 
@@ -30,8 +37,24 @@ const studentSchema = new mongoose.Schema<IStudent>({
     minlength: 6,
     maxlength: 1024,
   },
-  isAdmin: { type: Boolean, default: false }
-});
+  campusId: {
+    type: String,
+  },
+  idPhoto: {
+    type: String,
+  },
+  studyYear: {
+    type: String,
+  },
+  department: {
+    type: String,
+  },
+  status: {
+    type: String,
+  },
+  isAdmin: { type: Boolean, default: false },
+  
+}, { timestamps: true });
 
 studentSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
