@@ -1,24 +1,23 @@
 import { Route, Routes, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
-import AddNewBook from "./pages/AddNewBook";
-import AdminDashboard from "./pages/AdminDashboard";
+import AddNewBook from "./pages/AdminPages/AddNewBook";
+import AdminDashboard from "./pages/AdminPages/Dashboard";
 import apiClient from "./services/api-client";
 import axios from "axios";
 import BookDetail from "./pages/BookDetail";
-import Donate from "./pages/Donate";
+import Donate from "./pages/UserPages/Donate";
+import Donations from "./pages/AdminPages/Donations";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Main from "./pages/Main";
+import Main from "./components/Main";
 import ProtectedRoute from "./ProtectedRoute";
 import Register from "./pages/Register";
-import Shelf from "./pages/Shelf";
+import Shelf from "./pages/UserPages/Shelf";
 import UpdatePassword from "./pages/UpdateProfile";
-import UserDashboard from "./pages/UserDashboard";
-import Users from "./pages/Users";
+import UserDashboard from "./pages/UserPages/Dashboard";
+import UserDetail from "./pages/AdminPages/UserDetail";
+import Users from "./pages/AdminPages/Users";
 import ViewMore from "./pages/ViewMore";
-import Donations from "./pages/Donations";
-// import Payments from "./pages/Payments";
-// import Users from "./pages/Users";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -248,6 +247,12 @@ function App() {
             <Route
               path="/admindashboard"
               element={<Main>{<AdminDashboard />}</Main>}
+            />
+          )}
+          {isAdmin && (
+            <Route
+              path="/userdetail/:id"
+              element={<Main>{<UserDetail />}</Main>}
             />
           )}
           <Route

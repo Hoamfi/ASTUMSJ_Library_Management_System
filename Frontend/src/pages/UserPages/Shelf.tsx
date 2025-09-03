@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import apiClient from "../services/api-client";
+import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
+import apiClient from "../../services/api-client";
 
 interface Book {
   title: string;
@@ -32,7 +31,7 @@ const Shelf = () => {
     apiClient
       .get("/books")
       .then((res) => {
-        setBooks(res.data);
+        setBooks(res.data.books);
       })
       .catch((error) => console.log(error.response?.data));
   }, []);
