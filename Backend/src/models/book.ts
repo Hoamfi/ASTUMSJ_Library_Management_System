@@ -8,7 +8,7 @@ export interface IBook extends Document {
   bookCover:string;
   description?: string;
   borrowCount:number;
-  isbn: string;
+  isbn?: string;
   page:number;
   category:string;
   availableCopies: number;
