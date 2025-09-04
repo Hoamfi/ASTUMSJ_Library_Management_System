@@ -12,11 +12,11 @@ export async function addStudent(req: Request, res: Response) {
   const { error } = validateStudent(req.body);
   if (error) return res.status(400).send(error.message);
 
-  // Check if email already exists
+  
   let existing = await Student.findOne({ email: req.body.email });
   if (existing) return res.status(400).send("Email already registered");
 
-  // Create new student
+
   let student = new Student(_.pick(req.body, ["name", "email", "password"]));
   const salt = await bcrypt.genSalt(10);
   student.password = await bcrypt.hash(student.password, salt);
