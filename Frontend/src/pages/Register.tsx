@@ -4,11 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import _ from "lodash";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import apiClient from "../services/api-client";
+import { useState } from "react";
 
 interface Props {
-  onRegister: (data: { name: string; email: string; password: string }) => void;
-  error?: string;
+  emailToVerify: (email: string) => void;
 }
 
 const schema = z
@@ -29,7 +30,26 @@ const schema = z
 
 type FormData = z.infer<typeof schema>;
 
-const Register = ({ onRegister, error }: Props) => {
+const Register = ({emailToVerify}: Props) => {
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const handleRegister = (data: {
+    name: string;
+    email: string;
+    password: string;
+  }) => {
+    apiClient
+      .post("/students", data)
+      .then((res) => {
+        // const token = res.headers["x-auth-token"];
+        // localStorage.setItem("token", token);
+        emailToVerify(data.email)
+        navigate("/verifyemail");
+      })
+      .catch((error) => setError(error.response.data));
+  };
+
   const {
     register,
     handleSubmit,
@@ -48,7 +68,7 @@ const Register = ({ onRegister, error }: Props) => {
       <div style={{ maxWidth: "400px", minWidth: "300px" }}>
         <form
           onSubmit={handleSubmit((data) => {
-            onRegister(_.pick(data, ["name", "email", "password"]));
+            handleRegister(_.pick(data, ["name", "email", "password"]));
           })}
         >
           <div>

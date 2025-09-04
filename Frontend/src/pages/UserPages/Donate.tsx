@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form";
 
-interface Props {
-  onSubmit: (data: { amount: number; screenshot: FileList }) => void;
-}
-
-export default function Donate({ onSubmit }: Props) {
+export default function Donate() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<{ amount: number; screenshot: FileList }>();
+
+  const handleDonation = (data: { amount: number; screenshot: FileList }) => {
+    console.log(data);
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-8">
@@ -23,7 +23,7 @@ export default function Donate({ onSubmit }: Props) {
       </p>
 
       <form
-        onSubmit={handleSubmit((data) => onSubmit(data))}
+        onSubmit={handleSubmit((data) => handleDonation(data))}
         className="dark:bg-[#1d293d] shadow-md rounded-2xl p-6 space-y-6"
       >
         <div>

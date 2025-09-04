@@ -1,20 +1,10 @@
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-interface Props {
-  onAdd: (data: {
-    title: string;
-    author: string;
-    description: string;
-    catagory: string;
-    publicationYear: number;
-    bookCover: FileList;
-    totalCopies: number;
-    pages: number;
-  }) => void;
-  error: string;
-}
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import apiClient from "../../services/api-client";
 
 const schema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -34,7 +24,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const AddNewBook = ({ onAdd, error }: Props) => {
+const AddNewBook = () => {
   const {
     register,
     handleSubmit,
@@ -43,9 +33,42 @@ const AddNewBook = ({ onAdd, error }: Props) => {
     resolver: zodResolver(schema),
     defaultValues: { totalCopies: 1 },
   });
+
+  function handleAddBook(data: FormData) {
+    const imageFile = data.bookCover?.[0];
+    const imageData = new FormData();
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
+
+    imageData.append("image", imageFile);
+    axios
+      .post(
+        `https://api.imgbb.com/1/upload?key=82bca9b4b1e6512f2421267af231717d`,
+        imageData
+      )
+      .then((res) => {
+        console.log(res.data.data.url);
+        const newBook = {
+          title: data.title,
+          author: data.author,
+          description: data.description,
+          catagory: data.catagory,
+          publicationYear: data.publicationYear,
+          bookCover: res.data.data.url,
+          totalCopies: data.totalCopies,
+        };
+        apiClient
+          .post("/books", newBook, {
+            headers: { "x-auth-token": localStorage.getItem("token") },
+          })
+          .then(() => navigate("/"))
+          .catch((error) => setError(error.response.data));
+      })
+      .catch((error) => setError(error.response.data));
+  }
+
   return (
     <div className="flex flex-col items-center w-fit px-10 py-5 my-5 mx-auto rounded-2xl shadow bg-white dark:bg-[#1d293d]">
-      {error && <h1>{error}</h1>}
       <h1
         style={{ fontFamily: "'Libre Baskerville', serif" }}
         className="text-[2rem] font-semibold my-2"
@@ -55,7 +78,7 @@ const AddNewBook = ({ onAdd, error }: Props) => {
       <div className="max-w-sm md:min-w-[400px] lg:min-w-[600px]">
         <form
           onSubmit={handleSubmit((data) => {
-            onAdd(data);
+            handleAddBook(data);
           })}
         >
           <div>
