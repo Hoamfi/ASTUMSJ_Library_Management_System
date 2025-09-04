@@ -6,6 +6,8 @@ import authStudent from "./routes/auth";
 import router from "./routes/bookRoutes";
 import studentRouter from "./routes/student";
 import donationRoutes from "./routes/donationRoutes";
+import forgotRoutes from "./routes/forgotRoutes";
+
 
 const app = express();
 
@@ -18,6 +20,7 @@ app.use("/api/books", router);
 app.use("/api/auth", authStudent);
 app.use("/api/auth/student", authStudent);
 app.use("/api/donations", donationRoutes);
+app.use("/api/auth", forgotRoutes);
 
 mongoose
   .connect("mongodb://localhost/project")

@@ -1,28 +1,61 @@
 import Student from "@/models/student";
 import validateStudent from "../vallidators/validateStudent";
-import { Request, Response, RequestHandler } from "express";
+import { Request, Response } from "express";
 import _ from "lodash";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
+
 
 export async function addStudent(req: Request, res: Response) {
   const { error } = validateStudent(req.body);
-  // if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send(error.message);
 
-  let student = await Student.findOne({ email: req.body.email });
-  if (student) return res.status(400).send("Email already registered");
+  
+  let existing = await Student.findOne({ email: req.body.email });
+  if (existing) return res.status(400).send("Email already registered");
 
-  student = new Student(_.pick(req.body, ["name", "email", "password"]));
 
+  let student = new Student(_.pick(req.body, ["name", "email", "password"]));
   const salt = await bcrypt.genSalt(10);
   student.password = await bcrypt.hash(student.password, salt);
 
+  // Generate 6-digit OTP
+  const otp = crypto.randomInt(100000, 999999).toString();
+  student.otpCode = otp;
+  student.otpExpires = new Date(Date.now() + 3 * 60 * 1000);
+
+  // Save to DB
   student = await student.save();
-  const token = student.generateAuthToken();
-  res
-    .header("x-auth-token", token)
-    .send(_.pick(student, ["_id", "name", "email", "isAdmin"]));
+
+  // Send OTP email
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Library System" <${process.env.EMAIL_USER}>`,
+      to: student.email,
+      subject: "Your OTP Code",
+      text: `Your OTP is ${otp}. It expires in 3 minutes.`,
+    });
+
+    return res.status(201).send("Account created. OTP sent to email.");
+  } catch (err) {
+    console.error("Email send failed:", err);
+    return res
+      .status(500)
+      .send("Account created but failed to send OTP. Try again.");
+  }
 }
+
+
 
 export async function me(req: Request, res: Response) {
   const student = await Student.findById((req as any).user._id).select(
@@ -44,8 +77,8 @@ export async function getStudentById(req: Request, res: Response) {
     return;
   }
 
-  const students = await Student.findById(id).select(["-password", "-isAdmin"]);
-  res.send(students);
+  const student = await Student.findById(id).select(["-password", "-isAdmin"]);
+  res.send(student);
 }
 
 export async function updateStudent(req: Request, res: Response) {
@@ -102,7 +135,6 @@ export async function updateStudentStatus(req: Request, res: Response) {
 export const searchStudents = async (req: Request, res: Response) => {
   try {
     const query = (req.query.q as string) || "";
-
     const students = await Student.find({ name: new RegExp(query, "i") });
     res.send(students);
   } catch (err: any) {
