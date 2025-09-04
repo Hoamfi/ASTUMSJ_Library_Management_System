@@ -7,7 +7,7 @@ import {
   getAllStudents,
   searchStudents,
   getStudentById,
-  updateStudentStatus
+  updateStudentStatus,
 } from "../controllers/studentController";
 import admin from "@/middleware/admin";
 
@@ -17,7 +17,7 @@ studentRouter.get("/all", auth, admin, getAllStudents);
 studentRouter.get("/search", auth, admin, searchStudents);
 studentRouter.get("/me", auth, me);
 studentRouter.get("/:id", auth, admin, getStudentById);
-studentRouter.patch("/updateStatus/:id", auth, admin, updateStudentStatus)
+studentRouter.patch("/updateStatus/:id", auth, admin, updateStudentStatus);
 studentRouter.post("/", addStudent);
 studentRouter.put("/updateStudent", auth, updateStudent);
 

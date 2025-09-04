@@ -25,7 +25,6 @@ const donationSchema = new Schema<IDonation>(
     screenshot:{
         type:String,
         required:false,
-        match:/\.(jpg|jpeg|png|gif|webp)$/i,
     },
 
     status:{

@@ -15,50 +15,52 @@ export interface IStudent {
   createdAt: Date;
   updatedAt: Date;
   generateAuthToken(): string;
-  otpCode:string;
-  otpExpires:Date;
+  otpCode: string | null;
+  otpExpires: Date | null; 
 }
 
-const studentSchema = new mongoose.Schema<IStudent>({
-  name: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50,
+const studentSchema = new mongoose.Schema<IStudent>(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 5,
+      maxlength: 50,
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      minlength: 5,
+      maxlength: 255,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+      maxlength: 1024,
+    },
+    campusId: {
+      type: String,
+    },
+    idPhoto: {
+      type: String,
+    },
+    studyYear: {
+      type: String,
+    },
+    department: {
+      type: String,
+    },
+    status: {
+      type: String,
+    },
+    isAdmin: { type: Boolean, default: false },
+    otpCode: { type: String, default:null },
+    otpExpires: { type: Date , default:null},
   },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    minlength: 5,
-    maxlength: 255,
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
-    maxlength: 1024,
-  },
-  campusId: {
-    type: String,
-  },
-  idPhoto: {
-    type: String,
-  },
-  studyYear: {
-    type: String,
-  },
-  department: {
-    type: String,
-  },
-  status: {
-    type: String,
-  },
-  isAdmin: { type: Boolean, default: false },
-  otpCode:{type:String},
-  otpExpires:{type:Date},
-  
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 studentSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(

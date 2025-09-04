@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import Book, { IBook } from "../models/book";
 import Borrow, { IBorrow } from "../models/borrowModel";
-import Student   from "../models/student";
-import {IStudent} from "../models/student";
+import Student from "../models/student";
+import { IStudent } from "../models/student";
 
 // POST /api/borrow/:bookId
 export const borrowBook = async (req: Request, res: Response) => {
@@ -10,9 +10,8 @@ export const borrowBook = async (req: Request, res: Response) => {
   const userId = (req as { user?: { id: string } }).user?.id;
 
   try {
-    const student = await Student.findById(userId) as IStudent;
+    const student = (await Student.findById(userId)) as IStudent;
     if (!student) return res.status(404).json({ message: "Student not found" });
-
 
     const activeBorrows = await Borrow.countDocuments({
       user: userId,
@@ -25,7 +24,7 @@ export const borrowBook = async (req: Request, res: Response) => {
         .json({ message: "Borrow limit reached (3 books)" });
     }
 
-    const book = await Book.findById(bookId) as IBook;
+    const book = (await Book.findById(bookId)) as IBook;
     if (!book) return res.status(404).json({ message: "Book not found" });
 
     if (book.availableCopies < 1) {
@@ -44,18 +43,18 @@ export const borrowBook = async (req: Request, res: Response) => {
       status: "borrowed",
     });
     // counting how many times borrowed one book
-    await Book.findByIdAndUpdate(book.id,{$inc:{borrowCount:1}} );
+    await Book.findByIdAndUpdate(book.id, { $inc: { borrowCount: 1 } });
 
     book.availableCopies -= 1;
     await book.save();
 
     res.status(201).json({ message: "Book borrowed successfully", borrow });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Something went wrong. please try again later", error });
   }
 };
 
-// PUT /api/return/:borrowId 
+// PUT /api/return/:borrowId
 export const returnBook = async (req: Request, res: Response) => {
   const { borrowId } = req.params;
 
@@ -84,11 +83,16 @@ export const returnBook = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Book returned successfully", borrow });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong. Please try again later." , error });
+    res
+      .status(500)
+      .json({
+        message: "Something went wrong. Please try again later.",
+        error,
+      });
   }
 };
 
-// GET /api/my-borrows 
+// GET /api/my-borrows
 export const getMyBorrows = async (req: Request, res: Response) => {
   const userId = (req as { user?: { id: string } }).user?.id;
 
@@ -96,7 +100,9 @@ export const getMyBorrows = async (req: Request, res: Response) => {
     const borrows = await Borrow.find({ user: userId }).populate("book");
     res.status(200).json({ borrows });
   } catch (error) {
-    res.status(500).json({ message: "SSomething went wrong . Please try again lr", error });
+    res
+      .status(500)
+      .json({ message: "Something went wrong . Please try again later", error });
   }
 };
 // GET /api/borrows
@@ -105,6 +111,11 @@ export const getAllBorrows = async (_req: Request, res: Response) => {
     const borrows = await Borrow.find().populate("book user");
     res.status(200).json({ borrows });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong . Please try again later", error });
+    res
+      .status(500)
+      .json({
+        message: "Something went wrong . Please try again later",
+        error,
+      });
   }
 };
