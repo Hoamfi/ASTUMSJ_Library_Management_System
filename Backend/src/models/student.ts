@@ -52,7 +52,7 @@ const studentSchema = new mongoose.Schema<IStudent>(
     },
     status: {
       type: String,
-      default: null,
+      default: "active",
     },
     profileCompleted: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },

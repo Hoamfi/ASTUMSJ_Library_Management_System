@@ -18,6 +18,7 @@ import UserDashboard from "./pages/UserPages/Dashboard";
 import UserDetail from "./pages/AdminPages/UserDetail";
 import Users from "./pages/AdminPages/Users";
 import ViewMore from "./pages/ViewMore";
+import CompleteProfile from "./pages/CompleteProfile";
 interface RegisterFormData {
   name: string;
   email: string;
@@ -44,6 +45,7 @@ interface Student {
   _id: string;
   name: string;
   email: string;
+  profileCompleted: boolean;
   isAdmin: boolean;
 }
 
@@ -221,6 +223,16 @@ function App() {
               </Main>
             }
           />
+          {!student?.profileCompleted && (
+            <Route
+              path="/completeprofile"
+              element={
+                <Main>
+                  <CompleteProfile />
+                </Main>
+              }
+            />
+          )}
 
           {isAdmin && (
             <Route
@@ -250,7 +262,7 @@ function App() {
             />
           )}
           {isAdmin && (
-            <Route  
+            <Route
               path="/userdetail/:id"
               element={<Main>{<UserDetail />}</Main>}
             />
