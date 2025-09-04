@@ -8,7 +8,7 @@ export const studentSchema = z.object({
   email: z.string().email("Invalid email format"),
   password: z
     .string()
-    .min(8, "password must be at least 8 character")
+    .min(6, "password must be at least 8 character")
     .max(200, "password is too long "),
 });
 

@@ -2,6 +2,8 @@ import Student from "@/models/student";
 import {Request, Response} from "express"
 import Joi from "joi";
 import bcrypt from "bcrypt"
+import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 export default async function authStudent(req: Request, res: Response) {
     const {error} = validate(req.body)
@@ -12,6 +14,19 @@ export default async function authStudent(req: Request, res: Response) {
 
     const validPassword = await bcrypt.compare(req.body.password, student.password)
     if (!validPassword) return res.status(400).send("Invalid email or password")
+
+    //generate 6 dight OTP
+    const otp = crypto.randomInt(100000,999999).toString();
+
+    //save otp until 3 minutes
+    student.otpCode = otp;
+    student.otpExpires = new Date(Date.now() + 3 * 60 * 1000);
+    await student.save();
+
+    //create mail transporter
+    const transporter = nodemailer
+
+
 
     const token = student.generateAuthToken()
     return res.send(token);

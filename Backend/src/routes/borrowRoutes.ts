@@ -1,98 +1,20 @@
-import express, { Request, Response } from 'express';
-import  auth from '../middleware/auth';
-import Borrow from '../models/borrowModel';
-import Book from '../models/book';
-import Student from '../models/student';
+import express from "express";
+import auth from "../middleware/auth";
+import {
+  borrowBook,
+  returnBook ,
+  getMyBorrows,
+  getAllBorrows,
+} from "../controllers/borrowController";
 
-const Router = express.Router();
+import isAdmin from "@/middleware/admin";
 
-// Borrow a book
-Router.post('/borrow/:bookId', auth, async (req: Request, res: Response) => {
-  try {
-    const userId = (req as { user?: { id: string } }).user?.id;
-    const bookId = req.params.bookId;
+const router = express.Router();
 
-    // Fetch user and book
-    const user = await Student.findById(userId);
-    const book = await Book.findById(bookId);
+router.post("/:bookId",auth,borrowBook);
+router.put("/return/:borrowId",auth,returnBook);
+router.get("/me",auth,getMyBorrows);
 
-    if (!user || !book) return res.status(404).json({ message: 'User or Book not found' });
+router.get("/", [auth, isAdmin],getAllBorrows);
 
-    // Check membership/payment
-    
-    // Check max borrow limit (3 books)
-    const activeBorrows = await Borrow.find({ user: userId, status: 'Borrowed' });
-    if (activeBorrows.length >= 3) {
-      return res.status(400).json({ message: 'Max 3 books can be borrowed at a time.' });
-    }
-
-    // Check book availability
-    if (book.availableCopies < 1) {
-      return res.status(400).json({ message: 'No copies available.' });
-    }
-
-    // Create borrow record
-    const borrow = new Borrow({
-      user: userId,
-      book: bookId,
-      borrowDate: new Date(),
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days later
-      status: 'Borrowed',
-    });
-
-    await borrow.save();
-
-    // Decrement book copies
-    book.availableCopies -= 1;
-    await book.save();
-
-    res.status(200).json({ message: 'Book borrowed successfully', borrow });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Return a book
-Router.post('/return/:borrowId', auth, async (req: Request, res: Response) => {
-  try {
-    const borrowId = req.params.borrowId;
-
-    const borrow = await Borrow.findById(borrowId).populate('book');
-    if (!borrow) return res.status(404).json({ message: 'Borrow record not found' });
-
-    if (borrow.status === 'returned') {
-      return res.status(400).json({ message: 'Book already returned.' });
-    }
-
-    borrow.status = 'returned';
-    borrow.returnedAt = new Date();
-    await borrow.save();
-
-    // Increment book copies
-    const book = await Book.findById(borrow.book._id);
-    if (book) {
-      book.availableCopies += 1;
-      await book.save();
-    }
-
-    res.status(200).json({ message: 'Book returned successfully', borrow });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Get user borrow history
-Router.get('/history', auth, async (req: Request, res: Response) => {
-  try {
-    const userId = (req as { user?: { id: string } }).user?.id;
-    const borrows = await Borrow.find({ user: userId }).populate('book');
-    res.status(200).json(borrows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-export default Router;
+export default router;
