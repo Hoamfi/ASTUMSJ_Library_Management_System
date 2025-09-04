@@ -3,10 +3,11 @@ import validateStudent from "../vallidators/validateStudent";
 import { Request, Response, RequestHandler } from "express";
 import _ from "lodash";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 export async function addStudent(req: Request, res: Response) {
   const { error } = validateStudent(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  // if (error) return res.status(400).send(error.details[0].message);
 
   let student = await Student.findOne({ email: req.body.email });
   if (student) return res.status(400).send("Email already registered");
@@ -32,6 +33,18 @@ export async function me(req: Request, res: Response) {
 
 export async function getAllStudents(req: Request, res: Response) {
   const students = await Student.find().select(["-password", "-isAdmin"]);
+  res.send(students);
+}
+
+export async function getStudentById(req: Request, res: Response) {
+  const id = req.params.id.trim();
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).json({ error: "Invalid student ID" });
+    return;
+  }
+
+  const students = await Student.findById(id).select(["-password", "-isAdmin"]);
   res.send(students);
 }
 

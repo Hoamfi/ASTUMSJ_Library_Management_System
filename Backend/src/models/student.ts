@@ -7,54 +7,58 @@ export interface IStudent {
   email: string;
   password: string;
   campusId: string;
-  idPhoto: string;
   studyYear: string;
   department: string;
   status: string;
   isAdmin: Boolean;
   createdAt: Date;
   updatedAt: Date;
+  profileCompleted: Boolean;
   generateAuthToken(): string;
 }
 
-const studentSchema = new mongoose.Schema<IStudent>({
-  name: {
-    type: String,
-    required: true,
-    minlength: 5,
-    maxlength: 50,
+const studentSchema = new mongoose.Schema<IStudent>(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 5,
+      maxlength: 50,
+    },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      minlength: 5,
+      maxlength: 255,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+      maxlength: 1024,
+    },
+    campusId: {
+      type: String,
+      default: null,
+    },
+    studyYear: {
+      type: String,
+      default: null,
+    },
+    department: {
+      type: String,
+      default: null,
+    },
+    status: {
+      type: String,
+      default: null,
+    },
+    profileCompleted: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: false },
   },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    minlength: 5,
-    maxlength: 255,
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
-    maxlength: 1024,
-  },
-  campusId: {
-    type: String,
-  },
-  idPhoto: {
-    type: String,
-  },
-  studyYear: {
-    type: String,
-  },
-  department: {
-    type: String,
-  },
-  status: {
-    type: String,
-  },
-  isAdmin: { type: Boolean, default: false },
-  
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 studentSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
