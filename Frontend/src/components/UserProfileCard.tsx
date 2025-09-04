@@ -5,16 +5,23 @@ import { GoTriangleUp } from "react-icons/go";
 import { MdLogout } from "react-icons/md";
 import { Link } from "react-router";
 import apiClient from "../services/api-client";
+import { FaExclamationCircle } from "react-icons/fa";
+
+interface User {
+  _id: string;
+  name: string;
+  profileCompleted: boolean;
+}
 
 const UserProfileCard = () => {
-  const [userName, setUserName] = useState<String>("user");
+  const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     apiClient
       .get("/students/me", {
         headers: { "x-auth-token": localStorage.getItem("token") },
       })
       .then((res) => {
-        setUserName(res.data.name.split(" ")[0]);
+        setUser(res.data);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -23,7 +30,7 @@ const UserProfileCard = () => {
     <div className="relative">
       <div className="p-2 m-4 border-1 border-gray-300 bg-white dark:bg-[#1d293d]  dark:border-0 rounded-full">
         <FaRegUser size={25} className="inline" />
-        <p className="inline pl-1 pr-3">{userName}</p>
+        <p className="inline pl-1 pr-3">{user?.name.split(" ")[0]}</p>
         {profileExpanded ? (
           <GoTriangleUp
             className="inline"
@@ -61,6 +68,18 @@ const UserProfileCard = () => {
             <MdLogout size={15} className="inline" />
             <span>Logout</span>
           </Link>
+          {!user?.profileCompleted && (
+            <Link
+              to={`/completeprofile`}
+              className="block text-red-600 font-bold"
+              onClick={() => {
+                setProfileExpanded(false)
+              }}
+            >
+              <FaExclamationCircle size={20} className="inline mr-1" />
+              Profile incomplete
+            </Link>
+          )}
         </div>
       )}
     </div>

@@ -54,6 +54,7 @@ const studentSchema = new mongoose.Schema<IStudent>(
     },
     status: {
       type: String,
+      default: "active",
     },
     isAdmin: { type: Boolean, default: false },
     otpCode: { type: String, default:null },

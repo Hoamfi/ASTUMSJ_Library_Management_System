@@ -70,6 +70,24 @@ export async function updateStudent(req: Request, res: Response) {
   );
   res.send(_.pick(student, ["_id", "email"]));
 }
+
+export async function completeProfile(req: Request, res: Response) {
+  let student = await Student.findOne({ _id: req.body._id });
+  if (!student) return res.status(400).send("Bad Request");
+
+  student = await Student.findOneAndUpdate(
+    { _id: req.body._id },
+    {
+      campusId: req.body.campusId,
+      studyYear: req.body.studyYear,
+      department: req.body.department,
+      profileCompleted: true,
+    },
+    { new: true }
+  );
+  res.send(_.omit(student, ["password", "isAdmin"]));
+}
+
 export async function updateStudentStatus(req: Request, res: Response) {
   const id = req.params.id.trim();
   let student = await Student.findById(id);
