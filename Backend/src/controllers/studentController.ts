@@ -70,6 +70,15 @@ export async function updateStudent(req: Request, res: Response) {
   );
   res.send(_.pick(student, ["_id", "email"]));
 }
+export async function updateStudentStatus(req: Request, res: Response) {
+  const id = req.params.id.trim();
+  let student = await Student.findById(id);
+  if (!student) return res.status(400).send("Bad Request");
+
+  student.status = req.body.status;
+  const result = await student.save();
+  res.send({ status: result.status });
+}
 
 // GET /api/students/search?q=query
 export const searchStudents = async (req: Request, res: Response) => {

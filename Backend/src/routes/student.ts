@@ -6,7 +6,8 @@ import {
   updateStudent,
   getAllStudents,
   searchStudents,
-  getStudentById
+  getStudentById,
+  updateStudentStatus
 } from "../controllers/studentController";
 import admin from "@/middleware/admin";
 
@@ -16,7 +17,8 @@ studentRouter.get("/all", auth, admin, getAllStudents);
 studentRouter.get("/search", auth, admin, searchStudents);
 studentRouter.get("/me", auth, me);
 studentRouter.get("/:id", auth, admin, getStudentById);
+studentRouter.patch("/updateStatus/:id", auth, admin, updateStudentStatus)
 studentRouter.post("/", addStudent);
-studentRouter.put("/updateStudent", auth, admin, updateStudent);
+studentRouter.put("/updateStudent", auth, updateStudent);
 
 export default studentRouter;

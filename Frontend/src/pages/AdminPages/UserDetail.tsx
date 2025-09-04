@@ -87,6 +87,7 @@ const AdminUserDetail = () => {
   const [borrowedBooks, setBorrowedBooks] = useState<Book[]>([]);
   const [donations, SetDonations] = useState<Donation[]>([]);
   const [isLoading, setLoading] = useState(false);
+  const [userStatus, setUserStatus] = useState("");
   const { id } = useParams<{ id: string }>();
   useEffect(() => {
     setLoading(true);
@@ -96,6 +97,7 @@ const AdminUserDetail = () => {
       })
       .then((response) => {
         setUser(response.data);
+        setUserStatus(response.data.status);
         setLoading(false);
         setBorrowedBooks(borrowedBooksDummy);
         SetDonations(donationsDummy);
@@ -105,6 +107,22 @@ const AdminUserDetail = () => {
         setLoading(false);
       });
   }, []);
+
+  const handleToggleStatus = () => {
+    const newStatus = userStatus === "active" ? "suspended" : "active";
+    // setUserStatus(newStatus);
+
+    apiClient
+      .patch(
+        `/students/updateStatus/${user?._id}`,
+        { status: newStatus },
+        {
+          headers: { "x-auth-token": localStorage.getItem("token") },
+        }
+      )
+      .then((res) => setUserStatus(res.data.status))
+      .catch((err) => console.error(err.response?.data));
+  };
 
   return (
     <div className="px-5 mx-auto w-full md:w-[80%]">
@@ -125,7 +143,7 @@ const AdminUserDetail = () => {
           <div className="flex flex-col items-center my-5 py-5 rounded-2xl shadow bg-white dark:bg-[#1d293d]">
             <h1 className="text-[2rem] font-semibold px-3 mb-4">User Detail</h1>
             <div className="flex flex-col md:flex-row">
-              <FaRegUser  className="bg-gray-200 dark:bg-gray-900 p-4 rounded-lg mx-auto size-full md:size-[220px] md:mr-3" />
+              <FaRegUser className="bg-gray-200 dark:bg-gray-900 p-4 rounded-lg mx-auto size-full md:size-[220px] md:mr-3" />
               <div className="self-center mt-2">
                 <p className="my-1">Name: {user.name}</p>
                 <p className="my-1">Email: {user.email}</p>
@@ -140,18 +158,22 @@ const AdminUserDetail = () => {
                 </p>
                 <p
                   className={`font-semibold my-1 ${
-                    user.status === "active" ? "text-green-600" : "text-red-600"
+                    userStatus === "active" ? "text-green-600" : "text-red-600"
                   }`}
                 >
-                  Status: {user.status}
+                  Status: {userStatus}{" "}
+                  <button
+                    onClick={handleToggleStatus}
+                    className={`ml-5 text-white px-3 py-1 rounded-lg ${userStatus === "active" ? "bg-red-600  hover:bg-red-700" : "bg-green-600  hover:bg-green-700"}`}
+                  >
+                    {userStatus === "active" ? "suspend" : "unSuspend"}
+                  </button>
                 </p>
               </div>
             </div>
           </div>
           <div className="flex flex-col my-5 p-5 rounded-2xl shadow bg-white dark:bg-[#1d293d]">
-            <h2 className="text-2xl font-semibold px-3 mb-4">
-              Borrow History
-            </h2>
+            <h2 className="text-2xl font-semibold px-3 mb-4">Borrow History</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
