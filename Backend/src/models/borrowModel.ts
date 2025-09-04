@@ -39,7 +39,6 @@ const borrowSchema = new Schema<IBorrow>(
       default: "borrowed",
       index: true,
     },
-
   },
   {
     timestamps: true,

@@ -7,14 +7,16 @@ export interface IStudent {
   email: string;
   password: string;
   campusId: string;
+  idPhoto: string;
   studyYear: string;
   department: string;
   status: string;
   isAdmin: Boolean;
   createdAt: Date;
   updatedAt: Date;
-  profileCompleted: Boolean;
   generateAuthToken(): string;
+  otpCode: string | null;
+  otpExpires: Date | null; 
 }
 
 const studentSchema = new mongoose.Schema<IStudent>(
@@ -40,22 +42,23 @@ const studentSchema = new mongoose.Schema<IStudent>(
     },
     campusId: {
       type: String,
-      default: null,
+    },
+    idPhoto: {
+      type: String,
     },
     studyYear: {
       type: String,
-      default: null,
     },
     department: {
       type: String,
-      default: null,
     },
     status: {
       type: String,
       default: "active",
     },
-    profileCompleted: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
+    otpCode: { type: String, default:null },
+    otpExpires: { type: Date , default:null},
   },
   { timestamps: true }
 );
