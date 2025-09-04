@@ -5,7 +5,7 @@ import { FaTimes } from "react-icons/fa";
 import { LuArrowDownUp } from "react-icons/lu";
 import apiClient from "../../services/api-client";
 
-export interface Student {
+export interface User {
   _id: string;
   name: string;
   email: string;
@@ -13,7 +13,7 @@ export interface Student {
 }
 
 const Users = () => {
-  const [students, setStudents] = useState<Student[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("");
@@ -26,7 +26,7 @@ const Users = () => {
           headers: { "x-auth-token": localStorage.getItem("token") },
         })
         .then((response) => {
-          setStudents(response.data);
+          setUsers(response.data);
           setLoading(false);
         })
         .catch((error) => {
@@ -42,7 +42,7 @@ const Users = () => {
           headers: { "x-auth-token": localStorage.getItem("token") },
         })
         .then((res) => {
-          setStudents(res.data);
+          setUsers(res.data);
           setLoading(false);
         })
         .catch((err) => {
@@ -57,7 +57,7 @@ const Users = () => {
   useEffect(() => {
     if (!sortBy) return;
 
-    setStudents((prev) => {
+    setUsers((prev) => {
       const sorted = [...prev].sort((a, b) => {
         if (sortBy === "name") return a.name.localeCompare(b.name);
         if (sortBy === "revname") return b.name.localeCompare(a.name);
@@ -74,7 +74,7 @@ const Users = () => {
   return (
     <div className="bg-white dark:bg-[#1d293d] p-6 m-5 rounded-2xl shadow">
       <div className="flex mt-2 mb-5 justify-between flex-col md:flex-row">
-        <h2 className="text-[2rem] font-semibold self-center">Current Users</h2>
+        <h1 className="text-[2rem] font-semibold self-center">Current Users</h1>
         <div className="px-3 py-1 rounded-3xl flex items-center gap-2 border-2 border-gray-200 focus-within:border-4 focus-within:border-blue-400 bg-white dark:bg-gray-900 dark:border-0 shadow">
           <IoSearch size={25} />
           <input
@@ -94,12 +94,12 @@ const Users = () => {
       {isLoading ? (
         <div className="flex items-center justify-center h-[50vh]">
           <p className="text-lg text-gray-500 animate-pulse">
-            Fetching list of students...
+            Fetching list of users...
           </p>
         </div>
       ) : (
         <div className="overflow-x-auto">
-          {students.length !== 0 ? (
+          {users.length !== 0 ? (
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="text-gray-600 dark:text-gray-300 border-b">
@@ -145,27 +145,27 @@ const Users = () => {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
-                  <tr key={student._id} className="border-b">
+                {users.map((user) => (
+                  <tr key={user._id} className="border-b">
                     <td className="p-5 hover:opacity-70">
                       {
-                        <Link to={"studentdetail/" + student._id}>
-                          {student.name}
+                        <Link to={"/userdetail/" + user._id}>
+                          {user.name}
                         </Link>
                       }
                     </td>
 
                     <td className="p-5 text-blue-500 dark:text-blue-400">
-                      {student.email}
+                      {user.email}
                     </td>
                     <td
                       className={`p-2 font-semibold ${
-                        student.status === "active"
+                        user.status === "active"
                           ? "text-green-600"
                           : "text-red-600"
                       }`}
                     >
-                      {student.status}
+                      {user.status}
                     </td>
                   </tr>
                 ))}

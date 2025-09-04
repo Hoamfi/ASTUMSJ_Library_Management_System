@@ -250,7 +250,7 @@ function App() {
             />
           )}
           {isAdmin && (
-            <Route
+            <Route  
               path="/userdetail/:id"
               element={<Main>{<UserDetail />}</Main>}
             />

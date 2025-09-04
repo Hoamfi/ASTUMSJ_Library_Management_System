@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { Link, useParams } from "react-router-dom";
 import SearchBox from "../components/SearchBox";
-import { FaArrowLeft } from "react-icons/fa";
 import BookCardSkeleton from "../components/BookCardSkeleton";
+import Back from "../components/Back";
 
 interface Book {
   _id: string;
@@ -52,7 +52,7 @@ const ViewMore = () => {
           .get("/books/mostborrowed")
           .then((res) => {
             setBooks(res.data);
-            setBooksCount(10)
+            setBooksCount(10);
             setLoading(false);
           })
           .catch((error) => {
@@ -78,12 +78,9 @@ const ViewMore = () => {
   return (
     <div className="flex flex-col items-center">
       <SearchBox />
-      <Link to="/" className="self-start m-5">
-        <span className="mr-5">
-          <FaArrowLeft className="inline mx-3" />
-          Back
-        </span>
-      </Link>
+      <span className="self-start m-5">
+        <Back path="/" />
+      </span>
       <div className="self-start ml-5">
         <h1 className="text-5xl font-bold">
           {catagory === "mostborrowed"

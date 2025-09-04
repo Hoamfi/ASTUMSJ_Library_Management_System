@@ -3,10 +3,11 @@ import validateStudent from "../vallidators/validateStudent";
 import { Request, Response, RequestHandler } from "express";
 import _ from "lodash";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 export async function addStudent(req: Request, res: Response) {
   const { error } = validateStudent(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  // if (error) return res.status(400).send(error.details[0].message);
 
   let student = await Student.findOne({ email: req.body.email });
   if (student) return res.status(400).send("Email already registered");
@@ -35,6 +36,18 @@ export async function getAllStudents(req: Request, res: Response) {
   res.send(students);
 }
 
+export async function getStudentById(req: Request, res: Response) {
+  const id = req.params.id.trim();
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(400).json({ error: "Invalid student ID" });
+    return;
+  }
+
+  const students = await Student.findById(id).select(["-password", "-isAdmin"]);
+  res.send(students);
+}
+
 export async function updateStudent(req: Request, res: Response) {
   let student = await Student.findOne({ _id: req.body._id });
   if (!student) return res.status(400).send("Bad Request");
@@ -56,6 +69,15 @@ export async function updateStudent(req: Request, res: Response) {
     { new: true }
   );
   res.send(_.pick(student, ["_id", "email"]));
+}
+export async function updateStudentStatus(req: Request, res: Response) {
+  const id = req.params.id.trim();
+  let student = await Student.findById(id);
+  if (!student) return res.status(400).send("Bad Request");
+
+  student.status = req.body.status;
+  const result = await student.save();
+  res.send({ status: result.status });
 }
 
 // GET /api/students/search?q=query

@@ -1,7 +1,6 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import apiClient from "../services/api-client";
 import { useEffect, useState } from "react";
-import { FaArrowLeft } from "react-icons/fa6";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaBook } from "react-icons/fa";
 import { FaQuran } from "react-icons/fa";
@@ -9,6 +8,7 @@ import { MdSelfImprovement } from "react-icons/md";
 import { FaSackDollar } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaPen } from "react-icons/fa";
+import Back from "../components/Back";
 
 interface Book {
   _id: string;
@@ -43,13 +43,8 @@ const BookDetail = ({ isAdmin }: Props) => {
       });
   }, [id]);
   return (
-    <div className=" border-gray-200 m-5 ">
-      <Link to="/">
-        <span className="mr-5">
-          <FaArrowLeft className="inline mx-3" />
-          Back
-        </span>
-      </Link>
+    <div className=" border-gray-200 m-5">
+      <Back path="/"/>
       {isLoading ? (
         <div className="flex items-center justify-center h-[50vh]">
           <p className="text-lg text-gray-500 animate-pulse">
@@ -57,7 +52,7 @@ const BookDetail = ({ isAdmin }: Props) => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl px-5 py-7 my-5">
+        <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl px-5">
           <img
             src={book?.bookCover}
             alt="book-photo"

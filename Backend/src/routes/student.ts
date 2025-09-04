@@ -6,6 +6,8 @@ import {
   updateStudent,
   getAllStudents,
   searchStudents,
+  getStudentById,
+  updateStudentStatus
 } from "../controllers/studentController";
 import admin from "@/middleware/admin";
 
@@ -13,8 +15,10 @@ const studentRouter = express.Router();
 
 studentRouter.get("/all", auth, admin, getAllStudents);
 studentRouter.get("/search", auth, admin, searchStudents);
-studentRouter.post("/", addStudent);
 studentRouter.get("/me", auth, me);
-studentRouter.put("/updateStudent", auth, admin, updateStudent);
+studentRouter.get("/:id", auth, admin, getStudentById);
+studentRouter.patch("/updateStatus/:id", auth, admin, updateStudentStatus)
+studentRouter.post("/", addStudent);
+studentRouter.put("/updateStudent", auth, updateStudent);
 
 export default studentRouter;
