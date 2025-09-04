@@ -7,9 +7,6 @@ router.post("/", authStudent);
 
 
 
-// Step 1: email + password → OTP
-router.post("/login", authStudent);
-
 // Step 2: email + OTP → JWT
 router.post("/verify-otp", verifyOtp);
 

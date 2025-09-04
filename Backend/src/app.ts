@@ -16,7 +16,7 @@ app.use(helmet());
 app.use("/api/students", studentRouter);
 app.use("/api/books", router);
 app.use("/api/auth", authStudent);
-
+app.use("/api/auth/student", authStudent);
 app.use("/api/donations", donationRoutes);
 
 mongoose
