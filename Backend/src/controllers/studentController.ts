@@ -7,15 +7,12 @@ import mongoose from "mongoose";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 
-
 export async function addStudent(req: Request, res: Response) {
   const { error } = validateStudent(req.body);
   if (error) return res.status(400).send(error.message);
 
-  
   let existing = await Student.findOne({ email: req.body.email });
   if (existing) return res.status(400).send("Email already registered");
-
 
   let student = new Student(_.pick(req.body, ["name", "email", "password"]));
   const salt = await bcrypt.genSalt(10);
@@ -55,8 +52,6 @@ export async function addStudent(req: Request, res: Response) {
   }
 }
 
-
-
 export async function me(req: Request, res: Response) {
   const student = await Student.findById((req as any).user._id).select(
     "-password"
@@ -81,7 +76,7 @@ export async function getStudentById(req: Request, res: Response) {
   res.send(student);
 }
 
-export async function updateStudent(req: Request, res: Response) {
+export async function updateStudentPassword(req: Request, res: Response) {
   let student = await Student.findOne({ _id: req.body._id });
   if (!student) return res.status(400).send("Bad Request");
 
@@ -96,7 +91,6 @@ export async function updateStudent(req: Request, res: Response) {
   student = await Student.findOneAndUpdate(
     { _id: req.body._id },
     {
-      email: req.body.email,
       password: hashedPassword,
     },
     { new: true }

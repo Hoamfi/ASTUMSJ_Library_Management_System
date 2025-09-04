@@ -55,7 +55,7 @@ const ChangePassword = ({ id, email }: Props) => {
       newPassword: data.newPassword,
     };
     apiClient
-      .put("/students/updateStudent", updateProfile, {
+      .put("/students/changePassword", updateProfile, {
         headers: { "x-auth-token": localStorage.getItem("token") },
       })
       .then(() => {
