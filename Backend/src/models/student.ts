@@ -17,6 +17,8 @@ export interface IStudent {
   generateAuthToken(): string;
   otpCode: string | null;
   otpExpires: Date | null; 
+  resetPasswordToken:string | null;
+  resetPasswordExpires:Date | null;
 }
 
 const studentSchema = new mongoose.Schema<IStudent>(
@@ -59,6 +61,9 @@ const studentSchema = new mongoose.Schema<IStudent>(
     isAdmin: { type: Boolean, default: false },
     otpCode: { type: String, default:null },
     otpExpires: { type: Date , default:null},
+    resetPasswordToken:{type: String, default:null},
+    resetPasswordExpires:{ type: Date , default:null},
+
   },
   { timestamps: true }
 );
