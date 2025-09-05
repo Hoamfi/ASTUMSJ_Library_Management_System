@@ -4,6 +4,6 @@ import { createAccount,verifyRegistrationOtp} from "@/controllers/creatingContro
 const router = express.Router();
 
 router.post("/register", createAccount);
-router.post("/verify-registration", verifyRegistrationOtp);
+router.post("/verifyregistration", verifyRegistrationOtp);
 
 export default router ;

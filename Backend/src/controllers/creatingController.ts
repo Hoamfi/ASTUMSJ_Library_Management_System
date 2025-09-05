@@ -4,10 +4,10 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
-// POST /api/auth/register 
+// POST /api/creating/register 
 export async function createAccount(req: Request, res: Response) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, campusId } = req.body;
 
     const existing = await Student.findOne({ email });
     if (existing) return res.status(400).send("Email already registered");
@@ -21,6 +21,7 @@ export async function createAccount(req: Request, res: Response) {
       name,
       email,
       password: hashedPassword,
+      campusId,
       otpCode: otp,
       otpExpires: new Date(Date.now() + 5 * 60 * 1000),
     });
@@ -49,7 +50,7 @@ export async function createAccount(req: Request, res: Response) {
   }
 }
 
-// POST /api/auth/verifyregistration —
+// POST /api/creating/verifyregistration 
 export async function verifyRegistrationOtp(req: Request, res: Response) {
   try {
     const { email, otp } = req.body;

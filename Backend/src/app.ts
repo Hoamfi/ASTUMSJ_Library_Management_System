@@ -25,7 +25,8 @@ app.use("/api/auth/student", authStudent);
 app.use("/api/donations", donationRoutes);
 app.use("/api/auth", forgotRoutes);
 app.use("/api/borrow",borrowRoutes);
-app.use("/api/",creatingRoutes);
+app.use("/api/creating",creatingRoutes);
+app.use("/api/forgotpassword",forgotRoutes);
 
 
 mongoose
