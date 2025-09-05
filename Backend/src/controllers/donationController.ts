@@ -86,3 +86,19 @@ export const updateDonationStatus = async (
     res.status(500).json({ error: error.message });
   }
 };
+
+// GET /api/admin/pending
+export const getPendingDonations = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const donations = await Donation.find({ status: "Pending" })
+      .populate("user", "name email") 
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ donations });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
