@@ -33,7 +33,7 @@ export async function forgotPassword(req: Request, res: Response) {
       from: `"Library System" <${process.env.EMAIL_USER}>`,
       to: student.email,
       subject: "Password Reset",
-      text: `Click the link to reset your password: ${resetLink}`,
+      text: ` Dear our student Click the link to reset your password: ${resetLink}`,
     });
 
     res.send("Password reset link sent to your email");

@@ -9,11 +9,9 @@ import { forgotPassword, resetPassword } from "@/controllers/forgotController";
 const router = express.Router();
 router.post("/", authStudent);
 
-router.post("/forgotpassword", forgotPassword);
-router.post("/resetpassword/:token", resetPassword);
 
 
 // Step 2: email + OTP → JWT
-router.post("/verify-otp", verifyOtp);
+router.post("/verifyotp", verifyOtp);
 
 export default router;
