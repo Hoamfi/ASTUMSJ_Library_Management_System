@@ -2,12 +2,9 @@ import logo from "../assets/logo.png";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
-
-interface Props {
-  onLogin: (data: { email: string; password: string }) => void;
-  error?: string;
-}
+import { Link, useNavigate } from "react-router-dom";
+import apiClient from "../services/api-client";
+import { useState } from "react";
 
 const schema = z.object({
   email: z.email("Required"),
@@ -16,7 +13,20 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const Login = ({ onLogin, error }: Props) => {
+const Login = () => {
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const handleLogin = (data: FormData) => {
+    apiClient
+      .post("/auth", data)
+      .then((res) => {
+        const token = res.data;
+        localStorage.setItem("token", token);
+        navigate("/");
+      })
+      .catch((error) => setError(error.response.data));
+  };
   const {
     register,
     handleSubmit,
@@ -33,7 +43,7 @@ const Login = ({ onLogin, error }: Props) => {
         Sign in
       </h1>
       <div style={{ maxWidth: "400px", minWidth: "300px" }}>
-        <form action="" onSubmit={handleSubmit((data) => onLogin(data))}>
+        <form action="" onSubmit={handleSubmit((data) => handleLogin(data))}>
           <div>
             <label htmlFor="email" className="block mb-2  text-sm font-medium">
               Email
@@ -66,8 +76,13 @@ const Login = ({ onLogin, error }: Props) => {
             )}
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
+          <div className="mt-3">
+            <Link to="/forgetpassword" className="text-sm">
+              Forget password?
+            </Link>
+          </div>
           <div>
-            <button className="w-full py-2 px-2 my-6 bg-black rounded-full text-white font-sans hover:bg-black/80 cursor-pointer">
+            <button className="w-full py-2 px-2 my-3 bg-black rounded-full text-white font-sans hover:bg-black/80 cursor-pointer">
               Sign in
             </button>
           </div>
@@ -82,7 +97,6 @@ const Login = ({ onLogin, error }: Props) => {
             and <span className="underline cursor-pointer">Privacy Policy</span>
           </p>
         </div>
-
         <div className="my-10">
           <p className="mb-3">New to ASTUMSJ library?</p>
           <Link to="/register">

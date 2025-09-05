@@ -3,7 +3,7 @@ import auth from "@/middleware/auth";
 import {
   addStudent,
   me,
-  updateStudent,
+  updateStudentPassword,
   getAllStudents,
   searchStudents,
   getStudentById,
@@ -20,7 +20,7 @@ studentRouter.get("/me", auth, me);
 studentRouter.get("/:id", auth, admin, getStudentById);
 studentRouter.patch("/updateStatus/:id", auth, admin, updateStudentStatus);
 studentRouter.post("/", addStudent);
-studentRouter.put("/updateStudent", auth, updateStudent);
+studentRouter.put("/changePassword", auth, updateStudentPassword);
 studentRouter.patch("/completeprofile", auth, completeProfile);
 
 export default studentRouter;
