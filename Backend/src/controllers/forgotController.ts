@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
 
+//Post /api/auth/forgotpassword
 export async function forgotPassword(req: Request, res: Response) {
   try {
     const { email } = req.body;
@@ -44,7 +45,24 @@ export async function forgotPassword(req: Request, res: Response) {
   }
 }
 
+// POST /api/auth/verifyotp 
+export async function verifyOtp(req:Request,res:Response){
+    const {email,otp} =req.body;
+    const student = await  Student.findOne({email});
+    if (!student || !student.otpCode){
+        return res.status(400).send("Invalid or Expired otp ");
+    }
+    if (student.otpCode !==otp || !student.otpExpires || student.otpExpires< new Date()){
+        return res.status(400).send("Invalid or Expired OTP .");
+    }
+    // clear otp after verification
+    student.otpCode = null;
+    student.otpExpires = null;
+    await student.save();
 
+}
+
+// POST /api/auth/resetpassword
 export async function resetPassword(req: Request, res: Response) {
   try {
     const { otp, newPassword } = req.body;
