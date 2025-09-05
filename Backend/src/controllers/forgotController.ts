@@ -4,7 +4,7 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
-//Post /api/auth/forgotpassword
+// POST /api/forgotpassword
 export async function forgotPassword(req: Request, res: Response) {
   try {
     const { email } = req.body;
@@ -12,15 +12,12 @@ export async function forgotPassword(req: Request, res: Response) {
 
     if (!student) return res.status(400).send("User not found");
 
-    // Generate OTP (6 digits)
     const otp = crypto.randomInt(100000, 999999).toString();
-
-    // Save OTP + Expiration
     student.resetPasswordToken = otp;
-    student.resetPasswordExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+    student.resetPasswordExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 min
+    student.isOtpVerified = false; // Reset verification status
     await student.save();
 
-    // Setup email transporter
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -29,7 +26,6 @@ export async function forgotPassword(req: Request, res: Response) {
       },
     });
 
-    // Send OTP Email
     await transporter.sendMail({
       from: `"Astu Msj Library System" <${process.env.EMAIL_USER}>`,
       to: student.email,
@@ -44,7 +40,7 @@ export async function forgotPassword(req: Request, res: Response) {
   }
 }
 
-// POST /api/auth/verifyotp
+// POST /api/forgotpassword/verifyotp
 export async function verifyOtp(req: Request, res: Response) {
   try {
     const { email, otp } = req.body;
@@ -63,36 +59,39 @@ export async function verifyOtp(req: Request, res: Response) {
       return res.status(400).send("Invalid or expired OTP");
     }
 
-    // Clear OTP after successful verification
-    student.resetPasswordToken = null;
-    student.resetPasswordExpires = null;
+    student.isOtpVerified = true;
     await student.save();
 
     res.send("OTP is valid");
   } catch (err) {
-    res.status(500).send("some thing went wrong please try again later");
+    console.error("Verify OTP error:", err);
+    res.status(500).send("Something went wrong. Please try again later.");
   }
 }
 
-// POST /api/auth/resetpassword
+// POST /api/forgotpassword/resetpassword
 export async function resetPassword(req: Request, res: Response) {
   try {
-    const { otp, newPassword } = req.body;
+    const { email, otp, newPassword } = req.body;
 
     const student = await Student.findOne({
+      email,
       resetPasswordToken: otp,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!student) return res.status(400).send("Invalid or expired OTP");
 
-    // Hash new password
+    if (!student.isOtpVerified) {
+      return res.status(403).send("OTP not verified. Please verify first.");
+    }
+
     const salt = await bcrypt.genSalt(10);
     student.password = await bcrypt.hash(newPassword, salt);
 
-    // Clear OTP fields
     student.resetPasswordToken = null;
     student.resetPasswordExpires = null;
+    student.isOtpVerified = false;
     await student.save();
 
     res.send("Password has been reset successfully");

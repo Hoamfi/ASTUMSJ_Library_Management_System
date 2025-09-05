@@ -16,6 +16,7 @@ export interface IStudent {
   generateAuthToken(): string;
   otpCode: string | null;
   otpExpires: Date | null;
+  isOtpVerified: Boolean;
   resetPasswordToken: string | null;
   resetPasswordExpires: Date | null;
 }
@@ -41,6 +42,7 @@ const studentSchema = new mongoose.Schema<IStudent>(
       minlength: 6,
       maxlength: 1024,
     },
+
     campusId: {
       type: String,
       unique: true,
@@ -60,6 +62,10 @@ const studentSchema = new mongoose.Schema<IStudent>(
     otpExpires: { type: Date, default: null },
     resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
+    isOtpVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
