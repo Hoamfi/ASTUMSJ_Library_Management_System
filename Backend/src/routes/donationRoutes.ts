@@ -11,7 +11,7 @@ import auth from "../middleware/auth";
 const router = Router();
 
 //for user purpose
-router.post("/", auth, createDonation);
+router.post("/donate", auth, createDonation);
 router.get("/me", getMyDonations);
 
 //for admin purpose

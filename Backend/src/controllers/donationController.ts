@@ -1,28 +1,28 @@
 import { Request, Response } from "express";
 import Donation, { IDonation } from "../models/donationModel";
 
-//POST /api/donations
+//POST /api/donations/donate
 export const createDonation = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const userId = (req as { user?: { id: string } }).user?.id;
+    // const userId = (req as { user?: { id: string } }).user?.id;
 
     const donation = await Donation.create({
-      user: userId,
+      user: req.body.userId,
       amount: req.body.amount,
-      reference: req.body.amount,
       screenshot: req.body.screenshot,
       status: "Pending",
     });
-    res
-      .status(201)
-      .json({
-        message:
-          "Your donation is successufully submited you will receive a confirmation email shortly جزاكم الله خير",
-        donation,
-      });
+
+
+    res.status(201).json({
+      message:
+        "Your donation is successufully submited you will receive a confirmation email shortly جزاكم الله خير",
+      donation,
+    });
+
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
