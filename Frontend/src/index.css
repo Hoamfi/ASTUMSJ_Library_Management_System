@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+@import 'react-toastify/dist/ReactToastify.css';
 
 body {
     font-family: Titillium Web, sans-serif;

@@ -187,8 +187,10 @@ const AdminUserDetail = () => {
                   {borrowedBooks.length !== 0 &&
                     borrowedBooks.map((book) => (
                       <tr key={book._id} className="border-b">
-                        <td className="p-5">{book.title}</td>
-                        <td className="p-5">
+                        <td className="py-5 px-2 whitespace-nowrap">
+                          {book.title}
+                        </td>
+                        <td className="py-5 px-2 whitespace-nowrap">
                           {new Date(book.borrowDate).toLocaleString("en-us", {
                             dateStyle: "medium",
                           })}
@@ -227,8 +229,8 @@ const AdminUserDetail = () => {
                   {donations.length !== 0 &&
                     donations.map((donation) => (
                       <tr key={donation._id} className="border-b">
-                        <td className="p-5">Birr: {donation.amount}</td>
-                        <td className="p-5">
+                        <td className="py-5 px-2 whitespace-nowrap">Birr: {donation.amount}</td>
+                        <td className="py-5 px-2 whitespace-nowrap">
                           {new Date(donation.date).toLocaleString("en-us", {
                             dateStyle: "medium",
                           })}
