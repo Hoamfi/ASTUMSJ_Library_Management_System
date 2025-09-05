@@ -46,20 +46,32 @@ export async function forgotPassword(req: Request, res: Response) {
 }
 
 // POST /api/auth/verifyotp 
-export async function verifyOtp(req:Request,res:Response){
-    const {email,otp} =req.body;
-    const student = await  Student.findOne({email});
-    if (!student || !student.otpCode){
-        return res.status(400).send("Invalid or Expired otp ");
+export async function verifyOtp(req: Request, res: Response) {
+  try {
+    const { email, otp } = req.body;
+    const student = await Student.findOne({ email });
+
+    if (!student || !student.resetPasswordToken) {
+      return res.status(400).send("Invalid or expired OTP");
     }
-    if (student.otpCode !==otp || !student.otpExpires || student.otpExpires< new Date()){
-        return res.status(400).send("Invalid or Expired OTP .");
+
+    const isMatch = student.resetPasswordToken === otp;
+    const isExpired = !student.resetPasswordExpires || student.resetPasswordExpires < new Date();
+
+    if (!isMatch || isExpired) {
+      return res.status(400).send("Invalid or expired OTP");
     }
-    // clear otp after verification
-    student.otpCode = null;
-    student.otpExpires = null;
+
+    // Clear OTP after successful verification
+    student.resetPasswordToken = null;
+    student.resetPasswordExpires = null;
     await student.save();
 
+    res.send("OTP is valid");
+  } catch (err) {
+
+    res.status(500).send("some thing went wrong please try again later");
+  }
 }
 
 // POST /api/auth/resetpassword
