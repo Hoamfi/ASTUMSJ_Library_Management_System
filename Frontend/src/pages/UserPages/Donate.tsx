@@ -1,8 +1,19 @@
+import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 // import toast from "react-hot-toast";
 import { toast } from "react-toastify";
+import apiClient from "../../services/api-client";
 
-export default function Donate() {
+interface Props {
+  id?: string;
+}
+
+export default function Donate({ id }: Props) {
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -10,10 +21,47 @@ export default function Donate() {
   } = useForm<{ amount: number; screenshot: FileList }>();
 
   const handleDonation = (data: { amount: number; screenshot: FileList }) => {
-    console.log(data);
-    toast.success(
-      "Your donation is successufully submited you will receive a confirmation email shortly"
-    );
+    const imageFile = data.screenshot?.[0];
+    const imageData = new FormData();
+
+    imageData.append("image", imageFile);
+    if (!id) {
+      toast.error("unknown error occured please refresh the page");
+      return;
+    }
+
+    const toastId = toast.loading("Uploading screenshot...");
+
+    axios
+      .post(
+        `https://api.imgbb.com/1/upload?key=82bca9b4b1e6512f2421267af231717d`,
+        imageData
+      )
+      .then((res) => {
+        const screenshot = res.data.data.url;
+        const newdonation = {
+          userId: id,
+          amount: data.amount,
+          screenshot: screenshot,
+        };
+        apiClient
+          .post(`/donations/donate`, newdonation, {
+            headers: { "x-auth-token": localStorage.getItem("token") },
+          })
+          .then((res) => {
+            toast.dismiss(toastId);
+            toast.success(res.data.message);
+            navigate("/");
+          })
+          .catch((error) => {
+            toast.dismiss(toastId);
+            toast.error(error.response.data);
+          });
+      })
+      .catch((err) => {
+        toast.dismiss(toastId);
+        toast.error(err.message);
+      });
   };
 
   return (

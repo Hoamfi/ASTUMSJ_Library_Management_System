@@ -75,7 +75,7 @@ function App() {
         <Route path="/" element={<Main>{<Home />}</Main>} />
         <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
         <Route path="/dashboard" element={<Main>{<UserDashboard />}</Main>} />
-        <Route path="/donate" element={<Main>{<Donate />}</Main>} />
+        <Route path="/donate" element={<Main>{<Donate id={user?._id}  />}</Main>} />
         <Route
           path="/bookdetail/:id"
           element={
