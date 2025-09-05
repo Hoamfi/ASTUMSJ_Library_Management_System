@@ -50,7 +50,9 @@ export const borrowBook = async (req: Request, res: Response) => {
 
     res.status(201).json({ message: "Book borrowed successfully", borrow });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong. please try again later", error });
+    res
+      .status(500)
+      .json({ message: "Something went wrong. please try again later", error });
   }
 };
 
@@ -83,12 +85,10 @@ export const returnBook = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "Book returned successfully", borrow });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Something went wrong. Please try again later.",
-        error,
-      });
+    res.status(500).json({
+      message: "Something went wrong. Please try again later.",
+      error,
+    });
   }
 };
 
@@ -102,7 +102,10 @@ export const getMyBorrows = async (req: Request, res: Response) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Something went wrong . Please try again later", error });
+      .json({
+        message: "Something went wrong . Please try again later",
+        error,
+      });
   }
 };
 // GET /api/borrows
@@ -111,11 +114,9 @@ export const getAllBorrows = async (_req: Request, res: Response) => {
     const borrows = await Borrow.find().populate("book user");
     res.status(200).json({ borrows });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Something went wrong . Please try again later",
-        error,
-      });
+    res.status(500).json({
+      message: "Something went wrong . Please try again later",
+      error,
+    });
   }
 };

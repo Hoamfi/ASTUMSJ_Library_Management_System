@@ -18,7 +18,11 @@ export const createDonation = async (
     });
     res
       .status(201)
-      .json({ message: "Your donation is successufully submited you will receive a confirmation email shortly جزاكم الله خير", donation });
+      .json({
+        message:
+          "Your donation is successufully submited you will receive a confirmation email shortly جزاكم الله خير",
+        donation,
+      });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
