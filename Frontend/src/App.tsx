@@ -5,7 +5,6 @@ import AdminDashboard from "./pages/AdminPages/Dashboard";
 import apiClient from "./services/api-client";
 import BookDetail from "./pages/BookDetail";
 import Donate from "./pages/UserPages/Donate";
-import Donations from "./pages/AdminPages/Donations";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Main from "./components/Main";
@@ -21,6 +20,7 @@ import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import ChangePassword from "./pages/ChangePassword";
+import Pendings from "./pages/AdminPages/Pendings";
 
 interface User {
   _id: string;
@@ -115,7 +115,7 @@ function App() {
         )}
         {isAdmin && <Route path="/users" element={<Main>{<Users />}</Main>} />}
         {isAdmin && (
-          <Route path="/donations" element={<Main>{<Donations />}</Main>} />
+          <Route path="/donations" element={<Main>{<Pendings />}</Main>} />
         )}
         {isAdmin && (
           <Route

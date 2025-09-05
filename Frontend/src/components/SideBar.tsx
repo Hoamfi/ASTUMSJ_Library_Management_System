@@ -165,7 +165,7 @@ const SideBar = ({ open }: Props) => {
             {!open && (
               <FaClock className="justify-self-center text-black dark:text-white dark:hover:text-black" />
             )}
-            {open && <span>Donations</span>}
+            {open && <span>Pendings</span>}
           </NavLink>
         </nav>
       )}

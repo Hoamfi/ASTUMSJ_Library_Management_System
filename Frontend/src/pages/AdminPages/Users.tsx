@@ -147,7 +147,7 @@ const Users = () => {
               <tbody>
                 {users.map((user) => (
                   <tr key={user._id} className="border-b">
-                    <td className="p-5 hover:opacity-70">
+                    <td className="py-5 px-2 hover:opacity-70 whitespace-nowrap">
                       {
                         <Link to={"/userdetail/" + user._id}>
                           {user.name}
@@ -155,7 +155,7 @@ const Users = () => {
                       }
                     </td>
 
-                    <td className="p-5 text-blue-500 dark:text-blue-400">
+                    <td className="py-5 px-2 text-blue-500 dark:text-blue-400">
                       {user.email}
                     </td>
                     <td

@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+// import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function Donate() {
   const {
@@ -9,6 +11,9 @@ export default function Donate() {
 
   const handleDonation = (data: { amount: number; screenshot: FileList }) => {
     console.log(data);
+    toast.success(
+      "Your donation is successufully submited you will receive a confirmation email shortly"
+    );
   };
 
   return (
@@ -21,10 +26,19 @@ export default function Donate() {
         our collection, and adding more amazing books for everyone to enjoy.
         Every contribution makes a big difference 📚✨
       </p>
-
+      <p>
+        <strong className=" text-gray-700 dark:text-gray-400 mx-3">CBE:</strong>{" "}
+        1000473423862
+      </p>
+      <p>
+        <strong className=" text-gray-700 dark:text-gray-400 mx-3">
+          TeleBirr:
+        </strong>{" "}
+        0907080605
+      </p>
       <form
         onSubmit={handleSubmit((data) => handleDonation(data))}
-        className="dark:bg-[#1d293d] shadow-md rounded-2xl p-6 space-y-6"
+        className="dark:bg-[#1d293d] shadow-md rounded-2xl p-6 space-y-6 mt-2"
       >
         <div>
           <label

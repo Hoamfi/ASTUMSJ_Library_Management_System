@@ -2,6 +2,7 @@ import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState, type ReactNode } from "react";
+import { ToastContainer } from "react-toastify";
 
 interface Props {
   children: ReactNode;
@@ -44,6 +45,7 @@ const Main = ({ children }: Props) => {
       {/* MAIN */}
       <main className="col-span-2 lg:col-start-2 lg:col-span-1 max-h-[84vh] overflow-y-auto bg-gray-100 text-black dark:bg-gray-900 dark:text-white">
         {children}
+        <ToastContainer />
       </main>
 
       {/* FOOTER */}
