@@ -93,24 +93,21 @@ const donationsDummy = [
     amount: 1000,
     date: "2025-09-03T17:55:28.691+00:00",
     donner: "BinLadin",
-    screenshot:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOTF3St62EotWOHJLwtKGV4OBMR1gNy2XwYQ&s",
+    screenshot: "https://i.ibb.co/Q3qv4gX1/photo-2025-09-05-16-21-25.jpg",
   },
   {
     _id: "3x",
     amount: 100,
     date: "2025-09-03T17:55:28.691+00:00",
     donner: "John Smith",
-    screenshot:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9TYyGMyujsrzj7aQ9PBJJ1_7hVogI4Ai1EQ&s",
+    screenshot: "https://i.ibb.co/XxGJjGfK/photo-2025-09-05-16-10-34.jpg",
   },
   {
     _id: "4x",
     amount: 100,
     date: "2025-09-03T17:55:28.691+00:00",
     donner: "Ammar Sabit",
-    screenshot:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAcONNY43VDtL8TqZhWC4uX5evuHKGxzH8_g&sluaPlIgB361nZ-8MI3gVvYxpizVGhfAnEpg&s",
+    screenshot: "https://i.ibb.co/Q3qv4gX1/photo-2025-09-05-16-21-25.jpg",
   },
 ];
 
@@ -125,14 +122,13 @@ const Pendings = () => {
     console.log("preview");
     return (
       <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
-        <p>Preview</p>
         <button
           className="fixed right-5 top-5 cursor-pointer"
           onClick={() => setShowScreenshot(false)}
         >
           <LiaTimesSolid size={25} />
         </button>
-        <img src={screenshot} alt="" className="h-screen"/>
+        <img src={screenshot} alt="" className="h-screen" />
       </div>
     );
   };
