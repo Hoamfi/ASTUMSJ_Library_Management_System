@@ -26,6 +26,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
+  createdAt: Date;
   profileCompleted: boolean;
   isAdmin: boolean;
 }
@@ -37,6 +38,7 @@ function App() {
   const [isAdmin, setAdmin] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [emailToVerify, setEmailToVerify] = useState("");
+  const [resetEmail, setResetEmail] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -59,14 +61,20 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/forgetpassword" element={<ForgetPassword />} />
-      <Route path="/resetpassword" element={<ResetPassword />} />
+      <Route
+        path="/forgetpassword"
+        element={
+          <ForgetPassword resetEmail={(email) => setResetEmail(email)} />
+        }
+      />
+      
       <Route
         path="/register"
         element={
           <Register emailToVerify={(email) => setEmailToVerify(email)} />
         }
       />
+      <Route path="/resetpassword" element={<ResetPassword email={resetEmail}/>} />
       <Route
         path="/verifyemail"
         element={<VerifyEmail email={emailToVerify} />}
@@ -74,8 +82,23 @@ function App() {
       <Route element={<ProtectedRoute isAuth={isAuth} />}>
         <Route path="/" element={<Main>{<Home />}</Main>} />
         <Route path="/shelf" element={<Main>{<Shelf />}</Main>} />
-        <Route path="/dashboard" element={<Main>{<UserDashboard />}</Main>} />
-        <Route path="/donate" element={<Main>{<Donate id={user?._id}  />}</Main>} />
+        <Route
+          path="/dashboard"
+          element={
+            <Main>
+              {
+                <UserDashboard
+                  name={user?.name}
+                  memberSince={user?.createdAt}
+                />
+              }
+            </Main>
+          }
+        />
+        <Route
+          path="/donate"
+          element={<Main>{<Donate id={user?._id} />}</Main>}
+        />
         <Route
           path="/bookdetail/:id"
           element={

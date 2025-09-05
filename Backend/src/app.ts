@@ -20,7 +20,7 @@ app.use("/api/books", router);
 app.use("/api/auth", authStudent);
 app.use("/api/auth/student", authStudent);
 app.use("/api/donations", donationRoutes);
-app.use("/api/auth", forgotRoutes);
+app.use("/api/forgotpassword", forgotRoutes);
 
 mongoose
   .connect("mongodb://localhost/project")

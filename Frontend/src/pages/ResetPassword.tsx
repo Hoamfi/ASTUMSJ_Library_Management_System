@@ -2,11 +2,20 @@ import logo from "../assets/logo.png";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import apiClient from "../services/api-client";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const ResetPassword = () => {
-  const otp: string[] = [];
+interface Props {
+  email: string;
+}
+
+const ResetPassword = ({ email }: Props) => {
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const schema = z
     .object({
+      otp: z.string().length(6, { message: "Invalid OTP" }),
       newPassword: z
         .string()
         .min(6, { message: "Password must be atleast 6 characters long" }),
@@ -27,6 +36,39 @@ const ResetPassword = () => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  // const handlePasswordReset = (otp: string, newPassword: string) => {
+  //   console.log(`"${otp}"`);
+  //   apiClient
+  //     .post("/forgotpassword/verifyotp", { otp: otp, email: email})
+  //     .then(() => {
+  //       apiClient
+  //         .post("/forgotpassword/resetpassword", {
+  //           otp: `"${otp}"`,
+  //           newPassword: newPassword,
+  //         })
+  //         .then((res) => setSuccess(res.data))
+  //         .catch((err) => setError(err.response.data));
+  //     }
+  //   )
+  //     .catch((err) => setError(err.response.data));
+  // };
+  const handlePasswordReset = (otp: string, newPassword: string) => {
+    console.log(otp);
+    // apiClient
+    //   .post("/forgotpassword/verifyotp", { otp: otp, email: email})
+    //   .then(() => {
+        apiClient
+          .post("/forgotpassword/resetpassword", {
+            otp: otp,
+            newPassword: newPassword,
+          })
+          .then((res) => setSuccess(res.data))
+          .catch((err) => setError(err.response.data));
+    //   }
+    // )
+    //   .catch((err) => setError(err.response.data));
+  };
+
   return (
     <div className="flex flex-col items-center m-5 h-screen relative">
       <img src={logo} width={90} alt="" />
@@ -39,64 +81,24 @@ const ResetPassword = () => {
       <div className="mt-5">
         <form
           onSubmit={handleSubmit((data) => {
-            console.log({ OTP: otp.join(), password: data.newPassword });
+            handlePasswordReset(data.otp, data.newPassword);
           })}
           className="flex flex-col"
         >
           <div className="py-2">
-            <label htmlFor="otp" className="block mb-2  text-sm font-medium">
+            <label htmlFor="otp" className="block mb-2 text-sm font-medium">
               Enter Reset Code
             </label>
             <span>
               <input
-                type="text"
-                className="border-2 border-gray-300 m-1 px-2 py-2 w-8 h-12 rounded-lg"
+                {...register("otp")}
+                type="number"
+                className="border-2 border-gray-300 m-1 px-2 py-2 rounded-lg"
                 id="otp1"
-                maxLength={1}
                 required
-                onChange={(e) => (otp[0] = e.target.value)}
-              />
-              <input
-                type="text"
-                className="border-2 border-gray-300 m-1 px-2 py-2 w-8 h-12 rounded-lg"
-                id="otp2"
-                maxLength={1}
-                required
-                onChange={(e) => (otp[1] = e.target.value)}
-              />
-              <input
-                type="text"
-                className="border-2 border-gray-300 m-1 px-2 py-2 w-8 h-12 rounded-lg"
-                id="otp3"
-                maxLength={1}
-                required
-                onChange={(e) => (otp[2] = e.target.value)}
-              />
-              <input
-                type="text"
-                className="border-2 border-gray-300 m-1 px-2 py-2 w-8 h-12 rounded-lg"
-                id="otp4"
-                maxLength={1}
-                required
-                onChange={(e) => (otp[3] = e.target.value)}
-              />
-              <input
-                type="text"
-                className="border-2 border-gray-300 m-1 px-2 py-2 w-8 h-12 rounded-lg"
-                id="otp5"
-                maxLength={1}
-                required
-                onChange={(e) => (otp[4] = e.target.value)}
-              />
-              <input
-                type="text"
-                className="border-2 border-gray-300 m-1 px-2 py-2 w-8 h-12 rounded-lg"
-                id="otp6"
-                maxLength={1}
-                required
-                onChange={(e) => (otp[5] = e.target.value)}
               />
             </span>
+            {error && <p className="text-red-500 text-sm my-1">{error}</p>}
           </div>
           <div className="py-2">
             <label
@@ -141,6 +143,14 @@ const ResetPassword = () => {
               Reset
             </button>
           </div>
+          {success && (
+            <span>
+              <p className="text-green-500 text-lg">🎉 {success}</p>
+              <Link to="/login" className="text-blue-500">
+                Back to login
+              </Link>
+            </span>
+          )}
         </form>
       </div>
       <div className="absolute bottom-8">
