@@ -7,7 +7,6 @@ export interface IStudent {
   email: string;
   password: string;
   campusId: string;
-  idPhoto: string;
   studyYear: string;
   department: string;
   status: string;

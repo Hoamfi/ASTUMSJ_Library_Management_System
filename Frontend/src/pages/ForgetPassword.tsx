@@ -1,11 +1,32 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa6";
+import apiClient from "../services/api-client";
 
-const ForgetPassword = () => {
+interface Props {
+  resetEmail: (email: string) => void;
+}
+
+const ForgetPassword = ({resetEmail}: Props) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const handleForgetPassword = (email: string) => {
+    apiClient
+      .post("/forgotpassword", { email: email })
+      .then((res) => {
+        resetEmail(email)
+        navigate("/resetpassword");
+        console.log(res.data);
+      })
+      .catch((err) => {
+        setError(err.response.data);
+        console.log(err);
+      });
+  };
+
   return (
     <div className="flex flex-col items-center m-5 h-screen relative">
       <img src={logo} width={90} alt="" />
@@ -22,8 +43,7 @@ const ForgetPassword = () => {
           onSubmit={(e) => {
             e.preventDefault();
             if (emailRef.current !== null) {
-              console.log(emailRef.current.value);
-              navigate("/resetpassword");
+              handleForgetPassword(emailRef.current.value);
             }
           }}
           className="flex flex-col"
@@ -36,6 +56,7 @@ const ForgetPassword = () => {
             required
             className="border-2 border-gray-500 rounded-2xl py-2 px-3 my-2"
           />
+          {error && <p className="text-red-500 mb-2 text-sm">{error}!</p>}
           <button
             type="submit"
             className="px-3 py-2 mb-3 rounded-xl w-fit bg-black hover:bg-gray-800 text-white cursor-pointer"

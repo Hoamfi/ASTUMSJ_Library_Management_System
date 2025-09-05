@@ -13,8 +13,6 @@ import {
 } from "recharts";
 
 const user = {
-  name: "Ammar Sabit",
-  memberSince: "2023-08-12",
   borrowedBooks: [
     { title: "Riyad as-Salihin", dueDate: "2025-09-05", status: "Borrowed" },
     {
@@ -41,18 +39,30 @@ const borrowedCategories = [
   { name: "Bussiness", value: 2 },
 ];
 
+interface Props {
+  name?: string;
+  memberSince?: Date;
+}
+
 const COLORS = ["#6366F1", "#22C55E", "#F59E0B"];
 
-export default function UserDashboard() {
+export default function UserDashboard({ name, memberSince }: Props) {
+  console.log(memberSince);
   return (
     <div className="min-h-screen p-8 space-y-8">
       <div className="bg-white dark:bg-[#1d293d] p-6 rounded-2xl shadow flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
-          <p className="text-gray-600">
-            Member since{" "}
-            <span className="font-semibold">{user.memberSince}</span>
-          </p>
+          <h1 className="text-2xl font-bold">Welcome, {name}</h1>
+          {memberSince && (
+            <p className="text-gray-600">
+              Member since{" "}
+              <span className="font-semibold">
+                {new Date(memberSince).toLocaleString("en-us", {
+                  dateStyle: "medium",
+                })}
+              </span>
+            </p>
+          )}
         </div>
         <Link to="/">
           <button className="bg-black dark:bg-gray-900 text-white px-4 py-2 rounded-lg shadow hover:bg-black/80 dark:hover:bg-black/90 cursor-pointer">
