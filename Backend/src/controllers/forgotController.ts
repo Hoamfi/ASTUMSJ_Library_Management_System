@@ -31,7 +31,7 @@ export async function forgotPassword(req: Request, res: Response) {
 
     // Send OTP Email
     await transporter.sendMail({
-      from: `"Library System" <${process.env.EMAIL_USER}>`,
+      from: `"Astu Msj Library System" <${process.env.EMAIL_USER}>`,
       to: student.email,
       subject: "Password Reset OTP",
       text: `Dear student,\n\nYour OTP for password reset is: ${otp}\nIt will expire in 5 minutes.\n\nIf you did not request this, please ignore this email.`,

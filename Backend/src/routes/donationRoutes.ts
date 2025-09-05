@@ -15,7 +15,7 @@ router.post("/donate", auth, createDonation);
 router.get("/me", getMyDonations);
 
 //for admin purpose
-router.get("/admin", getAllDonations);
-router.patch("/admin/:donationId", updateDonationStatus);
+router.get("/admin/all", getAllDonations);
+router.patch("/admin/updatestatus/:donationId", updateDonationStatus);
 
 export default router;
