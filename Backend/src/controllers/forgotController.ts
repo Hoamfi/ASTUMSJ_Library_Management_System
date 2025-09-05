@@ -1,9 +1,9 @@
-import student from "@/models/student";
 import Student from "@/models/student";
-import {Request,Response} from "express";
+import { Request, Response } from "express";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
+
 
 export async function forgotPassword(req: Request, res: Response) {
   try {
@@ -12,14 +12,15 @@ export async function forgotPassword(req: Request, res: Response) {
 
     if (!student) return res.status(400).send("User not found");
 
-    // Generate reset token
-    const resetToken = crypto.randomBytes(20).toString("hex");
+    // Generate OTP (6 digits)
+    const otp = crypto.randomInt(100000, 999999).toString();
 
-    student.resetPasswordToken = resetToken;
+    // Save OTP + Expiration
+    student.resetPasswordToken = otp;
     student.resetPasswordExpires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
     await student.save();
 
-
+    // Setup email transporter
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -27,39 +28,40 @@ export async function forgotPassword(req: Request, res: Response) {
         pass: process.env.EMAIL_PASS,
       },
     });
-    const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
+    // Send OTP Email
     await transporter.sendMail({
       from: `"Library System" <${process.env.EMAIL_USER}>`,
       to: student.email,
-      subject: "Password Reset",
-      text: `Click the link to reset your password: ${resetLink}`,
+      subject: "Password Reset OTP",
+      text: `Dear student,\n\nYour OTP for password reset is: ${otp}\nIt will expire in 5 minutes.\n\nIf you did not request this, please ignore this email.`,
     });
 
-    res.send("Password reset link sent to your email");
+    res.send("OTP has been sent to your email");
   } catch (err) {
     console.error("Forgot password error:", err);
-    res.status(500).send("something went wrong . Please try again later.");
+    res.status(500).send("Something went wrong. Please try again later.");
   }
 }
 
+
 export async function resetPassword(req: Request, res: Response) {
   try {
-    const { token } = req.params;
-    const { newPassword } = req.body;
+    const { otp, newPassword } = req.body;
 
     const student = await Student.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }, // check expiration
+      resetPasswordToken: otp,
+      resetPasswordExpires: { $gt: Date.now() }, 
     });
-       if (!student) return res.status(400).send("Invalid or expired token");
+
+    if (!student) return res.status(400).send("Invalid or expired OTP");
 
     // Hash new password
     const salt = await bcrypt.genSalt(10);
     student.password = await bcrypt.hash(newPassword, salt);
 
-    // Clear reset fields
-    student.resetPasswordToken =null ;
+    // Clear OTP fields
+    student.resetPasswordToken = null;
     student.resetPasswordExpires = null;
     await student.save();
 
