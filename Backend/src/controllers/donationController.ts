@@ -16,13 +16,11 @@ export const createDonation = async (
       status: "Pending",
     });
 
-
     res.status(201).json({
       message:
         "Your donation is successufully submited you will receive a confirmation email shortly جزاكم الله خير",
       donation,
     });
-
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
@@ -45,15 +43,22 @@ export const getMyDonations = async (
 };
 
 //GET /api/admin/donations
-export const getAllDonations = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getAllDonations = async (req: Request,res: Response): Promise<void> => {
   try {
-    const donations: IDonation[] = await Donation.find()
+    const donations = await Donation.find()
       .populate("user")
       .sort({ createdAt: -1 });
-    res.status(200).json({ donations });
+
+    const totalAmount = donations.reduce((sum, donation) => {
+      return sum + (donation.amount || 0); 
+    }, 0);
+
+    res.status(200).json({
+      success: true,
+      data: donations,
+      totalAmount,
+      count: donations.length,
+    });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -98,14 +103,10 @@ export const getPendingDonations = async (
       .populate("user", "name email")
       .sort({ createdAt: -1 });
 
-    const totalPending = await Donation.countDocuments({ status: "Pending" });
-
     res.status(200).json({
-      totalPending,
       donations,
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
-

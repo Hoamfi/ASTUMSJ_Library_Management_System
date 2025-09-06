@@ -43,10 +43,10 @@ const studentSchema = new mongoose.Schema<IStudent>(
       maxlength: 1024,
     },
 
-    campusId: {
-      type: String,
-      unique: true,
-    },
+   //campusId: {
+     // type: String,
+    // unique: true,
+   // },
     studyYear: {
       type: String,
     },

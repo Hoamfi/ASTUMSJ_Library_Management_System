@@ -7,7 +7,7 @@ import nodemailer from "nodemailer";
 // POST /api/creating/register 
 export async function createAccount(req: Request, res: Response) {
   try {
-    const { name, email, password, campusId } = req.body;
+    const { name, email, password , campusId} = req.body;
 
     const existing = await Student.findOne({ email });
     if (existing) return res.status(400).send("Email already registered");
