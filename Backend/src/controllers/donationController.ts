@@ -43,14 +43,17 @@ export const getMyDonations = async (
 };
 
 //GET /api/admin/donations
-export const getAllDonations = async (req: Request,res: Response): Promise<void> => {
+export const getAllDonations = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const donations = await Donation.find()
       .populate("user")
       .sort({ createdAt: -1 });
 
     const totalAmount = donations.reduce((sum, donation) => {
-      return sum + (donation.amount || 0); 
+      return sum + (donation.amount || 0);
     }, 0);
 
     res.status(200).json({
