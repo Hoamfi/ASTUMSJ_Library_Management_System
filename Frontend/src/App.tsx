@@ -103,7 +103,7 @@ function App() {
           path="/bookdetail/:id"
           element={
             <Main>
-              <BookDetail isAdmin={user?.isAdmin} />
+              <BookDetail isAdmin={user?.isAdmin} profileCompleted={user?.profileCompleted} userId={user?._id} />
             </Main>
           }
         />

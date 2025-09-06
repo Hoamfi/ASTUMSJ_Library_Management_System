@@ -6,7 +6,7 @@ import _ from "lodash";
 import mongoose from "mongoose";
 
 // Post /api/books
-export const createBook = async (
+export const addnewBook = async (
   req: Request,
   res: Response
 ): Promise<void> => {

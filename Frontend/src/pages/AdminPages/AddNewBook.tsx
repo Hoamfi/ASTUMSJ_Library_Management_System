@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import apiClient from "../../services/api-client";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -25,6 +26,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const AddNewBook = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -37,8 +39,8 @@ const AddNewBook = () => {
   function handleAddBook(data: FormData) {
     const imageFile = data.bookCover?.[0];
     const imageData = new FormData();
-    const navigate = useNavigate();
-    const [error, setError] = useState("");
+
+    const toastId = toast.loading("Uploading book cover...");
 
     imageData.append("image", imageFile);
     axios
@@ -53,18 +55,30 @@ const AddNewBook = () => {
           author: data.author,
           description: data.description,
           catagory: data.catagory,
+          page: data.pages,
           publicationYear: data.publicationYear,
           bookCover: res.data.data.url,
           totalCopies: data.totalCopies,
+          availableCopies: data.totalCopies,
         };
         apiClient
-          .post("/books", newBook, {
+          .post("/books/addnewbook", newBook, {
             headers: { "x-auth-token": localStorage.getItem("token") },
           })
-          .then(() => navigate("/"))
-          .catch((error) => setError(error.response.data));
+          .then(() => {
+            toast.dismiss(toastId);
+            toast.success("New book successfully added to collection.");
+            navigate("/");
+          })
+          .catch((error) => {
+            toast.dismiss(toastId);
+            toast.error(error.response.data);
+          });
       })
-      .catch((error) => setError(error.response.data));
+      .catch((error) => {
+        toast.dismiss(toastId);
+        toast.error(error.data);
+      });
   }
 
   return (
