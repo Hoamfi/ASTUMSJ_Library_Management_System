@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -13,13 +14,7 @@ import {
   Bar,
   Legend,
 } from "recharts";
-
-const stats = {
-  totalBooks: 1200,
-  totalMembers: 340,
-  booksBorrowed: 220,
-  overdueBooks: 35,
-};
+import apiClient from "../../services/api-client";
 
 const borrowingTrends = [
   { month: "Jan", borrowings: 50 },
@@ -57,6 +52,36 @@ function StatCard({ title, value }: { title: string; value: number }) {
 }
 
 export default function AdminDashboard() {
+  const [totalBooks, setTotalBooks] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalBorrows, setTotalBorrows] = useState(0);
+  const [totalDonations, setTotalDonations] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = { "x-auth-token": token };
+
+        const [booksRes, usersRes, borrowsRes, donationsRes] =
+          await Promise.all([
+            apiClient.get("/books", { headers }),
+            apiClient.get("/students/allCount", { headers }),
+            apiClient.get("/borrow/", { headers }),
+            apiClient.get("/donations/admin/all", { headers }),
+          ]);
+
+        setTotalBooks(booksRes.data.count);
+        setTotalUsers(usersRes.data);
+        setTotalBorrows(borrowsRes.data.count);
+        setTotalDonations(donationsRes.data.count);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className="flex-1 p-8 space-y-8">
       <div className="flex justify-between items-center">
@@ -67,10 +92,10 @@ export default function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <StatCard title="Total Books" value={stats.totalBooks} />
-        <StatCard title="Total Members" value={stats.totalMembers} />
-        <StatCard title="Books Borrowed" value={stats.booksBorrowed} />
-        <StatCard title="Overdue Books" value={stats.overdueBooks} />
+        <StatCard title="Total Books" value={totalBooks} />
+        <StatCard title="Total Members" value={totalUsers} />
+        <StatCard title="Total Donations" value={totalDonations} />
+        <StatCard title="Books Borrowed" value={totalBorrows} />
       </div>
 
       {/* Borrowing Trends Line Chart */}
