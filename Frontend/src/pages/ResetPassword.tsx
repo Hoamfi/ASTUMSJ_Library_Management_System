@@ -36,37 +36,20 @@ const ResetPassword = ({ email }: Props) => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  // const handlePasswordReset = (otp: string, newPassword: string) => {
-  //   console.log(`"${otp}"`);
-  //   apiClient
-  //     .post("/forgotpassword/verifyotp", { otp: otp, email: email})
-  //     .then(() => {
-  //       apiClient
-  //         .post("/forgotpassword/resetpassword", {
-  //           otp: `"${otp}"`,
-  //           newPassword: newPassword,
-  //         })
-  //         .then((res) => setSuccess(res.data))
-  //         .catch((err) => setError(err.response.data));
-  //     }
-  //   )
-  //     .catch((err) => setError(err.response.data));
-  // };
   const handlePasswordReset = (otp: string, newPassword: string) => {
-    console.log(otp);
-    // apiClient
-    //   .post("/forgotpassword/verifyotp", { otp: otp, email: email})
-    //   .then(() => {
+    apiClient
+      .post("/forgotpassword/verifyotp", { otp: otp, email: email })
+      .then(() => {
         apiClient
           .post("/forgotpassword/resetpassword", {
             otp: otp,
+            email: email,
             newPassword: newPassword,
           })
           .then((res) => setSuccess(res.data))
           .catch((err) => setError(err.response.data));
-    //   }
-    // )
-    //   .catch((err) => setError(err.response.data));
+      })
+      .catch((err) => setError(err.response.data));
   };
 
   return (
@@ -87,7 +70,7 @@ const ResetPassword = ({ email }: Props) => {
         >
           <div className="py-2">
             <label htmlFor="otp" className="block mb-2 text-sm font-medium">
-              Enter Reset Code
+              Enter Reset Code sent to {email}
             </label>
             <span>
               <input
@@ -144,7 +127,7 @@ const ResetPassword = ({ email }: Props) => {
             </button>
           </div>
           {success && (
-            <span>
+            <span className="mt-2 mb-10">
               <p className="text-green-500 text-lg">🎉 {success}</p>
               <Link to="/login" className="text-blue-500">
                 Back to login
@@ -152,9 +135,6 @@ const ResetPassword = ({ email }: Props) => {
             </span>
           )}
         </form>
-      </div>
-      <div className="absolute bottom-8">
-        <p>&copy; 2025 ASTUMSJ library</p>
       </div>
     </div>
   );

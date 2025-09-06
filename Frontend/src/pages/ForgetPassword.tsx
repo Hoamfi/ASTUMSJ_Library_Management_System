@@ -8,7 +8,7 @@ interface Props {
   resetEmail: (email: string) => void;
 }
 
-const ForgetPassword = ({resetEmail}: Props) => {
+const ForgetPassword = ({ resetEmail }: Props) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -17,13 +17,11 @@ const ForgetPassword = ({resetEmail}: Props) => {
     apiClient
       .post("/forgotpassword", { email: email })
       .then((res) => {
-        resetEmail(email)
+        resetEmail(email);
         navigate("/resetpassword");
-        console.log(res.data);
       })
       .catch((err) => {
         setError(err.response.data);
-        console.log(err);
       });
   };
 
