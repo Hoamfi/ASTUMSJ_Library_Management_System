@@ -100,12 +100,10 @@ export const getMyBorrows = async (req: Request, res: Response) => {
     const borrows = await Borrow.find({ user: userId }).populate("book");
     res.status(200).json({ borrows });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Something went wrong . Please try again later",
-        error,
-      });
+    res.status(500).json({
+      message: "Something went wrong . Please try again later",
+      error,
+    });
   }
 };
 // GET /api/borrows

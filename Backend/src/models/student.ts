@@ -20,6 +20,7 @@ export interface IStudent {
   isOtpVerified: Boolean;
   resetPasswordToken: string | null;
   resetPasswordExpires: Date | null;
+  isVerified:boolean;
 }
 
 const studentSchema = new mongoose.Schema<IStudent>(
@@ -69,6 +70,10 @@ const studentSchema = new mongoose.Schema<IStudent>(
       type: Boolean,
       default: false,
     },
+    isVerified :{
+      type:Boolean,
+      default:false,
+    }
   },
   { timestamps: true }
 );

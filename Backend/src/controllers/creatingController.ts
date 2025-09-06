@@ -23,6 +23,7 @@ export async function createAccount(req: Request, res: Response) {
       password: hashedPassword,
       otpCode: otp,
       otpExpires: new Date(Date.now() + 5 * 60 * 1000),
+      isVerified: false, 
     });
 
     await student.save();
@@ -45,7 +46,7 @@ export async function createAccount(req: Request, res: Response) {
     res.send("Email verification code is sent to your email.");
   } catch (err) {
     console.error("Registration error:", err);
-    res.status(500).send("something went wrong. please try again later .");
+    res.status(500).send("Something went wrong. Please try again later.");
   }
 }
 
@@ -68,10 +69,12 @@ export async function verifyRegistrationOtp(req: Request, res: Response) {
 
     student.otpCode = null;
     student.otpExpires = null;
+    student.isVerified = true; 
     await student.save();
 
     res.send("Account verified successfully.");
   } catch (err) {
-    res.status(500).send("something went wrong. please try again later .");
+    console.error("OTP verification error:", err);
+    res.status(500).send("Something went wrong. Please try again later.");
   }
 }
