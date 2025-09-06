@@ -48,7 +48,7 @@ export const borrowBook = async (req: Request, res: Response) => {
     book.availableCopies -= 1;
     await book.save();
 
-    res.status(201).json({ message: "Book borrowed successfully", borrow });
+    res.status(201).json({ message: "borrowed request submitted.Awaiting admin approval", borrow });
   } catch (error) {
     res
       .status(500)
@@ -70,7 +70,7 @@ export const returnBook = async (req: Request, res: Response) => {
     }
 
   
-    borrow.status = "Pending";
+    borrow.status = "Pending_return";
     await borrow.save();
 
     res.status(200).json({
@@ -123,7 +123,7 @@ export const approveReturnBook = async (req: Request, res: Response) => {
     if (!borrow)
       return res.status(404).json({ message: "Borrow record not found" });
 
-    if (borrow.status !== "Pending") {
+    if (borrow.status !== "Pending_return") {
       return res
         .status(400)
         .json({ message: "This borrow is not pending return approval" });
@@ -168,5 +168,45 @@ export const getStudentBorrowHistory = async (req: Request, res: Response) => {
       message: "Something went wrong. Please try again later.",
       error,
     });
+  }
+};
+
+// POST /api/borrowapproved/:bookId 
+export const borrowBookApproved = async (req: Request, res: Response) => {
+  const { bookId } = req.params;
+  const userId = (req as { user?: { id: string } }).user?.id;
+
+  try {
+    const student = await Student.findById(userId);
+    if (!student) return res.status(404).json({ message: "Student not found" });
+
+    const activeBorrows = await Borrow.countDocuments({
+      user: userId,
+      status: "borrowed",
+    });
+
+    if (activeBorrows >= 3) {
+      return res.status(400).json({ message: "Borrow limit reached (3 books)" });
+    }
+
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    if (book.availableCopies < 1) {
+      return res.status(400).json({ message: "No copies available" });
+    }
+
+    const borrow = await Borrow.create({
+      user: userId,
+      book: bookId,
+      status: "Pending_borrow",
+    });
+
+    res.status(201).json({
+      message: "Borrow request submitted. Awaiting admin approval.",
+      borrow,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error });
   }
 };
