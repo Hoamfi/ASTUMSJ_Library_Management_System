@@ -94,7 +94,7 @@ export const getMyBorrows = async (req: Request, res: Response) => {
   try {
     const borrows = await Borrow.find({ user: userId }).populate(
       "book",
-      "title"
+      "title bookCover"
     );
     res.status(200).send(borrows);
   } catch (error) {
@@ -107,7 +107,9 @@ export const getMyBorrows = async (req: Request, res: Response) => {
 // GET /api/borrows
 export const getAllBorrows = async (_req: Request, res: Response) => {
   try {
-    const borrows = await Borrow.find().populate("book user");
+    const borrows = await Borrow.find()
+      .populate("book", "title")
+      // .populate("user", "name");
     const count = await Borrow.find().countDocuments();
     res.status(200).json({ borrows, count });
   } catch (error) {
@@ -156,9 +158,11 @@ export const getStudentBorrowHistory = async (req: Request, res: Response) => {
   const { studentId } = req.params;
 
   try {
-    const borrows = await Borrow.find({ user: studentId })
-      .populate("book", "title")
-      // .populate("user");
+    const borrows = await Borrow.find({ user: studentId }).populate(
+      "book",
+      "title"
+    );
+    // .populate("user");
 
     if (!borrows || borrows.length === 0) {
       return res

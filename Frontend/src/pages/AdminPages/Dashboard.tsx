@@ -73,7 +73,7 @@ export default function AdminDashboard() {
           await Promise.all([
             apiClient.get("/books", { headers }),
             apiClient.get("/students/allCount", { headers }),
-            apiClient.get("/borrow/", { headers }),
+            apiClient.get("/borrow/admin/allborrows", { headers }),
             apiClient.get("/donations/admin/totaldonations", { headers }),
           ]);
 

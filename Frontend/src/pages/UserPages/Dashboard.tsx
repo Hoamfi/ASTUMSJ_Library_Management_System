@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   LineChart,
@@ -11,18 +12,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-
-const user = {
-  borrowedBooks: [
-    { title: "Riyad as-Salihin", dueDate: "2025-09-05", status: "Borrowed" },
-    {
-      title: "The Psychology of money",
-      dueDate: "2025-08-25",
-      status: "Overdue",
-    },
-    { title: "Atomic Habits", dueDate: "2025-09-10", status: "Borrowed" },
-  ],
-};
+import apiClient from "../../services/api-client";
 
 const borrowingHistory = [
   { month: "Jan", books: 2 },
@@ -44,10 +34,31 @@ interface Props {
   memberSince?: Date;
 }
 
+interface Borrow {
+  book: {
+    _id: string;
+    title: string;
+  };
+  dueDate: Date;
+  status: string;
+}
+
 const COLORS = ["#6366F1", "#22C55E", "#F59E0B"];
 
 export default function UserDashboard({ name, memberSince }: Props) {
-  console.log(memberSince);
+  const [borrowedBooks, setBorrowedBooks] = useState<Borrow[]>([]);
+  useEffect(() => {
+    apiClient
+      .get("/borrow/myborrows", {
+        headers: { "x-auth-token": localStorage.getItem("token") },
+      })
+      .then((res) => {
+        setBorrowedBooks(res.data);
+      })
+      .catch((error) => console.log(error.response?.data));
+  }, []);
+
+  console.log(borrowedBooks)
   return (
     <div className="min-h-screen p-8 space-y-8">
       <div className="bg-white dark:bg-[#1d293d] p-6 rounded-2xl shadow flex justify-between items-center">
@@ -82,18 +93,24 @@ export default function UserDashboard({ name, memberSince }: Props) {
             </tr>
           </thead>
           <tbody>
-            {user.borrowedBooks.map((book, idx) => (
-              <tr key={idx} className="border-b">
-                <td className="p-2">{book.title}</td>
-                <td className="p-2">{book.dueDate}</td>
+            {borrowedBooks.map((borrowed: Borrow) => (
+              <tr key={borrowed.book._id} className="border-b">
+                <td className="p-2">{borrowed.book.title}</td>
+                <td className="p-2">
+                  {new Date(borrowed.dueDate).toLocaleString("en-us", {
+                    dateStyle: "medium",
+                  })}
+                </td>
                 <td
                   className={`p-2 font-semibold ${
-                    book.status === "Overdue"
+                    borrowed.status === "overdue"
                       ? "text-red-600"
-                      : "text-green-600"
+                      : borrowed.status === "borrowed"
+                        ? "text-green-600"
+                        : "text-blue-500"
                   }`}
                 >
-                  {book.status}
+                  {borrowed.status}
                 </td>
               </tr>
             ))}
