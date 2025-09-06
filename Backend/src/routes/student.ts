@@ -9,12 +9,14 @@ import {
   getStudentById,
   updateStudentStatus,
   completeProfile,
+  getTotalNumber
 } from "../controllers/studentController";
 import admin from "@/middleware/admin";
 
 const studentRouter = express.Router();
 
 studentRouter.get("/all", auth, admin, getAllStudents);
+studentRouter.get("/allcount", auth, admin, getTotalNumber);
 studentRouter.get("/search", auth, admin, searchStudents);
 studentRouter.get("/me", auth, me);
 studentRouter.get("/:id", auth, admin, getStudentById);

@@ -63,6 +63,10 @@ export async function getAllStudents(req: Request, res: Response) {
   const students = await Student.find().select(["-password", "-isAdmin"]);
   res.send(students);
 }
+export async function getTotalNumber(req: Request, res: Response) {
+  const totalStudents = await Student.find().countDocuments();
+  res.send(totalStudents);
+}
 
 export async function getStudentById(req: Request, res: Response) {
   const id = req.params.id.trim();

@@ -110,7 +110,8 @@ export const getMyBorrows = async (req: Request, res: Response) => {
 export const getAllBorrows = async (_req: Request, res: Response) => {
   try {
     const borrows = await Borrow.find().populate("book user");
-    res.status(200).json({ borrows });
+    const count = await Borrow.find().countDocuments();
+    res.status(200).json({ borrows, count });
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong . Please try again later",
