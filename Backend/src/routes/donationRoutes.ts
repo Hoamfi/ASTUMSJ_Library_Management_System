@@ -5,6 +5,7 @@ import {
   getAllDonations,
   updateDonationStatus,
   getPendingDonations,
+  getTotalApprovedDonations,
 } from "../controllers/donationController";
 
 import auth from "../middleware/auth";
@@ -19,5 +20,6 @@ router.get("/me", getMyDonations);
 router.get("/admin/all", getAllDonations);
 router.patch("/admin/updatestatus/:donationId", updateDonationStatus);
 router.get("/admin/pending",getPendingDonations);
+router.get("/admin/totalapproved",getTotalApprovedDonations);
 
 export default router;
