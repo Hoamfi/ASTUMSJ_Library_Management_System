@@ -40,7 +40,7 @@ export const borrowBook = async (req: Request, res: Response) => {
       book: bookId,
       borrowedAt,
       dueDate,
-      status: "borrowed",
+      status: "Pending",
     });
     // counting how many times borrowed one book
     await Book.findByIdAndUpdate(book.id, { $inc: { borrowCount: 1 } });

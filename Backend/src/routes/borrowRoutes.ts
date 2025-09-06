@@ -16,11 +16,11 @@ const router = express.Router();
 
 router.post("/:bookId", auth, borrowBook);
 router.put("/return/:borrowId", auth, returnBook);
-router.get("/me", auth, getMyBorrows);
+router.get("/me/studentId", getMyBorrows);
 
 router.get("/", [auth, isAdmin], getAllBorrows);
 router.put("/admin/approvereturn/:borrowId",approveReturnBook);
-router.get("/borrows/admin/:studentId",getStudentBorrowHistory);
+router.get("/admin/:studentId",getStudentBorrowHistory);
 
 
 export default router;
