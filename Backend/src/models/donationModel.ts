@@ -1,21 +1,18 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { email } from "zod";
 
 export interface IDonation extends Document {
-  userId: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
   amount: number;
   screenshot: string;
   status: "Pending" | "Approved" | "Rejected";
   createdAt: Date;
-  email:string;
-  name:string;
 }
 
 const donationSchema = new Schema<IDonation>(
   {
-    userId: {
+    user: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Student",
       required: true,
     },
 
@@ -39,13 +36,7 @@ const donationSchema = new Schema<IDonation>(
       type: Date,
       default: Date.now,
     },
-    email:{
-      type:String,
   },
-  name:{
-    type:String,
-  }
-},
   {
     timestamps: true, // Add and update automatically
     toJSON: { virtuals: true },

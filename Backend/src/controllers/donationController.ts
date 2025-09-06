@@ -103,7 +103,7 @@ export const getPendingDonations = async (
 ): Promise<void> => {
   try {
     const donations = await Donation.find({ status: "Pending" })
-      .populate("userId", "name")
+      .populate("user")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
