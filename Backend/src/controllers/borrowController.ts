@@ -56,7 +56,7 @@ export const borrowBook = async (req: Request, res: Response) => {
   }
 };
 
-// PUT /api/return/:borrowId
+// PUT /api/return/:borrowId 
 export const returnBook = async (req: Request, res: Response) => {
   const { borrowId } = req.params;
 
@@ -69,21 +69,14 @@ export const returnBook = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Book already returned" });
     }
 
-    borrow.returnedAt = new Date();
-
-    if (new Date() > borrow.dueDate) {
-      borrow.status = "overdue";
-    } else {
-      borrow.status = "returned";
-    }
-
+  
+    borrow.status = "Pending";
     await borrow.save();
 
-    const book = borrow.book as IBook;
-    book.availableCopies += 1;
-    await book.save();
-
-    res.status(200).json({ message: "Book returned successfully", borrow });
+    res.status(200).json({
+      message: "Return request submitted. Awaiting admin approval.",
+      borrow,
+    });
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong. Please try again later.",
@@ -92,7 +85,8 @@ export const returnBook = async (req: Request, res: Response) => {
   }
 };
 
-// GET /api/my-borrows
+
+// GET /api/myborrows
 export const getMyBorrows = async (req: Request, res: Response) => {
   const userId = (req as { user?: { id: string } }).user?.id;
 
@@ -115,6 +109,63 @@ export const getAllBorrows = async (_req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong . Please try again later",
+      error,
+    });
+  }
+};
+
+// PUT /api/admin/approvereturn/:borrowId 
+export const approveReturnBook = async (req: Request, res: Response) => {
+  const { borrowId } = req.params;
+
+  try {
+    const borrow = await Borrow.findById(borrowId).populate("book user");
+    if (!borrow)
+      return res.status(404).json({ message: "Borrow record not found" });
+
+    if (borrow.status !== "Pending") {
+      return res
+        .status(400)
+        .json({ message: "This borrow is not pending return approval" });
+    }
+
+    borrow.returnedAt = new Date();
+    borrow.status =
+      new Date() > borrow.dueDate ? "overdue" : "returned";
+
+    await borrow.save();
+
+    const book = borrow.book as IBook;
+    book.availableCopies += 1;
+    await book.save();
+
+    res.status(200).json({ message: "Return approved successfully", borrow });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong. Please try again later.",
+      error,
+    });
+  }
+};
+
+
+// GET /api/borrows/admin/:studentId  
+export const getStudentBorrowHistory = async (req: Request, res: Response) => {
+  const { studentId } = req.params;
+
+  try {
+    const borrows = await Borrow.find({ user: studentId })
+      .populate("book")
+      .populate("user");
+
+    if (!borrows || borrows.length === 0) {
+      return res.status(404).json({ message: "No borrow history found for this student" });
+    }
+
+    res.status(200).json({ borrows, count: borrows.length });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong. Please try again later.",
       error,
     });
   }

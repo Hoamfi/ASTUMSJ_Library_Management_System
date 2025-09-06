@@ -5,6 +5,9 @@ import {
   returnBook,
   getMyBorrows,
   getAllBorrows,
+  approveReturnBook,
+  getStudentBorrowHistory,
+
 } from "../controllers/borrowController";
 
 import isAdmin from "@/middleware/admin";
@@ -16,5 +19,8 @@ router.put("/return/:borrowId", auth, returnBook);
 router.get("/me", auth, getMyBorrows);
 
 router.get("/", [auth, isAdmin], getAllBorrows);
+router.put("/admin/approvereturn/:borrowId",approveReturnBook);
+router.get("/borrows/admin/:studentId",getStudentBorrowHistory);
+
 
 export default router;

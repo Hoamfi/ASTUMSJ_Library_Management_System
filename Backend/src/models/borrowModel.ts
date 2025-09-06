@@ -7,7 +7,7 @@ export interface IBorrow extends Document {
   book: mongoose.Types.ObjectId | IBook;
   borrowedAt: Date;
   returnedAt?: Date;
-  status: "borrowed" | "returned" | "overdue";
+  status: "borrowed" | "returned" | "overdue"|"Pending";
   dueDate: Date;
 }
 
