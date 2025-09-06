@@ -123,7 +123,6 @@ export const getTotalApprovedDonations = async (req:Request,res:Response): Promi
       { $group: { _id: null, total: { $sum: "$amount" } } },
     ]);
     res.status(200).json({
-      success: true,
       totalApprovedAmount: totalApproved[0]?.total || 0,
     });
   } catch (error: any) {
