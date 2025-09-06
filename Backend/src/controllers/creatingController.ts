@@ -4,10 +4,10 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 
-// POST /api/creating/register 
+// POST /api/creating/register
 export async function createAccount(req: Request, res: Response) {
   try {
-    const { name, email, password, campusId } = req.body;
+    const { name, email, password } = req.body;
 
     const existing = await Student.findOne({ email });
     if (existing) return res.status(400).send("Email already registered");
@@ -21,7 +21,6 @@ export async function createAccount(req: Request, res: Response) {
       name,
       email,
       password: hashedPassword,
-      campusId,
       otpCode: otp,
       otpExpires: new Date(Date.now() + 5 * 60 * 1000),
     });
@@ -43,14 +42,14 @@ export async function createAccount(req: Request, res: Response) {
       text: `Welcome ${name},\n\nYour OTP for account verification is: ${otp}\nIt will expire in 5 minutes.\n\nThanks for registering!`,
     });
 
-    res.send("Account created. OTP sent to your email.");
+    res.send("Email verification code is sent to your email.");
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).send("something went wrong. please try again later .");
   }
 }
 
-// POST /api/creating/verifyregistration 
+// POST /api/creating/verifyregistration
 export async function verifyRegistrationOtp(req: Request, res: Response) {
   try {
     const { email, otp } = req.body;
@@ -73,7 +72,6 @@ export async function verifyRegistrationOtp(req: Request, res: Response) {
 
     res.send("Account verified successfully.");
   } catch (err) {
- 
     res.status(500).send("something went wrong. please try again later .");
   }
 }

@@ -30,7 +30,7 @@ const schema = z
 
 type FormData = z.infer<typeof schema>;
 
-const Register = ({emailToVerify}: Props) => {
+const Register = ({ emailToVerify }: Props) => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -39,12 +39,15 @@ const Register = ({emailToVerify}: Props) => {
     email: string;
     password: string;
   }) => {
+    const newUser = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
     apiClient
-      .post("/students", data)
+      .post("/creating/register", newUser)
       .then((res) => {
-        // const token = res.headers["x-auth-token"];
-        // localStorage.setItem("token", token);
-        emailToVerify(data.email)
+        emailToVerify(data.email);
         navigate("/verifyemail");
       })
       .catch((error) => setError(error.response.data));
