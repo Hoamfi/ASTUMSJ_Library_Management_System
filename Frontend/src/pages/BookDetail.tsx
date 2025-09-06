@@ -40,6 +40,7 @@ type Borrow = {
 interface Props {
   userId?: string;
   isAdmin?: boolean;
+  status?: string;
   profileCompleted?: boolean;
 }
 
@@ -56,7 +57,7 @@ const getBorrowStatus = (
     : { status: null, borrowId: null };
 };
 
-const BookDetail = ({ userId, isAdmin, profileCompleted }: Props) => {
+const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
   const { id } = useParams<{ id: string }>();
   const [book, setBook] = useState<Book | null>(null);
   const [isLoading, setLoading] = useState(true);
@@ -92,6 +93,11 @@ const BookDetail = ({ userId, isAdmin, profileCompleted }: Props) => {
   const handleBorrow = () => {
     if (!profileCompleted)
       return toast.error("Complete your profile before requesting any borrow.");
+
+    if (status === "suspended")
+      return toast.error(
+        "You are suspended. contact the librarian for more information"
+      );
 
     apiClient
       .post(
@@ -148,15 +154,15 @@ const BookDetail = ({ userId, isAdmin, profileCompleted }: Props) => {
                     No copies Available
                   </p>
                 ) : bookstatus === "Pending" ? (
-                  <p className="bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
+                  <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
                     Pending
                   </p>
                 ) : bookstatus === "Pending_return" ? (
-                  <p className="bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
+                  <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
                     Pending Return
                   </p>
                 ) : bookstatus === "returned" ? (
-                  <p className="text-green-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
+                  <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
                     Returned
                   </p>
                 ) : bookstatus === "borrowed" ? (

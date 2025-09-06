@@ -15,13 +15,6 @@ interface User {
   createdAt: string;
 }
 
-interface Book {
-  _id: string;
-  title: string;
-  borrowDate: Date;
-  status: string;
-}
-
 interface Donation {
   _id: string;
   amount: number;
@@ -31,31 +24,11 @@ interface Donation {
   user: { _id: string; name: string };
 }
 
-const borrowedBooksDummy = [
-  {
-    _id: "1",
-    title: "Atomic Habit",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-    status: "overDue",
-  },
-  {
-    _id: "2",
-    title: "The Power of habit",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-    status: "borrowed",
-  },
-  {
-    _id: "3",
-    title: "The psychology of money",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-    status: "returned",
-  },
-  {
-    title: "How to talk to anyone",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-    status: "returned",
-  },
-];
+interface Borrow {
+  book: { title: string; _id: string };
+  borrowedAt: Date;
+  status: string;
+}
 
 const AdminUserDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -63,32 +36,39 @@ const AdminUserDetail = () => {
   const headers = { "x-auth-token": token };
 
   const [user, setUser] = useState<User | null>(null);
-  const [borrowedBooks, setBorrowedBooks] = useState<Book[]>([]);
+  const [borrows, setBorrows] = useState<Borrow[]>([]);
   const [donations, setDonations] = useState<Donation[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [userStatus, setUserStatus] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [userRes, donationsRes] = await Promise.all([
-          apiClient.get(`/students/${id}`, { headers: headers }),
-          apiClient.get(`/donations/admin/userdonation/${id}`, {
-            headers: headers,
-          }),
-        ]);
-        setUser(userRes.data);
-        setUserStatus(userRes.data.status);
-        setDonations(donationsRes.data.donations);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching student detail:", err);
-        setLoading(false);
-      }
-    };
+  const fetchUserDetail = async () => {
+    apiClient.get(`/students/${id}`, { headers: headers }).then((res) => {
+      setUser(res.data);
+      setUserStatus(res.data.status);
+    });
+  };
 
-    fetchData();
+  const fetchBorrowHistroy = async () => {
+    apiClient
+      .get(`/borrow/admin/borrowhistory/${id}`, {
+        headers: headers,
+      })
+      .then((res) => setBorrows(res.data.borrows));
+  };
+
+  const fetchDonationsHistory = async () => {
+    apiClient
+      .get(`/donations/admin/userdonation/${id}`, {
+        headers: headers,
+      })
+      .then((res) => setDonations(res.data.donations));
+  };
+  useEffect(() => {
+    setLoading(true);
+    fetchUserDetail();
+    fetchBorrowHistroy();
+    fetchDonationsHistory();
+    setLoading(false);
   }, []);
 
   const handleToggleStatus = () => {
@@ -167,30 +147,33 @@ const AdminUserDetail = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {borrowedBooks.length !== 0 &&
-                    borrowedBooks.map((book) => (
-                      <tr key={book._id} className="border-b">
+                  {borrows.length === 0 ? (
+                    <p>No borow history yet!</p>
+                  ) : (
+                    borrows.map((borrow) => (
+                      <tr key={borrow.book._id} className="border-b">
                         <td className="py-5 px-2 whitespace-nowrap">
-                          {book.title}
+                          {borrow.book.title}
                         </td>
                         <td className="py-5 px-2 whitespace-nowrap">
-                          {new Date(book.borrowDate).toLocaleString("en-us", {
+                          {new Date(borrow.borrowedAt).toLocaleString("en-us", {
                             dateStyle: "medium",
                           })}
                         </td>
                         <td
                           className={`p-2 font-semibold ${
-                            book.status === "returned"
+                            borrow.status === "returned"
                               ? "text-green-600"
-                              : book.status === "overDue"
+                              : borrow.status === "overDue"
                                 ? "text-red-600"
                                 : "text-blue-600"
                           }`}
                         >
-                          {book.status}
+                          {borrow.status}
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -209,7 +192,9 @@ const AdminUserDetail = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {donations.length !== 0 &&
+                  {donations.length === 0 ? (
+                    <p>No Donations yet!</p>
+                  ) : (
                     donations.map((donation) => (
                       <tr key={donation._id} className="border-b">
                         <td className="py-5 px-2 whitespace-nowrap">
@@ -235,7 +220,8 @@ const AdminUserDetail = () => {
                           {donation.status}
                         </td>
                       </tr>
-                    ))}
+                    ))
+                  )}
                 </tbody>
                 <tfoot>
                   <tr className="text-left">

@@ -157,8 +157,8 @@ export const getStudentBorrowHistory = async (req: Request, res: Response) => {
 
   try {
     const borrows = await Borrow.find({ user: studentId })
-      .populate("book")
-      .populate("user");
+      .populate("book", "title")
+      // .populate("user");
 
     if (!borrows || borrows.length === 0) {
       return res
