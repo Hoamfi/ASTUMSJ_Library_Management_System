@@ -113,3 +113,19 @@ export const getPendingDonations = async (
     res.status(500).json({ error: error.message });
   }
 };
+
+
+//GET /api/donations/admin/totalapproved
+export const getTotalApprovedDonations = async (req:Request,res:Response): Promise<void> =>{
+  try{
+    const totalApproved= await Donation.aggregate([
+      { $match: { status: "Approved" } },
+      { $group: { _id: null, total: { $sum: "$amount" } } },
+    ]);
+    res.status(200).json({
+      totalApprovedAmount: totalApproved[0]?.total || 0,
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
