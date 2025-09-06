@@ -25,8 +25,10 @@ interface Book {
 interface Donation {
   _id: string;
   amount: number;
-  date: Date;
-  status: String;
+  createdAt: string;
+  status: string;
+  screenshot: string;
+  user: { _id: string; name: string };
 }
 
 const borrowedBooksDummy = [
@@ -55,57 +57,38 @@ const borrowedBooksDummy = [
   },
 ];
 
-const donationsDummy = [
-  {
-    _id: "1",
-    amount: 100,
-    date: "2025-09-03T17:55:28.691+00:00",
-    status: "pending",
-  },
-  {
-    _id: "2",
-    amount: 1000,
-    date: "2025-09-03T17:55:28.691+00:00",
-    status: "rejected",
-  },
-  {
-    _id: "3",
-    amount: 100,
-    date: "2025-09-03T17:55:28.691+00:00",
-    status: "approved",
-  },
-  {
-    _id: "4",
-    amount: 100,
-    date: "2025-09-03T17:55:28.691+00:00",
-    status: "approved",
-  },
-];
-
 const AdminUserDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const token = localStorage.getItem("token");
+  const headers = { "x-auth-token": token };
+
   const [user, setUser] = useState<User | null>(null);
   const [borrowedBooks, setBorrowedBooks] = useState<Book[]>([]);
-  const [donations, SetDonations] = useState<Donation[]>([]);
+  const [donations, setDonations] = useState<Donation[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [userStatus, setUserStatus] = useState("");
-  const { id } = useParams<{ id: string }>();
+
   useEffect(() => {
-    setLoading(true);
-    apiClient
-      .get(`/students/${id}`, {
-        headers: { "x-auth-token": localStorage.getItem("token") },
-      })
-      .then((response) => {
-        setUser(response.data);
-        setUserStatus(response.data.status);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [userRes, donationsRes] = await Promise.all([
+          apiClient.get(`/students/${id}`, { headers: headers }),
+          apiClient.get(`/donations/admin/userdonation/${id}`, {
+            headers: headers,
+          }),
+        ]);
+        setUser(userRes.data);
+        setUserStatus(userRes.data.status);
+        setDonations(donationsRes.data.donations);
         setLoading(false);
-        setBorrowedBooks(borrowedBooksDummy);
-        SetDonations(donationsDummy);
-      })
-      .catch((error) => {
-        console.error("Error fetching student detail:", error);
+      } catch (err) {
+        console.error("Error fetching student detail:", err);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleToggleStatus = () => {
@@ -229,17 +212,22 @@ const AdminUserDetail = () => {
                   {donations.length !== 0 &&
                     donations.map((donation) => (
                       <tr key={donation._id} className="border-b">
-                        <td className="py-5 px-2 whitespace-nowrap">Birr: {donation.amount}</td>
                         <td className="py-5 px-2 whitespace-nowrap">
-                          {new Date(donation.date).toLocaleString("en-us", {
-                            dateStyle: "medium",
-                          })}
+                          Birr: {donation.amount}
+                        </td>
+                        <td className="py-5 px-2 whitespace-nowrap">
+                          {new Date(donation.createdAt).toLocaleString(
+                            "en-us",
+                            {
+                              dateStyle: "medium",
+                            }
+                          )}
                         </td>
                         <td
                           className={`p-2 font-semibold ${
-                            donation.status === "approved"
+                            donation.status === "Approved"
                               ? "text-green-600"
-                              : donation.status === "rejected"
+                              : donation.status === "Rejected"
                                 ? "text-red-600"
                                 : "text-blue-600"
                           }`}
@@ -256,7 +244,7 @@ const AdminUserDetail = () => {
                       Birr:
                       {donations.reduce(
                         (accumulator, donation) =>
-                          donation.status === "approved"
+                          donation.status === "Approved"
                             ? donation.amount + accumulator
                             : accumulator,
                         0

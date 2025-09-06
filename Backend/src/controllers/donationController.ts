@@ -7,8 +7,6 @@ export const createDonation = async (
   res: Response
 ): Promise<void> => {
   try {
-    // const userId = (req as { user?: { id: string } }).user?.id;
-
     const donation = await Donation.create({
       user: req.body.userId,
       amount: req.body.amount,
@@ -26,13 +24,13 @@ export const createDonation = async (
   }
 };
 
-//GET /api/donations/me
-export const getMyDonations = async (
+//GET /api/donations/admin/userdonation/:userId
+export const getUserDonation = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const userId = (req as { user?: { id: string } }).user?.id;
+    const { userId } = req.params;
     const donations: IDonation[] = await Donation.find({ user: userId }).sort({
       createdAt: -1,
     });
@@ -103,7 +101,7 @@ export const getPendingDonations = async (
 ): Promise<void> => {
   try {
     const donations = await Donation.find({ status: "Pending" })
-      .populate("user")
+      .populate("user", "name")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -114,16 +112,18 @@ export const getPendingDonations = async (
   }
 };
 
-
-//GET /api/donations/admin/totalapproved
-export const getTotalApprovedDonations = async (req:Request,res:Response): Promise<void> =>{
-  try{
-    const totalApproved= await Donation.aggregate([
+//GET /api/donations/admin/admin/totaldonations
+export const getTotalDonations = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const totalApproved = await Donation.aggregate([
       { $match: { status: "Approved" } },
       { $group: { _id: null, total: { $sum: "$amount" } } },
     ]);
     res.status(200).json({
-      totalApprovedAmount: totalApproved[0]?.total || 0,
+      totaldonation: totalApproved[0]?.total || 0,
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });

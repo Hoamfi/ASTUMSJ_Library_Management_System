@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 import { LiaTimesSolid } from "react-icons/lia";
+import apiClient from "../../services/api-client";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 interface Borrows {
   _id: string;
@@ -21,9 +24,10 @@ interface Returns {
 interface Donation {
   _id: string;
   amount: number;
-  date: string;
-  donner: String;
+  createdAt: string;
+  status: string;
   screenshot: string;
+  user: { _id: string; name: string };
 }
 
 const borrowsDummy = [
@@ -80,46 +84,32 @@ const returnsDummy = [
   },
 ];
 
-const donationsDummy = [
-  {
-    _id: "1x",
-    amount: 100,
-    date: "2025-09-03T17:55:28.691+00:00",
-    donner: "Ammar Sabit",
-    screenshot: "https://i.ibb.co/XxGJjGfK/photo-2025-09-05-16-10-34.jpg",
-  },
-  {
-    _id: "2x",
-    amount: 1000,
-    date: "2025-09-03T17:55:28.691+00:00",
-    donner: "BinLadin",
-    screenshot: "https://i.ibb.co/Q3qv4gX1/photo-2025-09-05-16-21-25.jpg",
-  },
-  {
-    _id: "3x",
-    amount: 100,
-    date: "2025-09-03T17:55:28.691+00:00",
-    donner: "John Smith",
-    screenshot: "https://i.ibb.co/XxGJjGfK/photo-2025-09-05-16-10-34.jpg",
-  },
-  {
-    _id: "4x",
-    amount: 100,
-    date: "2025-09-03T17:55:28.691+00:00",
-    donner: "Ammar Sabit",
-    screenshot: "https://i.ibb.co/Q3qv4gX1/photo-2025-09-05-16-21-25.jpg",
-  },
-];
-
 const Pendings = () => {
-  const [donations, SetDonations] = useState<Donation[]>(donationsDummy);
+  const token = localStorage.getItem("token");
+  const headers = { "x-auth-token": token };
+
+  const [donations, setDonations] = useState<Donation[]>([]);
   const [borrows, setBorrows] = useState<Borrows[]>(borrowsDummy);
   const [returns, setReturns] = useState<Returns[]>(returnsDummy);
   const [showScreenshot, setShowScreenshot] = useState(false);
   const [screenShot, setScreenShot] = useState("");
 
+  const fetchDonations = async () => {
+    try {
+      const [donationsRes] = await Promise.all([
+        apiClient.get("/donations/admin/pending", { headers: headers }),
+      ]);
+      setDonations(donationsRes.data.donations);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchDonations();
+  }, []);
+
   const screenShotPreview = (screenshot: string) => {
-    console.log("preview");
     return (
       <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
         <button
@@ -131,6 +121,25 @@ const Pendings = () => {
         <img src={screenshot} alt="" className="h-screen" />
       </div>
     );
+  };
+
+  const handleDonation = (donationId: string, status: string) => {
+    apiClient
+      .patch(
+        `/donations/admin/updatestatus/${donationId}`,
+        {
+          status: status,
+        },
+        { headers: headers }
+      )
+      .then(() => {
+        status === "Approved"
+          ? toast.success("Donation Approved")
+          : toast.error("Donation Rejected");
+          fetchDonations()
+      })
+      .catch((err) => console.error(err));
+    console.log(`donation ${donationId} rejected`);
   };
 
   return (
@@ -222,6 +231,7 @@ const Pendings = () => {
             <thead>
               <tr className="text-gray-600 dark:text-gray-300 border-b">
                 <th className="p-2 text-center whitespace-nowrap">Donner</th>
+                <th className="p-2 text-center whitespace-nowrap">Amount</th>
                 <th className="p-2 text-center whitespace-nowrap">Date</th>
                 <th className="p-2 text-center whitespace-nowrap">
                   Screenshot
@@ -230,14 +240,21 @@ const Pendings = () => {
               </tr>
             </thead>
             <tbody>
-              {donations.length !== 0 &&
+              {donations.length === 0 ? (
+                <p className="my-5">No pending donation yet!</p>
+              ) : (
                 donations.map((donation) => (
                   <tr key={donation._id} className="border-b">
                     <td className="p-2 text-center whitespace-nowrap">
-                      {donation.donner}
+                      <Link to={`/userdetail/${donation.user._id}`}>
+                        {donation.user.name}
+                      </Link>
                     </td>
                     <td className="p-2 text-center whitespace-nowrap">
-                      {new Date(donation.date).toLocaleString("en-us", {
+                      {donation.amount} Birr
+                    </td>
+                    <td className="p-2 text-center whitespace-nowrap">
+                      {new Date(donation.createdAt).toLocaleString("en-us", {
                         dateStyle: "medium",
                         timeStyle: "short",
                       })}
@@ -253,16 +270,23 @@ const Pendings = () => {
                         photo
                       </button>
                     </td>
-                    <td className="p-2 flex justify-center whitespace-nowrap">
-                      <button>
+                    <td className="p-2 flex gap-2 justify-center whitespace-nowrap">
+                      <button
+                        className="cursor-pointer"
+                        onClick={() => handleDonation(donation._id, "Rejected")}
+                      >
                         <FaTimes color="red" size={25} />
                       </button>
-                      <button>
+                      <button
+                        className="cursor-pointer"
+                        onClick={() => handleDonation(donation._id, "Approved")}
+                      >
                         <FaCheck color="green" size={25} />
                       </button>
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
             </tbody>
           </table>
         </div>

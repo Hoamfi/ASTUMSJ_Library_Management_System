@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -38,7 +38,7 @@ const topBooks = [
 // Colors for pie chart
 const COLORS = ["#6366F1", "#22C55E", "#EF4444"];
 
-function StatCard({ title, value }: { title: string; value: number }) {
+function StatCard({ title, value }: { title: string; value: number | string }) {
   return (
     <div className="dark:bg-[#1d293d] p-6 rounded-br-2xl rounded-tl-2xl shadow text-center">
       <h4 className="text-gray-500  text-sm">{title}</h4>
@@ -48,7 +48,6 @@ function StatCard({ title, value }: { title: string; value: number }) {
 }
 
 export default function AdminDashboard() {
-  const pdfRef = useRef(null);
   // stats
   const [totalBooks, setTotalBooks] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -75,13 +74,13 @@ export default function AdminDashboard() {
             apiClient.get("/books", { headers }),
             apiClient.get("/students/allCount", { headers }),
             apiClient.get("/borrow/", { headers }),
-            // apiClient.get("/donations/admin/all", { headers }),
+            apiClient.get("/donations/admin/totaldonations", { headers }),
           ]);
 
         setTotalBooks(booksRes.data.count);
         setTotalUsers(usersRes.data);
         setTotalBorrows(borrowsRes.data.count);
-        // setTotalDonations(donationsRes.data.count);
+        setTotalDonations(donationsRes.data.totaldonation);
       } catch (err) {
         console.error(err);
       }
@@ -135,7 +134,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <StatCard title="Total Books" value={totalBooks} />
         <StatCard title="Total Members" value={totalUsers} />
-        <StatCard title="Total Donations" value={totalDonations} />
+        <StatCard title="Total Donation" value={`${totalDonations}` + "Birr"} />
         <StatCard title="Books Borrowed" value={totalBorrows} />
       </div>
 

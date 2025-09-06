@@ -1,25 +1,31 @@
 import { Router } from "express";
 import {
   createDonation,
-  getMyDonations,
+  getUserDonation,
   getAllDonations,
   updateDonationStatus,
   getPendingDonations,
-  getTotalApprovedDonations,
+  getTotalDonations,
 } from "../controllers/donationController";
 
 import auth from "../middleware/auth";
+import isAdmin from "@/middleware/admin";
 
 const router = Router();
 
 //for user purpose
 router.post("/donate", auth, createDonation);
-router.get("/me", getMyDonations);
 
 //for admin purpose
-router.get("/admin/all", getAllDonations);
-router.patch("/admin/updatestatus/:donationId", updateDonationStatus);
-router.get("/admin/pending",getPendingDonations);
-router.get("/admin/totalapproved",getTotalApprovedDonations);
+router.get("/admin/all", auth, isAdmin, getAllDonations);
+router.get("/admin/userdonation/:userId", auth, isAdmin, getUserDonation);
+router.patch(
+  "/admin/updatestatus/:donationId",
+  auth,
+  isAdmin,
+  updateDonationStatus
+);
+router.get("/admin/pending", auth, isAdmin, getPendingDonations);
+router.get("/admin/totaldonations", auth, isAdmin, getTotalDonations);
 
 export default router;
