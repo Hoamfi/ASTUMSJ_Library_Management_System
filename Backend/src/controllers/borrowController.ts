@@ -233,7 +233,7 @@ export const borrowBookApproved = async (req: Request, res: Response) => {
 // GET /api/borrow/admin/pendingborrow
 export const getPendingBorrows = async (_req: Request, res: Response) => {
   try {
-    const pendingBorrows = await Borrow.find({ status: "Pending_borrow" })
+    const pendingBorrows = await Borrow.find({ status: "Pending" })
       .populate("book")
       .populate("user");
 
