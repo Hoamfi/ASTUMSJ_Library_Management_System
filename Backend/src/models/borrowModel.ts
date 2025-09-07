@@ -7,7 +7,7 @@ export interface IBorrow extends Document {
   book: mongoose.Types.ObjectId | IBook;
   borrowedAt: Date;
   returnedAt?: Date;
-  status: "borrowed" | "returned" | "overdue"|"Pending_return"|"Pending_borrow";
+  status: "borrowed" | "returned" | "overdue"|"Pending_return"|"Pending_borrow"|"rejected";
   dueDate: Date;
 }
 
@@ -35,7 +35,10 @@ const borrowSchema = new Schema<IBorrow>(
     },
     status: {
       type: String,
-      enum: ["borrowed", "returned", "overdue", "Pending", "Pending_return", "Pending_borrow"],
+
+      enum: ["borrowed", "returned", "overdue","rejected","Pending_borrow","Pending_return"],
+
+
       default: "borrowed",
       index: true,
     },
