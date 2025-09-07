@@ -1,38 +1,40 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-// 1. Interface
 export interface IBook extends Document {
   title: string;
   author: string;
   publicationYear: number;
-  bookCover: string;
+  bookCover?: string;
   description?: string;
-  borrowCount: number;
+  borrowCount: number; // defaults to 0
   isbn?: string;
   page: number;
-  category: string;
-  availableCopies: number;
+  catagory: string;
+  availableCopies: number; // defaults to 0
   totalCopies: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // 2. Schema
-const bookSchema: Schema<IBook> = new Schema(
+const bookSchema = new Schema<IBook>(
   {
     title: { type: String, required: true },
-    borrowCount: { type: Number, required: true },
     author: { type: String, required: true },
     publicationYear: { type: Number, required: true },
+    bookCover: { type: String },
     description: { type: String },
+    page: { type: Number, required: true },
+    catagory: { type: String, required: true }, 
+    borrowCount: { type: Number, default: 0 },
+    totalCopies: { type: Number, required: true, min: 0 },
+    availableCopies: { type: Number, min: 0 },
     isbn: {
       type: String,
       required: false,
       unique: true,
       index: true,
     },
-    totalCopies: { type: Number, required: true, min: 0 },
-    availableCopies: { type: Number, required: true, min: 0 },
   },
   { timestamps: true }
 );

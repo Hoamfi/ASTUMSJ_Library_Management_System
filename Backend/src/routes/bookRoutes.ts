@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  createBook,
+  addnewBook,
   getBooks,
   getBookById,
   updateBook,
@@ -10,15 +10,16 @@ import {
 } from "../controllers/bookController";
 
 import isAdmin from "../middleware/admin";
+import auth from "@/middleware/auth";
 
 const router: Router = Router();
 
 router.get("/search", searchBooks);
-router.post("/", isAdmin, createBook); // admin only
+router.post("/addnewbook", auth, isAdmin, addnewBook); // admin only
 router.get("/", getBooks); // public
 router.get("/mostborrowed", getMostBorrowedBooks);
 router.get("/:id", getBookById); // public
-router.put("/:id", isAdmin, updateBook); // admin only
-router.delete("/:id", isAdmin, deleteBook); // admin only
+router.put("/:id", auth, isAdmin, updateBook); // admin only
+router.delete("/:id", auth, isAdmin, deleteBook); // admin only
 
 export default router;

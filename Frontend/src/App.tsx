@@ -28,6 +28,7 @@ interface User {
   email: string;
   createdAt: Date;
   profileCompleted: boolean;
+  status: string;
   isAdmin: boolean;
 }
 
@@ -103,7 +104,7 @@ function App() {
           path="/bookdetail/:id"
           element={
             <Main>
-              <BookDetail isAdmin={user?.isAdmin} />
+              <BookDetail isAdmin={user?.isAdmin} profileCompleted={user?.profileCompleted} status={user?.status} userId={user?._id} />
             </Main>
           }
         />

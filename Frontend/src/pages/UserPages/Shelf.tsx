@@ -3,6 +3,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import apiClient from "../../services/api-client";
 
 interface Book {
+  _id: string;
   title: string;
   bookCover: string;
 }
@@ -29,9 +30,15 @@ const Shelf = () => {
 
   useEffect(() => {
     apiClient
-      .get("/books")
+      .get("/borrow/myborrows", {
+        headers: { "x-auth-token": localStorage.getItem("token") },
+      })
       .then((res) => {
-        setBooks(res.data.books);
+        const returnedBooks: Book[] = res.data
+          .filter((borrow: any) => borrow.status === "returned")
+          .map((borrow: any) => borrow.book);
+
+        setBooks(returnedBooks);
       })
       .catch((error) => console.log(error.response?.data));
   }, []);
@@ -43,13 +50,17 @@ const Shelf = () => {
       </span>
 
       <div className="grid grid-cols-2  md:grid-cols-3 gap-x-4 gap-y-10 border-gray-200 m-5 rounded-xl shadow-xl px-5 py-7 w-screen lg:w-4xl px-3 mx-auto">
-        {books?.map((book) => (
-          <BookCard
-            key={book.title}
-            title={book.title}
-            bookCover={book.bookCover}
-          />
-        ))}
+        {books?.length === 0 ? (
+          <p>No Borrow record yet.</p>
+        ) : (
+          books?.map((book) => (
+            <BookCard
+              key={book._id}
+              title={book.title}
+              bookCover={book.bookCover}
+            />
+          ))
+        )}
       </div>
     </div>
   );

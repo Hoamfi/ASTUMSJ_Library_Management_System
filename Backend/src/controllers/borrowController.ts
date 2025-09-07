@@ -9,7 +9,7 @@ import nodemailer from "nodemailer";
 // POST /api/borrow/:bookId
 export const borrowBook = async (req: Request, res: Response) => {
   const { bookId } = req.params;
-  const userId = (req as { user?: { id: string } }).user?.id;
+  const userId = req.body.userId;
 
   try {
     const student = (await Student.findById(userId)) as IStudent;
@@ -50,12 +50,19 @@ export const borrowBook = async (req: Request, res: Response) => {
     book.availableCopies -= 1;
     await book.save();
 
+<<<<<<< HEAD
     res
       .status(201)
       .json({
         message: "borrowed request submitted.Awaiting admin approval",
         borrow,
       });
+=======
+    res.status(201).json({
+      message: "borrowed request submitted.Awaiting admin approval",
+      borrow,
+    });
+>>>>>>> 2c8976bcd9baa1790c5e6102353e26256fb02dc3
   } catch (error) {
     res
       .status(500)
@@ -93,11 +100,14 @@ export const returnBook = async (req: Request, res: Response) => {
 
 // GET /api/myborrows
 export const getMyBorrows = async (req: Request, res: Response) => {
-  const userId = (req as { user?: { id: string } }).user?.id;
+  const userId = await Student.findById((req as any).user._id).select("_id");
 
   try {
-    const borrows = await Borrow.find({ user: userId }).populate("book");
-    res.status(200).json({ borrows });
+    const borrows = await Borrow.find({ user: userId }).populate(
+      "book",
+      "title bookCover"
+    );
+    res.status(200).send(borrows);
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong . Please try again later",
@@ -108,7 +118,9 @@ export const getMyBorrows = async (req: Request, res: Response) => {
 // GET /api/borrows
 export const getAllBorrows = async (_req: Request, res: Response) => {
   try {
-    const borrows = await Borrow.find().populate("book user");
+    const borrows = await Borrow.find()
+      .populate("book", "title")
+      // .populate("user", "name");
     const count = await Borrow.find().countDocuments();
     res.status(200).json({ borrows, count });
   } catch (error) {
@@ -118,6 +130,10 @@ export const getAllBorrows = async (_req: Request, res: Response) => {
     });
   }
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c8976bcd9baa1790c5e6102353e26256fb02dc3
 // PUT /api/admin/approvereturn/:borrowId
 export const approveReturnBook = async (req: Request, res: Response) => {
   const { borrowId } = req.params;
@@ -135,6 +151,10 @@ export const approveReturnBook = async (req: Request, res: Response) => {
 
     borrow.returnedAt = new Date();
     borrow.status = new Date() > borrow.dueDate ? "overdue" : "returned";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2c8976bcd9baa1790c5e6102353e26256fb02dc3
     await borrow.save();
 
     const book = borrow.book as IBook;
@@ -157,9 +177,11 @@ export const getStudentBorrowHistory = async (req: Request, res: Response) => {
   const { studentId } = req.params;
 
   try {
-    const borrows = await Borrow.find({ user: studentId })
-      .populate("book")
-      .populate("user");
+    const borrows = await Borrow.find({ user: studentId }).populate(
+      "book",
+      "title"
+    );
+    // .populate("user");
 
     if (!borrows || borrows.length === 0) {
       return res

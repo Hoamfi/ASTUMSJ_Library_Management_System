@@ -136,7 +136,7 @@ const Pendings = () => {
         status === "Approved"
           ? toast.success("Donation Approved")
           : toast.error("Donation Rejected");
-          fetchDonations()
+        fetchDonations();
       })
       .catch((err) => console.error(err));
     console.log(`donation ${donationId} rejected`);

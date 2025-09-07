@@ -35,7 +35,10 @@ const borrowSchema = new Schema<IBorrow>(
     },
     status: {
       type: String,
+
       enum: ["borrowed", "returned", "overdue","rejected","Pending_borrow","Pending_return"],
+
+
       default: "borrowed",
       index: true,
     },
