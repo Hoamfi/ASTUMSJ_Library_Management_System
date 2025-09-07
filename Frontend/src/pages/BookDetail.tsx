@@ -64,6 +64,7 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
   const [bookstatus, setBookStatus] = useState<string | null>("");
   const [borrowId, setBorrowId] = useState<string | null>("");
   const header = { "x-auth-token": localStorage.getItem("token") };
+  const [activeBorrows, setActiveBorrows] = useState(0);
 
   const fetchBorrows = () => {
     apiClient
@@ -73,6 +74,13 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
       .then((res) => {
         setBookStatus(getBorrowStatus(res.data, id).status);
         setBorrowId(getBorrowStatus(res.data, id).borrowId);
+
+        const count = res.data.reduce((acc: number, curr: any) => {
+          if (curr.status.toLowerCase() !== "returned") acc++;
+          return acc;
+        }, 0);
+
+        setActiveBorrows(count);
       });
   };
 
@@ -152,6 +160,10 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
                 (book?.availableCopies === 0 ? (
                   <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
                     No copies Available
+                  </p>
+                ) : activeBorrows === 3 ? (
+                  <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
+                    Borrow limit exceeded
                   </p>
                 ) : bookstatus === "Pending" ? (
                   <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
