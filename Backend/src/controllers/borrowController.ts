@@ -4,7 +4,7 @@ import Borrow, { IBorrow } from "../models/borrowModel";
 import student from "../models/student";
 import Student from "../models/student";
 import { IStudent } from "../models/student";
-import nodemailer from "nodemailer";
+
 
 // POST /api/borrow/:bookId
 export const borrowBook = async (req: Request, res: Response) => {
@@ -228,14 +228,49 @@ export const borrowBookApproved = async (req: Request, res: Response) => {
   }
 };
 
-//Get /api/borrow/admin/pendings
-export const getPendingRequests = async (req: Request, res: Response) => {
+
+
+
+// GET /api/borrow/admin/pendingborrow
+export const getPendingBorrows = async (_req: Request, res: Response) => {
   try {
-    const pendings = await Borrow.find({
-      status: { $in: ["Pending_borrow", "Pending_return"] },
-    }).populate("book user");
-    res.status(200).send({ pendings });
+    const pendingBorrows = await Borrow.find({ status: "Pending_borrow" })
+      .populate("book")
+      .populate("user");
+
+    return res.status(200).json({
+      success: true,
+      count: pendingBorrows.length,
+      pendingBorrows,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Something Went wrong. Please Try again later.", error });
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching pending borrows.",
+      error,
+    });
   }
 };
+
+
+// GET /api/borrow/admin/pendingreturn
+export const getPendingReturns = async (_req: Request, res: Response) => {
+  try {
+    const pendingReturns = await Borrow.find({ status: "Pending_return" })
+      .populate("book")
+      .populate("user");
+
+    return res.status(200).json({
+      success: true,
+      count: pendingReturns.length,
+      pendingReturns,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong.",
+      error,
+    });
+  }
+};
+

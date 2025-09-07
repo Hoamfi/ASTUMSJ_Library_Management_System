@@ -9,7 +9,8 @@ import {
   approveReturnBook,
   getStudentBorrowHistory,
   borrowBookApproved,
-  getPendingRequests,
+  getPendingBorrows,
+  getPendingReturns,
 
 
 
@@ -30,6 +31,7 @@ router.get("/admin/allborrows", [auth, isAdmin], getAllBorrows);
 router.get("/admin/borrowhistory/:studentId", auth, isAdmin, getStudentBorrowHistory);
 router.put("/admin/approvereturn/:borrowId", auth, isAdmin, approveReturnBook);
 router.put("/borrowapproved/:bookId", auth, isAdmin, borrowBookApproved);
-router.get("/admin/pendings",getPendingRequests );
+router.get("/admin/pendingborrow", getPendingBorrows );
+router.get("/admin/pendingreturn",getPendingReturns);
 
 export default router;
