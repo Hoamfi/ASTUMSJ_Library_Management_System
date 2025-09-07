@@ -235,7 +235,7 @@ export const getPendingBorrows = async (_req: Request, res: Response) => {
   try {
     const pendingBorrows = await Borrow.find({ status: "Pending" })
       .populate("book")
-      .populate("user");
+      // .populate("user");
 
     return res.status(200).json({
       success: true,

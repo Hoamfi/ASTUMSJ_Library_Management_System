@@ -9,9 +9,13 @@ import { Link } from "react-router-dom";
 interface Borrows {
   _id: string;
   user: string;
-  book: string;
+  book: {
+    _id: string;
+    title: string;
+    availableCopies: number;
+    totalCopies: number;
+  };
   borrowDate: string;
-  // status: string;
 }
 
 interface Returns {
@@ -29,33 +33,6 @@ interface Donation {
   screenshot: string;
   user: { _id: string; name: string };
 }
-
-const borrowsDummy = [
-  {
-    _id: "1",
-    user: "Ammar",
-    book: "Atomic Habit",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-  {
-    _id: "2",
-    user: "Ammar",
-    book: "The Power of habit",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-  {
-    _id: "3",
-    user: "Ammar",
-    book: "The psychology of money",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-  {
-    _id: 4,
-    user: "Ammar",
-    book: "How to talk to anyone",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-];
 
 const returnsDummy = [
   {
@@ -89,17 +66,24 @@ const Pendings = () => {
   const headers = { "x-auth-token": token };
 
   const [donations, setDonations] = useState<Donation[]>([]);
-  const [borrows, setBorrows] = useState<Borrows[]>(borrowsDummy);
+  const [borrows, setBorrows] = useState<Borrows[]>([]);
   const [returns, setReturns] = useState<Returns[]>(returnsDummy);
   const [showScreenshot, setShowScreenshot] = useState(false);
   const [screenShot, setScreenShot] = useState("");
+  const [borowRequester, setBorowRequester] = useState("");
 
   const fetchDonations = async () => {
     try {
-      const [donationsRes] = await Promise.all([
+      const [donationsRes, borrowRes] = await Promise.all([
         apiClient.get("/donations/admin/pending", { headers: headers }),
+        apiClient.get("/borrow/admin/pendingborrow", { headers: headers }),
       ]);
       setDonations(donationsRes.data.donations);
+      setBorrows(borrowRes.data.pendingBorrows);
+      const borrowerId = borrowRes.data.pendingBorrows[0].user;
+      apiClient
+        .get(`/students/${borrowerId}`, { headers: headers })
+        .then((res) => setBorowRequester(res.data.name));
     } catch (err) {
       console.log(err);
     }
@@ -165,12 +149,12 @@ const Pendings = () => {
                 borrows.map((borrow) => (
                   <tr key={borrow._id} className="border-b">
                     <td className="p-2 text-center whitespace-nowrap">
-                      {borrow.user}
+                      {borowRequester}
                     </td>
                     <td className="p-2 text-center whitespace-nowrap">
-                      {borrow.book}
+                      {borrow.book.title}
                     </td>
-                    <td className="p-2 text-center whitespace-nowrap">20/54</td>
+                    <td className="p-2 text-center whitespace-nowrap">{`${borrow.book.availableCopies}/${borrow.book.totalCopies}`}</td>
                     <td className="p-2 text-center whitespace-nowrap">
                       <button className="w-fit">
                         <FaCheck color="green" size={25} />
