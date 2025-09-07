@@ -1,33 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+import { Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import apiClient from "../../services/api-client";
-
-const borrowingHistory = [
-  { month: "Jan", books: 2 },
-  { month: "Feb", books: 1 },
-  { month: "Mar", books: 3 },
-  { month: "Apr", books: 1 },
-  { month: "May", books: 4 },
-  { month: "Jun", books: 2 },
-];
-
-const borrowedCategories = [
-  { name: "Islamic", value: 6 },
-  { name: "Self Help", value: 3 },
-  { name: "Bussiness", value: 2 },
-];
 
 interface Props {
   name?: string;
@@ -47,18 +21,47 @@ const COLORS = ["#6366F1", "#22C55E", "#F59E0B"];
 
 export default function UserDashboard({ name, memberSince }: Props) {
   const [borrowedBooks, setBorrowedBooks] = useState<Borrow[]>([]);
+  const [borrowedCategories, setBorrowedCategories] = useState([
+    { name: "Islamic", value: 0 },
+    { name: "Self Help", value: 0 },
+    { name: "Business", value: 0 },
+  ]);
+
   useEffect(() => {
     apiClient
       .get("/borrow/myborrows", {
         headers: { "x-auth-token": localStorage.getItem("token") },
       })
       .then((res) => {
-        setBorrowedBooks(res.data);
+        const books = res.data;
+
+        // filter only returned or borrowed
+        const validBooks = books.filter(
+          (b: any) => b.status === "Returned" || b.status === "Borrowed"
+        );
+
+        // count by category
+        const categoryCount: Record<string, number> = {};
+        validBooks.forEach((b: any) => {
+          const cat = b.book?.catagory?.toLowerCase();
+          if (cat) {
+            categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+          }
+        });
+
+        // map to borrowedCategories state
+        const updated = [
+          { name: "Islamic", value: categoryCount["islamic"] || 0 },
+          { name: "Self Help", value: categoryCount["self"] || 0 },
+          { name: "Business", value: categoryCount["business"] || 0 },
+        ];
+
+        setBorrowedCategories(updated);
+        setBorrowedBooks(books);
       })
       .catch((error) => console.log(error.response?.data));
   }, []);
 
-  console.log(borrowedBooks)
   return (
     <div className="min-h-screen p-8 space-y-8">
       <div className="bg-white dark:bg-[#1d293d] p-6 rounded-2xl shadow flex justify-between items-center">
@@ -120,51 +123,39 @@ export default function UserDashboard({ name, memberSince }: Props) {
 
       {/* Borrowing History Line Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white dark:bg-[#1d293d] dark:text-white p-6 rounded-2xl shadow">
-          <h3 className="text-lg font-semibold mb-4">📈 Borrowing History</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={borrowingHistory} className="text-black">
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="books"
-                stroke="#6366F1"
-                strokeWidth={3}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
         {/* Borrowed Categories Pie Chart */}
         <div className="bg-white dark:bg-[#1d293d] p-6 rounded-2xl shadow">
           <h3 className="text-lg font-semibold mb-4">
             📊 Borrowed by Category
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={borrowedCategories}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-                label
-              >
-                {borrowedCategories.map((_entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+          {borrowedCategories[0].value === 0 &&
+          borrowedCategories[1].value === 0 &&
+          borrowedCategories[2].value === 0 ? (
+            <p>No borrow record</p>
+          ) : (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={borrowedCategories}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label
+                >
+                  {borrowedCategories.map((_entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
     </div>

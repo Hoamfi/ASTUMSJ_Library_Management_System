@@ -18,15 +18,6 @@ import apiClient from "../../services/api-client";
 import logo from "../../assets/logo-with-bg.jpg";
 import jsPDF from "jspdf";
 
-const borrowingTrends = [
-  { month: "Jan", borrowings: 50 },
-  { month: "Feb", borrowings: 75 },
-  { month: "Mar", borrowings: 90 },
-  { month: "Apr", borrowings: 120 },
-  { month: "May", borrowings: 65 },
-  { month: "Jun", borrowings: 150 },
-];
-
 const topBooks = [
   { title: "1984", borrowed: 120 },
   { title: "The Psychology of money", borrowed: 95 },
@@ -34,6 +25,11 @@ const topBooks = [
   { title: "Atomic Habits", borrowed: 55 },
   { title: "Clean Code", borrowed: 40 },
 ];
+
+interface Trend {
+  month: string;
+  borrowings: number;
+}
 
 // Colors for pie chart
 const COLORS = ["#6366F1", "#22C55E", "#EF4444"];
@@ -53,6 +49,7 @@ export default function AdminDashboard() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalBorrows, setTotalBorrows] = useState(0);
   const [totalDonations, setTotalDonations] = useState(0);
+  const [borrowingTrends, setBorrowingTrends] = useState<Trend[]>([]);
 
   // books
   const [islamic, setIslamic] = useState(0);
@@ -81,6 +78,50 @@ export default function AdminDashboard() {
         setTotalUsers(usersRes.data);
         setTotalBorrows(borrowsRes.data.count);
         setTotalDonations(donationsRes.data.totaldonation);
+
+        // Borrow trends (last 6 months only)
+        const borrows = borrowsRes.data.borrows;
+        const now = new Date();
+        const monthNames = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+
+        // Build last 6 months (current month included, going backwards)
+        const last6Months = [];
+        for (let i = 5; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          last6Months.push({
+            key: `${d.getFullYear()}-${d.getMonth()}`,
+            label: monthNames[d.getMonth()],
+          });
+        }
+
+        // Count borrowings by month
+        const monthlyCount: Record<string, number> = {};
+        borrows.forEach((b: any) => {
+          const d = new Date(b.borrowedAt);
+          const key = `${d.getFullYear()}-${d.getMonth()}`;
+          monthlyCount[key] = (monthlyCount[key] || 0) + 1;
+        });
+
+        // Format data for Recharts
+        const trends = last6Months.map((m) => ({
+          month: m.label,
+          borrowings: monthlyCount[m.key] || 0,
+        }));
+
+        setBorrowingTrends(trends);
       } catch (err) {
         console.error(err);
       }
