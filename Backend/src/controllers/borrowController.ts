@@ -50,19 +50,11 @@ export const borrowBook = async (req: Request, res: Response) => {
     book.availableCopies -= 1;
     await book.save();
 
-<<<<<<< HEAD
-    res
-      .status(201)
-      .json({
-        message: "borrowed request submitted.Awaiting admin approval",
-        borrow,
-      });
-=======
     res.status(201).json({
       message: "borrowed request submitted.Awaiting admin approval",
       borrow,
     });
->>>>>>> 2c8976bcd9baa1790c5e6102353e26256fb02dc3
+
   } catch (error) {
     res
       .status(500)
@@ -130,10 +122,8 @@ export const getAllBorrows = async (_req: Request, res: Response) => {
     });
   }
 };
-<<<<<<< HEAD
-=======
 
->>>>>>> 2c8976bcd9baa1790c5e6102353e26256fb02dc3
+
 // PUT /api/admin/approvereturn/:borrowId
 export const approveReturnBook = async (req: Request, res: Response) => {
   const { borrowId } = req.params;
@@ -151,10 +141,8 @@ export const approveReturnBook = async (req: Request, res: Response) => {
 
     borrow.returnedAt = new Date();
     borrow.status = new Date() > borrow.dueDate ? "overdue" : "returned";
-<<<<<<< HEAD
-=======
 
->>>>>>> 2c8976bcd9baa1790c5e6102353e26256fb02dc3
+
     await borrow.save();
 
     const book = borrow.book as IBook;
