@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import Book, { IBook } from "../models/book";
 import Borrow, { IBorrow } from "../models/borrowModel";
+import student from "../models/student";
 import Student from "../models/student";
 import { IStudent } from "../models/student";
+import nodemailer from "nodemailer";
 
 // POST /api/borrow/:bookId
 export const borrowBook = async (req: Request, res: Response) => {
@@ -48,7 +50,12 @@ export const borrowBook = async (req: Request, res: Response) => {
     book.availableCopies -= 1;
     await book.save();
 
-    res.status(201).json({ message: "borrowed request submitted.Awaiting admin approval", borrow });
+    res
+      .status(201)
+      .json({
+        message: "borrowed request submitted.Awaiting admin approval",
+        borrow,
+      });
   } catch (error) {
     res
       .status(500)
@@ -56,7 +63,7 @@ export const borrowBook = async (req: Request, res: Response) => {
   }
 };
 
-// PUT /api/return/:borrowId 
+// PUT /api/return/:borrowId
 export const returnBook = async (req: Request, res: Response) => {
   const { borrowId } = req.params;
 
@@ -69,7 +76,6 @@ export const returnBook = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Book already returned" });
     }
 
-  
     borrow.status = "Pending_return";
     await borrow.save();
 
@@ -84,7 +90,6 @@ export const returnBook = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 // GET /api/myborrows
 export const getMyBorrows = async (req: Request, res: Response) => {
@@ -113,8 +118,7 @@ export const getAllBorrows = async (_req: Request, res: Response) => {
     });
   }
 };
-
-// PUT /api/admin/approvereturn/:borrowId 
+// PUT /api/admin/approvereturn/:borrowId
 export const approveReturnBook = async (req: Request, res: Response) => {
   const { borrowId } = req.params;
 
@@ -130,26 +134,25 @@ export const approveReturnBook = async (req: Request, res: Response) => {
     }
 
     borrow.returnedAt = new Date();
-    borrow.status =
-      new Date() > borrow.dueDate ? "overdue" : "returned";
-
+    borrow.status = new Date() > borrow.dueDate ? "overdue" : "returned";
     await borrow.save();
 
     const book = borrow.book as IBook;
     book.availableCopies += 1;
     await book.save();
 
-    res.status(200).json({ message: "Return approved successfully", borrow });
+    return res
+      .status(200)
+      .json({ message: "Return approved successfully", borrow });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Something went wrong. Please try again later.",
       error,
     });
   }
 };
 
-
-// GET /api/borrows/admin/:studentId  
+// GET /api/borrows/admin/:studentId
 export const getStudentBorrowHistory = async (req: Request, res: Response) => {
   const { studentId } = req.params;
 
@@ -159,7 +162,9 @@ export const getStudentBorrowHistory = async (req: Request, res: Response) => {
       .populate("user");
 
     if (!borrows || borrows.length === 0) {
-      return res.status(404).json({ message: "No borrow history found for this student" });
+      return res
+        .status(404)
+        .json({ message: "No borrow history found for this student" });
     }
 
     res.status(200).json({ borrows, count: borrows.length });
@@ -171,7 +176,7 @@ export const getStudentBorrowHistory = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/borrowapproved/:bookId 
+// POST /api/borrowapproved/:bookId
 export const borrowBookApproved = async (req: Request, res: Response) => {
   const { bookId } = req.params;
   const userId = (req as { user?: { id: string } }).user?.id;
@@ -186,7 +191,9 @@ export const borrowBookApproved = async (req: Request, res: Response) => {
     });
 
     if (activeBorrows >= 3) {
-      return res.status(400).json({ message: "Borrow limit reached (3 books)" });
+      return res
+        .status(400)
+        .json({ message: "Borrow limit reached (3 books)" });
     }
 
     const book = await Book.findById(bookId);
@@ -208,5 +215,17 @@ export const borrowBookApproved = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });
+  }
+};
+
+//Get /api/borrow/admin/pendings
+export const getPendingRequests = async (req: Request, res: Response) => {
+  try {
+    const pendings = await Borrow.find({
+      status: { $in: ["Pending_borrow", "Pending_return"] },
+    }).populate("book user");
+    res.status(200).send({ pendings });
+  } catch (error) {
+    res.status(500).json({ message: "Something Went wrong. Please Try again later.", error });
   }
 };
