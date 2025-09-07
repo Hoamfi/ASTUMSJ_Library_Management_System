@@ -18,13 +18,13 @@ import apiClient from "../../services/api-client";
 import logo from "../../assets/logo-with-bg.jpg";
 import jsPDF from "jspdf";
 
-const topBooks = [
-  { title: "1984", borrowed: 120 },
-  { title: "The Psychology of money", borrowed: 95 },
-  { title: "Sapiens", borrowed: 70 },
-  { title: "Atomic Habits", borrowed: 55 },
-  { title: "Clean Code", borrowed: 40 },
-];
+// const topBooks = [
+//   { title: "1984", borrowed: 120 },
+//   { title: "The Psychology of money", borrowed: 95 },
+//   { title: "Sapiens", borrowed: 70 },
+//   { title: "Atomic Habits", borrowed: 55 },
+//   { title: "Clean Code", borrowed: 40 },
+// ];
 
 interface Trend {
   month: string;
@@ -230,7 +230,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* ===== Top Books Bar Chart ===== */}
-      <div className="dark:bg-[#1d293d] bg-white p-6 rounded-2xl shadow">
+      {/* <div className="dark:bg-[#1d293d] bg-white p-6 rounded-2xl shadow">
         <h3 className="text-lg font-semibold mb-4">🏆 Top Borrowed Books</h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={topBooks}>
@@ -242,7 +242,7 @@ export default function AdminDashboard() {
             <Bar dataKey="borrowed" fill="#22C55E" />
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </div> */}
     </div>
   );
 }

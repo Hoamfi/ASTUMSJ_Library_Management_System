@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import apiClient from "../services/api-client";
 import { useEffect, useState } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -12,6 +12,7 @@ import Back from "../components/Back";
 import { toast } from "react-toastify";
 import { BsBookshelf } from "react-icons/bs";
 import { SiBookstack } from "react-icons/si";
+import { FaTriangleExclamation } from "react-icons/fa6";
 
 interface Book {
   _id: string;
@@ -65,6 +66,9 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
   const [borrowId, setBorrowId] = useState<string | null>("");
   const header = { "x-auth-token": localStorage.getItem("token") };
   const [activeBorrows, setActiveBorrows] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
+  const [deleteAction, setDeleteAction] = useState(false);
+  const navigate = useNavigate();
 
   const fetchBorrows = () => {
     apiClient
@@ -137,137 +141,186 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
     fetchBorrows();
   };
 
-  return (
-    <div className=" border-gray-200 m-5">
-      <Back path="/" />
-      {isLoading ? (
-        <div className="flex items-center justify-center h-[50vh]">
-          <p className="text-lg text-gray-500 animate-pulse">
-            Loading book details...
-          </p>
-        </div>
-      ) : (
-        <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl px-5">
-          <img
-            src={book?.bookCover}
-            alt="book-photo"
-            className="w-80 rounded-xl md:self-center"
-          />
-          <div className="my-5 mx-2 md:mt-10">
-            <div className="w-full lg:w-2xl flex justify-between">
-              <h1 className="text-2xl font-bold md:text-5xl">{book?.title}</h1>
-              {!isAdmin &&
-                (book?.availableCopies === 0 ? (
-                  <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
-                    No copies Available
-                  </p>
-                ) : activeBorrows === 3 ? (
-                  <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
-                    Borrow limit exceeded
-                  </p>
-                ) : bookstatus === "Pending" ? (
-                  <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
-                    Pending
-                  </p>
-                ) : bookstatus === "Pending_return" ? (
-                  <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
-                    Pending Return
-                  </p>
-                ) : bookstatus === "returned" ? (
-                  <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
-                    Returned
-                  </p>
-                ) : bookstatus === "borrowed" ? (
-                  <button
-                    className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
-                    onClick={() => handleBookReturn()}
-                  >
-                    Return
-                  </button>
-                ) : bookstatus === "overdues" ? (
-                  <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
-                    Over Due
-                  </p>
-                ) : (
-                  <button
-                    className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
-                    onClick={() => handleBorrow()}
-                  >
-                    Borrow
-                  </button>
-                ))}
-            </div>
-            <div className="flex gap-4 mt-3">
-              <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
-                {book?.catagory === "islamic" ? (
-                  <FaQuran className="mr-1 self-center" />
-                ) : book?.catagory === "self" ? (
-                  <MdSelfImprovement className="mr-1 self-center" />
-                ) : (
-                  <FaSackDollar className="mr-1 self-center" />
-                )}
-                {book?.catagory}
-              </span>
-              <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
-                <FaCalendarAlt className="mr-1 self-center" />
-                {book?.publicationYear}
-              </span>
-              <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
-                <FaBook className="mr-1 self-center" />
-                {book?.page}
-              </span>
-            </div>
-            <div className="border-t-2 mt-7 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
-              <h2 className="text-xl font-bold md:text-2xl mb-2">Author</h2>
-              <p>{book?.author}</p>
-            </div>
-            <div className="border-t-2 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
-              <h2 className="text-xl font-bold md:text-2xl mb-2">
-                Description
-              </h2>
-              <p>{book?.description}</p>
-            </div>
+  useEffect(() => {
+    // setShowPopup(true);
+    deleteAction &&
+      apiClient.delete(`books/${id}`, { headers: header }).then(() => {
+        toast.success("Book collection is successfully deleted.");
+        setShowPopup(false);
+        navigate("/");
+      });
+    
+  }, [deleteAction])
 
-            {isAdmin && (
-              <>
-                <div className="border-t-2 pt-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
-                  <h2 className="text-xl font-bold md:text-2xl mb-2">Copies</h2>
-                  <span className="flex gap-2 my-2">
-                    <p className="font-bold text-md">Total Copies</p>
-                    <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
-                      <BsBookshelf className="mr-1 self-center" />
-                      {book?.totalCopies}
-                    </span>
-                  </span>
-                  <span className="flex gap-2">
-                    <p className="font-bold text-md">Total Copies</p>
-                    <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
-                      <SiBookstack className="mr-1 self-center" />
-                      {book?.availableCopies}
-                    </span>
-                  </span>
-                </div>
-                <div className="border-t-2 mt-7 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
-                  <h2 className="text-xl font-bold md:text-2xl mb-2">
-                    Actions
-                  </h2>
-                  <div className="flex gap-4">
-                    <button className="cursor-pointer border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-1 ">
-                      <FaPen className="inline mr-1 align-center" />
-                      Edit
-                    </button>
-                    <button>
-                      <FaTrashAlt className="inline" color="red" />
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
+  return (
+    <>
+      {showPopup && (
+        <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
+          <div className="bg-white dark:bg-[#1d293d] p-5 shadow-xl dark:text-white rounded-lg flex flex-col w-md font-sans">
+            <div className="flex mb-5">
+              <FaTriangleExclamation color="orange" size={40} />
+              <h2 className="fs-5 px-2 align-self-center">
+                Delete Book Collection?
+              </h2>
+            </div>
+            <h3 className="text-md ">
+              This will delete <strong>{book?.title}</strong>
+            </h3>
+            <div className="mt-5 self-end">
+              <button
+                className="bg-green-500 text-white px-3 py-2 rounded-lg shadow hover:bg-green-400 cursor-pointer h-fit mx-2"
+                onClick={() => setShowPopup(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-red-500 text-white px-3 py-2 rounded-lg shadow hover:bg-red-400 cursor-pointer h-fit"
+                onClick={() => setDeleteAction(true)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
-    </div>
+      <div className=" border-gray-200 m-5">
+        <Back path="/" />
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[50vh]">
+            <p className="text-lg text-gray-500 animate-pulse">
+              Loading book details...
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col md:gap-8 md:flex-row rounded-xl shadow-xl px-5">
+            <img
+              src={book?.bookCover}
+              alt="book-photo"
+              className="w-80 rounded-xl md:self-center"
+            />
+            <div className="my-5 mx-2 md:mt-10">
+              <div className="w-full lg:w-2xl flex justify-between">
+                <h1 className="text-2xl font-bold md:text-5xl">
+                  {book?.title}
+                </h1>
+                {!isAdmin &&
+                  (book?.availableCopies === 0 ? (
+                    <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
+                      No copies Available
+                    </p>
+                  ) : activeBorrows === 3 ? (
+                    <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
+                      Borrow limit exceeded
+                    </p>
+                  ) : bookstatus === "Pending" ? (
+                    <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
+                      Pending
+                    </p>
+                  ) : bookstatus === "Pending_return" ? (
+                    <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
+                      Pending Return
+                    </p>
+                  ) : bookstatus === "returned" ? (
+                    <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
+                      Returned
+                    </p>
+                  ) : bookstatus === "borrowed" ? (
+                    <button
+                      className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
+                      onClick={() => handleBookReturn()}
+                    >
+                      Return
+                    </button>
+                  ) : bookstatus === "overdues" ? (
+                    <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
+                      Over Due
+                    </p>
+                  ) : (
+                    <button
+                      className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
+                      onClick={() => handleBorrow()}
+                    >
+                      Borrow
+                    </button>
+                  ))}
+              </div>
+              <div className="flex gap-4 mt-3">
+                <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+                  {book?.catagory === "islamic" ? (
+                    <FaQuran className="mr-1 self-center" />
+                  ) : book?.catagory === "self" ? (
+                    <MdSelfImprovement className="mr-1 self-center" />
+                  ) : (
+                    <FaSackDollar className="mr-1 self-center" />
+                  )}
+                  {book?.catagory}
+                </span>
+                <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+                  <FaCalendarAlt className="mr-1 self-center" />
+                  {book?.publicationYear}
+                </span>
+                <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+                  <FaBook className="mr-1 self-center" />
+                  {book?.page}
+                </span>
+              </div>
+              <div className="border-t-2 mt-7 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
+                <h2 className="text-xl font-bold md:text-2xl mb-2">Author</h2>
+                <p>{book?.author}</p>
+              </div>
+              <div className="border-t-2 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
+                <h2 className="text-xl font-bold md:text-2xl mb-2">
+                  Description
+                </h2>
+                <p>{book?.description}</p>
+              </div>
+
+              {isAdmin && (
+                <>
+                  <div className="border-t-2 pt-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
+                    <h2 className="text-xl font-bold md:text-2xl mb-2">
+                      Copies
+                    </h2>
+                    <span className="flex gap-2 my-2">
+                      <p className="font-bold text-md">Total Copies</p>
+                      <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+                        <BsBookshelf className="mr-1 self-center" />
+                        {book?.totalCopies}
+                      </span>
+                    </span>
+                    <span className="flex gap-2">
+                      <p className="font-bold text-md">Total Copies</p>
+                      <span className="border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-0.5 flex">
+                        <SiBookstack className="mr-1 self-center" />
+                        {book?.availableCopies}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="border-t-2 mt-7 py-7 border-gray-200 dark:border-gray-100 dark:border-t-1 w-full lg:w-2xl">
+                    <h2 className="text-xl font-bold md:text-2xl mb-2">
+                      Actions
+                    </h2>
+                    <div className="flex gap-4">
+                      {/* <button className="cursor-pointer border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-1 ">
+                      <FaPen className="inline mr-1 align-center" />
+                      Edit
+                    </button> */}
+                      <button
+                        className="cursor-pointer border-gray-200 dark:bg-[#1d293d] dark:border-0 rounded-lg w-fit border-2 px-2 py-1"
+                        onClick={() => setShowPopup(true)}
+                      >
+                        <FaTrashAlt className="inline mr-1" color="red" />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
