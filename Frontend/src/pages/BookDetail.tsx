@@ -204,10 +204,13 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
                   {book?.title}
                 </h1>
                 {!isAdmin &&
-                  (book?.availableCopies === 0 ? (
-                    <p className="text-red-500">No copies Available</p>
-                  ) : activeBorrows === 3 ? (
-                    <p className="text-red-500">Borrow limit exceeded</p>
+                  (bookstatus === "borrowed" ? (
+                    <button
+                      className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
+                      onClick={() => handleBookReturn()}
+                    >
+                      Return
+                    </button>
                   ) : bookstatus === "Pending" ? (
                     <p className=" dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
                       Pending
@@ -220,17 +223,14 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
                     <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
                       Returned
                     </p>
-                  ) : bookstatus === "borrowed" ? (
-                    <button
-                      className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
-                      onClick={() => handleBookReturn()}
-                    >
-                      Return
-                    </button>
                   ) : bookstatus === "overdues" ? (
                     <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
                       Over Due
                     </p>
+                  ) : book?.availableCopies === 0 ? (
+                    <p className="text-red-500">No copies Available</p>
+                  ) : activeBorrows === 3 ? (
+                    <p className="text-red-500">Borrow limit exceeded</p>
                   ) : (
                     <button
                       className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
