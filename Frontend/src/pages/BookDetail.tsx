@@ -211,10 +211,6 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
                     >
                       Return
                     </button>
-                  ) : book?.availableCopies === 0 ? (
-                    <p className="text-red-500">No copies Available</p>
-                  ) : activeBorrows === 3 ? (
-                    <p className="text-red-500">Borrow limit exceeded</p>
                   ) : bookstatus === "Pending" ? (
                     <p className=" dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
                       Pending
@@ -231,6 +227,10 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
                     <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
                       Over Due
                     </p>
+                  ) : book?.availableCopies === 0 ? (
+                    <p className="text-red-500">No copies Available</p>
+                  ) : activeBorrows === 3 ? (
+                    <p className="text-red-500">Borrow limit exceeded</p>
                   ) : (
                     <button
                       className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow hover:bg-black/80 hover:dark:bg-[#1d293d]/90 cursor-pointer h-fit"
