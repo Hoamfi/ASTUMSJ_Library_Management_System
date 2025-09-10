@@ -9,6 +9,8 @@ import donationRoutes from "./routes/donationRoutes";
 import forgotRoutes from "./routes/forgotRoutes";
 import borrowRoutes from "./routes/borrowRoutes";
 import creatingRoutes from "./routes/creatingRoutes";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
