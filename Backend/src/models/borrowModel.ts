@@ -1,22 +1,23 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { IBook } from "./book";
+import { IStudent } from "./student";
 
 // 1. Interface
 export interface IBorrow extends Document {
-  user: mongoose.Types.ObjectId;
+  student: mongoose.Types.ObjectId | IStudent;
   book: mongoose.Types.ObjectId | IBook;
   borrowedAt: Date;
   returnedAt?: Date;
-  status: "borrowed" | "returned"|"Pending" | "overdue"|"Pending_return"|"Pending_borrow";
+  status: "borrowed" | "returned" | "Pending" | "overdue" | "Pending_return";
   dueDate: Date;
 }
 
 // 2. Schema
 const borrowSchema = new Schema<IBorrow>(
   {
-    user: {
+    student: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Student",
       required: true,
       index: true,
     },
@@ -35,7 +36,7 @@ const borrowSchema = new Schema<IBorrow>(
     },
     status: {
       type: String,
-      enum: ["borrowed", "returned", "overdue", "Pending", "Pending_return", "Pending_borrow"],
+      enum: ["borrowed", "returned", "overdue", "Pending", "Pending_return"],
       default: "borrowed",
       index: true,
     },
