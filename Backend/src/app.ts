@@ -27,8 +27,8 @@ app.use("/api/creating", creatingRoutes);
 app.use("/api/forgotpassword", forgotRoutes);
 
 mongoose
-  .connect("mongodb://localhost/project")
-  .then(() => console.log("Connected to mongodb..."))
-  .catch((err) => console.log("Couldnt connect to db ", err.message));
+  .connect(process.env.ATLAS_URL as string)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err.message));
 
 export default app;
