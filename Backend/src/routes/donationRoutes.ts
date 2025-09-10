@@ -9,7 +9,7 @@ import {
 } from "../controllers/donationController";
 
 import auth from "../middleware/auth";
-import isAdmin from "@/middleware/admin";
+import isAdmin from "../middleware/admin";
 
 const router = Router();
 

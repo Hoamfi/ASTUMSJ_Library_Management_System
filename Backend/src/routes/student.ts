@@ -1,5 +1,5 @@
 import express from "express";
-import auth from "@/middleware/auth";
+import auth from "../middleware/auth";
 import {
   addStudent,
   me,
@@ -11,7 +11,7 @@ import {
   completeProfile,
   getTotalNumber
 } from "../controllers/studentController";
-import admin from "@/middleware/admin";
+import admin from "../middleware/admin";
 
 const studentRouter = express.Router();
 

@@ -1,4 +1,4 @@
-import Student from "@/models/student";
+import Student from "../models/student";
 import { Request, Response } from "express";
 import crypto from "crypto";
 import bcrypt from "bcrypt";

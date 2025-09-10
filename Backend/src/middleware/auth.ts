@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { ENV } from "@/config/env";
+import { ENV } from "../config/env";
 
 function auth(req: Request, res: Response, next: () => void) {
   const token = req.header("x-auth-token");

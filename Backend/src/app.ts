@@ -17,7 +17,14 @@ const app = express();
 app.use(express.json());
 app.use(cors({ exposedHeaders: ["x-auth-token"] }));
 app.use(helmet());
-
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://astumsj-library.netlify.app"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    exposedHeaders: ["x-auth-token"],
+    credentials: true,
+  })
+);
 app.use("/api/students", studentRouter);
 app.use("/api/books", router);
 app.use("/api/auth", authStudent);

@@ -2,7 +2,7 @@ import {
   forgotPassword,
   resetPassword,
   verifyOtp,
-} from "@/controllers/forgotController";
+} from "../controllers/forgotController";
 import express from "express";
 
 const router = express.Router();

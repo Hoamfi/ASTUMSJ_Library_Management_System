@@ -16,7 +16,7 @@ export const borrowBook = async (req: Request, res: Response) => {
 
     const activeBorrows = await Borrow.countDocuments({
       student: studentId,
-      status: "borrowed",
+      status: { $ne: "returned" },
     });
     console.log(activeBorrows);
     if (activeBorrows >= 3) {
