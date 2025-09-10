@@ -6,23 +6,16 @@ import apiClient from "../../services/api-client";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
-interface Borrows {
+interface Borow {
   _id: string;
-  user: string;
+  student: { _id: string; name: string };
   book: {
     _id: string;
     title: string;
     availableCopies: number;
     totalCopies: number;
   };
-  borrowDate: string;
-}
-
-interface Returns {
-  _id: string;
-  user: string;
-  book: string;
-  borrowDate: string;
+  Date: string;
 }
 
 interface Donation {
@@ -34,79 +27,42 @@ interface Donation {
   user: { _id: string; name: string };
 }
 
-const returnsDummy = [
-  {
-    _id: "1",
-    user: "Ammar Sabit",
-    book: "Atomic Habit",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-  {
-    _id: "2",
-    user: "Ammar Sabit",
-    book: "The Power of habit",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-  {
-    _id: "3",
-    user: "Ammar Sabit",
-    book: "The psychology of money",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-  {
-    _id: "4",
-    user: "Ammar Sabit",
-    book: "How to talk to anyone",
-    borrowDate: "2025-09-03T17:55:28.691+00:00",
-  },
-];
-
 const Pendings = () => {
   const token = localStorage.getItem("token");
   const headers = { "x-auth-token": token };
 
   const [donations, setDonations] = useState<Donation[]>([]);
-  const [borrows, setBorrows] = useState<Borrows[]>([]);
-  // const [returns, setReturns] = useState<Returns[]>(returnsDummy);
-  const [returns, ] = useState<Returns[]>(returnsDummy);
+  const [borrows, setBorrows] = useState<Borow[]>([]);
+  const [returns, setReturns] = useState<Borow[]>([]);
   const [showScreenshot, setShowScreenshot] = useState(false);
   const [screenShot, setScreenShot] = useState("");
-  const [borowRequester, setBorowRequester] = useState("");
 
-  const fetchDonations = async () => {
-    try {
-      const [donationsRes, borrowRes] = await Promise.all([
-        apiClient.get("/donations/admin/pending", { headers: headers }),
-        apiClient.get("/borrow/admin/pendingborrow", { headers: headers }),
-      ]);
-      setDonations(donationsRes.data.donations);
-      setBorrows(borrowRes.data.pendingBorrows);
-      const borrowerId = borrowRes.data.pendingBorrows[0].user;
-      apiClient
-        .get(`/students/${borrowerId}`, { headers: headers })
-        .then((res) => setBorowRequester(res.data.name));
-    } catch (err) {
-      console.log(err);
-    }
+  const fetchBorrows = () => {
+    apiClient
+      .get("/borrow/admin/pendingborrow", { headers: headers })
+      .then((res) => setBorrows(res.data.pendingBorrows))
+      .catch((err) => console.log(err));
+  };
+
+  const fetchReturns = () => {
+    apiClient
+      .get("/borrow/admin/pendingreturn", { headers: headers })
+      .then((res) => setReturns(res.data.pendingReturns))
+      .catch((err) => console.log(err));
+  };
+
+  const fetchDonations = () => {
+    apiClient
+      .get("/donations/admin/pending", { headers: headers })
+      .then((res) => setDonations(res.data.donations))
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
+    fetchBorrows();
+    fetchReturns();
     fetchDonations();
   }, []);
-
-  const screenShotPreview = (screenshot: string) => {
-    return (
-      <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
-        <button
-          className="fixed right-5 top-5 cursor-pointer"
-          onClick={() => setShowScreenshot(false)}
-        >
-          <LiaTimesSolid size={25} />
-        </button>
-        <img src={screenshot} alt="" className="h-screen" />
-      </div>
-    );
-  };
 
   const handleDonation = (donationId: string, status: string) => {
     apiClient
@@ -125,6 +81,40 @@ const Pendings = () => {
       })
       .catch((err) => console.error(err));
     console.log(`donation ${donationId} rejected`);
+  };
+
+  const handleBorrow = (borrowId: string) => {
+    apiClient
+      .post(`/borrow/admin/approveborrow/${borrowId}`, {}, { headers: headers })
+      .then(() => {
+        toast.success("Borrow Request Approved");
+        fetchBorrows();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleReturn = (borrowId: string) => {
+    apiClient
+      .post(`/borrow/admin/approvereturn/${borrowId}`, {}, { headers: headers })
+      .then(() => {
+        toast.success("Return Request Approved");
+        fetchReturns();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const screenShotPreview = (screenshot: string) => {
+    return (
+      <div className="fixed top-0 left-0 w-screen h-screen z-50 bg-black/50 flex items-center justify-center">
+        <button
+          className="fixed right-5 top-5 cursor-pointer"
+          onClick={() => setShowScreenshot(false)}
+        >
+          <LiaTimesSolid size={25} />
+        </button>
+        <img src={screenshot} alt="" className="h-screen" />
+      </div>
+    );
   };
 
   return (
@@ -146,18 +136,21 @@ const Pendings = () => {
               </tr>
             </thead>
             <tbody>
-              {borrows.length !== 0 &&
+              {borrows.length === 0 ? <p className="my-5">No Pending Borrow Request!</p> :
                 borrows.map((borrow) => (
                   <tr key={borrow._id} className="border-b">
                     <td className="p-2 text-center whitespace-nowrap">
-                      {borowRequester}
+                      {borrow.student.name}
                     </td>
                     <td className="p-2 text-center whitespace-nowrap">
                       {borrow.book.title}
                     </td>
                     <td className="p-2 text-center whitespace-nowrap">{`${borrow.book.availableCopies}/${borrow.book.totalCopies}`}</td>
                     <td className="p-2 text-center whitespace-nowrap">
-                      <button className="w-fit">
+                      <button
+                        className="w-fit cursor-pointer"
+                        onClick={() => handleBorrow(borrow._id)}
+                      >
                         <FaCheck color="green" size={25} />
                       </button>
                     </td>
@@ -183,27 +176,33 @@ const Pendings = () => {
               </tr>
             </thead>
             <tbody>
-              {returns.length !== 0 &&
+              {returns.length === 0 ? (
+                <p className="my-5">No Pending Return Request!</p>
+              ) : (
                 returns.map((returnn) => (
                   <tr key={returnn._id} className="border-b">
                     <td className="p-2 text-center whitespace-nowrap">
-                      {returnn.user}
+                      {returnn.student.name}
                     </td>
                     <td className="p-2 text-center whitespace-nowrap">
-                      {returnn.book}
+                      {returnn.book.title}
                     </td>
                     <td className="p-2 text-center whitespace-nowrap">
-                      {new Date(returnn.borrowDate).toLocaleString("en-us", {
+                      {new Date(returnn.Date).toLocaleString("en-us", {
                         dateStyle: "medium",
                       })}
                     </td>
                     <td className="p-2 text-center whitespace-nowrap">
-                      <button className="w-fit">
+                      <button
+                        className="w-fit cursor-pointer"
+                        onClick={() => handleReturn(returnn._id)}
+                      >
                         <FaCheck color="green" size={25} />
                       </button>
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
             </tbody>
           </table>
         </div>

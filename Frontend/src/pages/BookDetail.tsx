@@ -59,11 +59,11 @@ const getBorrowStatus = (
 
 const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
   const { id } = useParams<{ id: string }>();
+  const header = { "x-auth-token": localStorage.getItem("token") };
   const [book, setBook] = useState<Book | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [bookstatus, setBookStatus] = useState<string | null>("");
   const [borrowId, setBorrowId] = useState<string | null>("");
-  const header = { "x-auth-token": localStorage.getItem("token") };
   const [activeBorrows, setActiveBorrows] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [deleteAction, setDeleteAction] = useState(false);
@@ -135,21 +135,22 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
           headers: header,
         }
       )
-      .then((res) => toast.success(res.data.message))
+      .then((res) => {
+        toast.success(res.data.message);
+        fetchBorrows();
+      })
       .catch(() => toast.error("something went wrong please try again"));
     fetchBorrows();
   };
 
   useEffect(() => {
-    // setShowPopup(true);
     deleteAction &&
       apiClient.delete(`books/${id}`, { headers: header }).then(() => {
         toast.success("Book collection is successfully deleted.");
         setShowPopup(false);
         navigate("/");
       });
-    
-  }, [deleteAction])
+  }, [deleteAction]);
 
   return (
     <>
@@ -204,15 +205,11 @@ const BookDetail = ({ userId, status, isAdmin, profileCompleted }: Props) => {
                 </h1>
                 {!isAdmin &&
                   (book?.availableCopies === 0 ? (
-                    <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
-                      No copies Available
-                    </p>
+                    <p className="text-red-500">No copies Available</p>
                   ) : activeBorrows === 3 ? (
-                    <p className="text-red-500 bg-black dark:bg-[#1d293d] px-4 py-3 rounded-lg">
-                      Borrow limit exceeded
-                    </p>
+                    <p className="text-red-500">Borrow limit exceeded</p>
                   ) : bookstatus === "Pending" ? (
-                    <p className="bg-black dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
+                    <p className=" dark:bg-[#1d293d] text-white px-4 py-3 rounded-lg shadow">
                       Pending
                     </p>
                   ) : bookstatus === "Pending_return" ? (
