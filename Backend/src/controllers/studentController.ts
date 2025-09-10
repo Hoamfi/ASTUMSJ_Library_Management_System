@@ -1,4 +1,4 @@
-import Student from "@/models/student";
+import Student from "../models/student";
 import validateStudent from "../vallidators/validateStudent";
 import { Request, Response } from "express";
 import _ from "lodash";

@@ -1,5 +1,5 @@
 import express from "express";
-import authStudent from "@/controllers/authController";
+import authStudent from "../controllers/authController";
 
 
 

@@ -1,6 +1,6 @@
 import express from "express";
 import auth from "../middleware/auth";
-import isAdmin from "@/middleware/admin";
+import isAdmin from "../middleware/admin";
 import {
   borrowBook,
   returnBook,
