@@ -2,12 +2,20 @@
   "name": "node_learn",
   "version": "1.0.0",
   "main": "app.js",
+<<<<<<< HEAD
 "scripts": {
   "build": "tsc",
   "start": "npm run build && node dist/server.js",
   "dev": "nodemon --watch src --ext ts --exec ts-node -r tsconfig-paths/register src/server.ts"
 },
 
+=======
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/server.js",
+    "dev": "nodemon --watch src --ext ts --exec ts-node -r tsconfig-paths/register src/server.ts"
+  },
+>>>>>>> 6a9f3b88a3534f3f05e1a25d9601bd567b6cc08c
   "keywords": [],
   "author": "",
   "license": "ISC",
