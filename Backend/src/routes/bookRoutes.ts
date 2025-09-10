@@ -10,7 +10,7 @@ import {
 } from "../controllers/bookController";
 
 import isAdmin from "../middleware/admin";
-import auth from "@/middleware/auth";
+import auth from "../middleware/auth";
 
 const router: Router = Router();
 
