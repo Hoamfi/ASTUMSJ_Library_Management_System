@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node -r tsconfig-paths/register dist/server.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node -r tsconfig-paths/register src/server.ts"
   },
   "keywords": [],
