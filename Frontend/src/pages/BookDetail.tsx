@@ -7,7 +7,6 @@ import { FaQuran } from "react-icons/fa";
 import { MdSelfImprovement } from "react-icons/md";
 import { FaSackDollar } from "react-icons/fa6";
 import { FaTrashAlt } from "react-icons/fa";
-import { FaPen } from "react-icons/fa";
 import Back from "../components/Back";
 import { toast } from "react-toastify";
 import { BsBookshelf } from "react-icons/bs";

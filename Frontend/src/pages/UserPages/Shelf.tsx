@@ -57,8 +57,7 @@ const Shelf = () => {
             <BookCard
               key={book._id}
               title={book.title}
-              bookCover={book.bookCover}
-            />
+              bookCover={book.bookCover} _id={""}            />
           ))
         )}
       </div>

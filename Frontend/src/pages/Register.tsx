@@ -46,7 +46,7 @@ const Register = ({ emailToVerify }: Props) => {
     };
     apiClient
       .post("/creating/register", newUser)
-      .then((res) => {
+      .then(() => {
         emailToVerify(data.email);
         navigate("/verifyemail");
       })

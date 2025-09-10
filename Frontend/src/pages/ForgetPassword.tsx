@@ -16,7 +16,7 @@ const ForgetPassword = ({ resetEmail }: Props) => {
   const handleForgetPassword = (email: string) => {
     apiClient
       .post("/forgotpassword", { email: email })
-      .then((res) => {
+      .then(() => {
         resetEmail(email);
         navigate("/resetpassword");
       })

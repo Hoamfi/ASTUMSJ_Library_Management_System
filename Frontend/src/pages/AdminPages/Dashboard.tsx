@@ -10,12 +10,12 @@ import {
   PieChart,
   Pie,
   Cell,
-  BarChart,
-  Bar,
-  Legend,
+  // BarChart,
+  // Bar,
+  // Legend,
 } from "recharts";
 import apiClient from "../../services/api-client";
-import logo from "../../assets/logo-with-bg.jpg";
+// import logo from "../../assets/logo-with-bg.jpg";
 import jsPDF from "jspdf";
 
 // const topBooks = [
