@@ -40,10 +40,14 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [emailToVerify, setEmailToVerify] = useState("");
   const [resetEmail, setResetEmail] = useState("");
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
     apiClient
       .get("/students/me", { headers: { "x-auth-token": token } })
@@ -51,13 +55,17 @@ function App() {
         setAuth(true);
         setUser(res.data);
         setAdmin(res.data.isAdmin);
+        setLoading(false);
       })
       .catch(() => {
         setAuth(false);
         setAdmin(false);
         localStorage.removeItem("token");
+        setLoading(false);
       });
   }, [navigate]);
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Routes>
@@ -68,14 +76,17 @@ function App() {
           <ForgetPassword resetEmail={(email) => setResetEmail(email)} />
         }
       />
-      
+
       <Route
         path="/register"
         element={
           <Register emailToVerify={(email) => setEmailToVerify(email)} />
         }
       />
-      <Route path="/resetpassword" element={<ResetPassword email={resetEmail}/>} />
+      <Route
+        path="/resetpassword"
+        element={<ResetPassword email={resetEmail} />}
+      />
       <Route
         path="/verifyemail"
         element={<VerifyEmail email={emailToVerify} />}
@@ -104,7 +115,12 @@ function App() {
           path="/bookdetail/:id"
           element={
             <Main>
-              <BookDetail isAdmin={user?.isAdmin} profileCompleted={user?.profileCompleted} status={user?.status} userId={user?._id} />
+              <BookDetail
+                isAdmin={user?.isAdmin}
+                profileCompleted={user?.profileCompleted}
+                status={user?.status}
+                userId={user?._id}
+              />
             </Main>
           }
         />
